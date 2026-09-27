@@ -97,7 +97,7 @@ function Pedido() {
   }
 
   const order = snap && snap.reference === tx.reference ? snap : null;
-  const eta = new Date((order?.createdAt ?? Date.now()) + (order && !isBogota(order.city) ? 4 : 2) * 86400000);
+  const eta = new Date((order?.createdAt ?? Date.now()) + (order?.etaDays ?? (order && !isBogota(order.city) ? 4 : 2)) * 86400000);
   const method = tx.paymentMethodType ? METHOD[tx.paymentMethodType] ?? tx.paymentMethodType : "Wompi";
 
   return (

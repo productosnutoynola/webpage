@@ -9,6 +9,7 @@ export type OrderSnapshot = {
   nombre: string;
   correo: string;
   direccion: string;
+  etaDays: number;
   createdAt: number;
 };
 

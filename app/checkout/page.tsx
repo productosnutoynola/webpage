@@ -50,7 +50,7 @@ export default function CheckoutPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ lines, customer: form }),
       });
-      const data = (await res.json()) as { url?: string; reference?: string; lines?: CartLine[]; totals?: Totals; city?: string; error?: string };
+      const data = (await res.json()) as { url?: string; reference?: string; lines?: CartLine[]; totals?: Totals; city?: string; etaDays?: number; error?: string };
       if (!res.ok || !data.url) throw new Error(data.error ?? "No pudimos iniciar el pago.");
       saveSnapshot({
         reference: data.reference!,
@@ -60,6 +60,7 @@ export default function CheckoutPage() {
         nombre: form.nombre.split(" ")[0] || form.nombre,
         correo: form.correo,
         direccion: form.direccion,
+        etaDays: data.etaDays ?? 2,
         createdAt: Date.now(),
       });
       window.location.assign(data.url);

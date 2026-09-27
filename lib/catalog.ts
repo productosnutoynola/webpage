@@ -53,10 +53,10 @@ export const FLAVORS: Record<FlavorKey, Flavor> = {
     objectPosition: "center 45%",
     blend: true,
     labelTop: "41%",
-    short: "Canela de Ceilán, macadamia y un hilo de miel al final. Huele a panadería a las 7 a.m.",
-    long: "Avena tostada con canela de Ceilán, macadamia y marañón, terminada con un hilo de miel que forma clusters del tamaño de una moneda. Es la que más se repite: huele a panadería a las 7 de la mañana y desaparece de la bolsa sin que te des cuenta.",
+    short: "Canela de Ceilán, macadamia y marañón tostados. Huele a panadería a las 7 a.m.",
+    long: "Avena tostada con canela de Ceilán, macadamia y marañón, horneada lento hasta formar clusters del tamaño de una moneda. Es la que más se repite: huele a panadería a las 7 de la mañana y desaparece de la bolsa sin que te des cuenta.",
     ingredients:
-      "Avena en hojuelas, almendra, marañón, macadamia, semillas de calabaza, coco deshidratado, miel de abejas, canela de Ceilán, aceite de coco, sal marina.",
+      "Avena en hojuelas, almendra, marañón, macadamia, semillas de calabaza, coco deshidratado, canela de Ceilán, aceite de coco, sal marina.",
     meta: "canela",
     reviews: 128,
     badge: "Más vendida",
@@ -74,7 +74,7 @@ export const FLAVORS: Record<FlavorKey, Flavor> = {
     short: "Cacao colombiano 70 %, almendra tostada y nibs enteros. Postre disfrazado de desayuno.",
     long: "Cacao colombiano al 70 % amasado con la avena antes de hornear, más almendra tostada y nibs enteros que crujen distinto. Amarga en el mejor sentido: es postre disfrazado de desayuno y funciona brutal sobre helado de vainilla.",
     ingredients:
-      "Avena en hojuelas, almendra, marañón, cacao en polvo 70 %, nibs de cacao, semillas de calabaza, miel de abejas, aceite de coco, extracto de vainilla, sal marina.",
+      "Avena en hojuelas, almendra, marañón, cacao en polvo 70 %, nibs de cacao, semillas de calabaza, aceite de coco, extracto de vainilla, sal marina.",
     meta: "cacao 70 %",
     reviews: 94,
   },
@@ -91,7 +91,7 @@ export const FLAVORS: Record<FlavorKey, Flavor> = {
     short: "Arándano, fresa y uchuva deshidratados. Ácida y fresca; brutal con yogur griego.",
     long: "Arándano, fresa y uchuva deshidratados sin azúcar, con avena tostada y almendra laminada. Ácida, fresca y con la acidez justa para cortar lo dulce del yogur griego. La favorita de quienes dicen que la granola les empalaga.",
     ingredients:
-      "Avena en hojuelas, almendra laminada, marañón, arándano deshidratado, fresa deshidratada, uchuva deshidratada, semillas de girasol, miel de abejas, aceite de coco, sal marina.",
+      "Avena en hojuelas, almendra laminada, marañón, arándano deshidratado, fresa deshidratada, uchuva deshidratada, semillas de girasol, aceite de coco, sal marina.",
     meta: "fruta deshidratada",
     reviews: 71,
   },

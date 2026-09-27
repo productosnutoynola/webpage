@@ -23,17 +23,50 @@ npm run build
 | `/producto/[sabor]` | Detalle (estático) de cada sabor |
 | `/checkout` | Paso 1: datos de envío. Paso 2: redirección a Wompi |
 | `/pedido?id=…` | Wompi redirige aquí; el estado se verifica contra la API de Wompi |
-| `POST /api/checkout` | Recalcula precios **en servidor**, crea el pedido `PENDING` y firma la URL de Wompi |
+| `POST /api/checkout` | Llama `create_order` en Supabase (precios, envío y stock los decide la base) y firma la URL de Wompi |
 | `GET /api/wompi/transaction` | Consulta el estado real de una transacción |
-| `POST /api/wompi/events` | Webhook de Wompi (checksum verificado); actualiza el pedido |
+| `POST /api/wompi/events` | Webhook de Wompi (checksum verificado, se registra en `payment_events`); llama `apply_payment` |
 
 - Reglas comerciales en `lib/catalog.ts` (precio, envíos, packs): un solo lugar para cambiarlas.
 - Los packs entran al carrito como una línea con su descuento (−8 % Dúo, −15 % Trío, −22 % Familiar). La Caja Regalo cobra los $14.000 de la caja. Dúo y Regalo permiten elegir sabores.
-- El pedido solo pasa a `APPROVED` si el monto cobrado por Wompi coincide con el del pedido.
+- El pedido solo pasa a `paid` si el monto cobrado por Wompi coincide con el del pedido.
+
+## Backend (Supabase)
+
+Migraciones en `supabase/migrations/` (aplicar en orden). Todas las tablas tienen RLS; el catálogo es de lectura pública y todo lo demás solo lo toca el servidor con la service role key.
+
+| Tabla | Contenido |
+|---|---|
+| `products` | Sabores: slug, SKU, precio, textos, imagen |
+| `bundles`, `bundle_items` | Combos/packs: descuento, cargo extra (caja), composición si es fija |
+| `inventory` | Stock por producto: `on_hand` (físico) y `reserved` (en checkout) |
+| `inventory_movements` | Kardex: reabastecimientos, reservas, liberaciones, ventas, ajustes |
+| `customers`, `addresses` | Clientes (únicos por correo) y sus direcciones |
+| `orders`, `order_items`, `order_item_components` | Pedidos con dirección y totales congelados; ítems y bolsas físicas por ítem |
+| `payments` | Transacciones de Wompi por pedido |
+| `payment_events` | Bitácora de webhooks recibidos |
+| `shipping_zones` | Tarifas: Bogotá y resto del país |
+
+**Ciclo del pedido:** `pending_payment` (stock reservado 60 min) → `paid` (stock descontado) → `preparing` → `shipped` → `delivered`. Rechazo → `payment_failed`; reserva vencida → `cancelled`; monto distinto o sin stock al aprobar → `needs_review`.
+
+**Operación diaria (SQL Editor de Supabase):**
+
+```sql
+select public.restock('cinnamon-roll', 50, 'Horneada 12 oct');   -- entrada de producto
+select public.adjust_stock('cacao-crunch', -2, 'Bolsas dañadas'); -- ajuste
+select * from public.inventory_status;                            -- stock disponible
+select * from public.orders_overview where status = 'paid';       -- pedidos por despachar
+select * from public.sales_daily;                                 -- ventas por día
+update public.orders set status = 'shipped', shipped_at = now(), tracking_code = '...' where reference = 'NYN-...';
+```
+
+**Precios:** la base es la fuente de verdad del cobro. `lib/catalog.ts` alimenta lo que se muestra en el sitio; si cambias un precio, cámbialo en ambos (o regenera la semilla con `npm run db:seed-sql` para entornos nuevos).
+
+**Pruebas de la base:** `psql "$DATABASE_URL" -f supabase/tests/checkout_flow.sql` (corre en una transacción y la revierte; 25 escenarios).
 
 ## Puesta en producción
 
-1. **Supabase**: aplicar `supabase/migrations/20260927000000_orders.sql` (SQL Editor o `supabase db push`).
+1. **Supabase** (proyecto `teqicnlvqhkpksfyorae`): aplicar en orden los 3 archivos de `supabase/migrations/` (SQL Editor o `supabase link --project-ref teqicnlvqhkpksfyorae && supabase db push`). Luego cargar el stock real con `public.restock(...)`: **arranca en 0 y con 0 el sitio no deja comprar**.
 2. **Vercel**: importar el repo → Framework Next.js. Variables de entorno (ver `.env.example`):
    `NEXT_PUBLIC_WOMPI_PUBLIC_KEY`, `WOMPI_INTEGRITY_SECRET`, `WOMPI_EVENTS_SECRET`,
    `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`, `NEXT_PUBLIC_SITE_URL=https://productosnutoynola.com`.
@@ -46,5 +79,4 @@ npm run build
 
 - Número real de WhatsApp en `lib/contact.ts`.
 - Reseñas y cifras nutricionales son de ejemplo (del prototipo).
-- Revisar claims de etiqueta: "0 g azúcar" y "vegano" con miel de abejas en los ingredientes.
 - Envío nacional ($18.000, gratis desde $150.000) fue un supuesto del prototipo.

@@ -1,8 +1,8 @@
 import { NextResponse } from "next/server";
-import { computeTotals, sanitizeLines } from "@/lib/pricing";
+import { sanitizeLines } from "@/lib/pricing";
 import { parseCustomer, resolvePlace, validateCustomer } from "@/lib/customer";
-import { buildCheckoutUrl, newReference } from "@/lib/wompi";
-import { createOrder } from "@/lib/orders";
+import { buildCheckoutUrl } from "@/lib/wompi";
+import { createOrder, OrderError } from "@/lib/orders";
 
 export const runtime = "nodejs";
 
@@ -28,19 +28,18 @@ export async function POST(req: Request) {
   if (missing.length) return NextResponse.json({ error: `Nos falta ${missing.join(", ")}.` }, { status: 400 });
 
   const { city, region } = resolvePlace(f);
-  const totals = computeTotals(lines, f.ciudad);
-  const reference = newReference();
   const phone = f.celular.replace(/\D/g, "").replace(/^57(?=\d{10}$)/, "");
 
+  let order;
   try {
-    await createOrder({
-      reference,
+    // Precios, envío y stock los decide la base de datos.
+    order = await createOrder({
       customer: { name: f.nombre, legalId: f.cedula, email: f.correo, phone },
       shipping: { city, region, neighborhood: f.barrio, address: f.direccion, notes: f.notas },
       lines,
-      totals,
     });
   } catch (err) {
+    if (err instanceof OrderError) return NextResponse.json({ error: err.message }, { status: err.status });
     console.error(err);
     return NextResponse.json({ error: "No pudimos registrar tu pedido. Intenta de nuevo en un momento." }, { status: 500 });
   }
@@ -49,12 +48,12 @@ export async function POST(req: Request) {
   const url = buildCheckoutUrl({
     publicKey,
     integritySecret,
-    reference,
-    amountInCents: totals.total * 100,
+    reference: order.reference,
+    amountInCents: order.totals.total * 100,
     redirectUrl: `${origin}/pedido`,
     customer: { email: f.correo, fullName: f.nombre, phone, legalId: f.cedula.replace(/\D/g, "") || undefined },
     shipping: { address: [f.direccion, f.barrio].filter(Boolean).join(", "), city, region, phone },
   });
 
-  return NextResponse.json({ url, reference, lines, totals, city });
+  return NextResponse.json({ url, reference: order.reference, lines, totals: order.totals, city: order.city, etaDays: order.etaDays });
 }
