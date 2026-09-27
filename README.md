@@ -67,12 +67,9 @@ update public.orders set status = 'shipped', shipped_at = now(), tracking_code =
 ## Puesta en producción
 
 1. **Supabase** (proyecto `teqicnlvqhkpksfyorae`): migraciones **ya aplicadas** (27 sep 2026). Falta cargar el stock real con `public.restock(...)`: **arranca en 0 y con 0 el sitio no deja comprar**.
-2. **Vercel**: importar el repo → Framework Next.js. Variables de entorno (ver `.env.example`):
-   `NEXT_PUBLIC_WOMPI_PUBLIC_KEY`, `WOMPI_INTEGRITY_SECRET`, `WOMPI_EVENTS_SECRET`,
-   `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`, `NEXT_PUBLIC_SITE_URL=https://productosnutoynola.com`.
-3. **Dominio**: Vercel → Project → Settings → Domains → agregar `productosnutoynola.com` y `www.productosnutoynola.com`.
-   En el registrador del dominio crear los registros exactos que muestre Vercel (típicamente `A @ → 76.76.21.21` y `CNAME www → cname.vercel-dns.com`).
-4. **Wompi** (comercios.wompi.co → Desarrolladores): URL de eventos = `https://productosnutoynola.com/api/wompi/events`.
+2. **Vercel** (proyecto `webpage`, equipo *Productos Nuto Y Nola*): conectado a GitHub (`main` despliega solo), framework Next.js, funciones en `yul1` (Montreal, junto a Supabase). Ya cargadas: `NEXT_PUBLIC_SITE_URL`, `SUPABASE_URL`. **Faltan (secretas):** `SUPABASE_SERVICE_ROLE_KEY`, `NEXT_PUBLIC_WOMPI_PUBLIC_KEY`, `WOMPI_INTEGRITY_SECRET`, `WOMPI_EVENTS_SECRET` → Settings → Environment Variables → tipo *Sensitive*, luego *Redeploy*.
+3. **Dominio**: `productosnutoynola.com` redirige (308) a `www.productosnutoynola.com`; ambos verificados en Vercel y con HTTPS.
+4. **Wompi** (comercios.wompi.co → Desarrolladores): URL de eventos = `https://www.productosnutoynola.com/api/wompi/events`.
    Probar primero con llaves `pub_test_…` y luego cambiar a `pub_prod_…`.
 
 ## Pendientes de negocio
