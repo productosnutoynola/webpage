@@ -66,7 +66,7 @@ update public.orders set status = 'shipped', shipped_at = now(), tracking_code =
 
 ## Puesta en producción
 
-1. **Supabase** (proyecto `teqicnlvqhkpksfyorae`): aplicar en orden los 3 archivos de `supabase/migrations/` (SQL Editor o `supabase link --project-ref teqicnlvqhkpksfyorae && supabase db push`). Luego cargar el stock real con `public.restock(...)`: **arranca en 0 y con 0 el sitio no deja comprar**.
+1. **Supabase** (proyecto `teqicnlvqhkpksfyorae`): migraciones **ya aplicadas** (27 sep 2026). Falta cargar el stock real con `public.restock(...)`: **arranca en 0 y con 0 el sitio no deja comprar**.
 2. **Vercel**: importar el repo → Framework Next.js. Variables de entorno (ver `.env.example`):
    `NEXT_PUBLIC_WOMPI_PUBLIC_KEY`, `WOMPI_INTEGRITY_SECRET`, `WOMPI_EVENTS_SECRET`,
    `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`, `NEXT_PUBLIC_SITE_URL=https://productosnutoynola.com`.
