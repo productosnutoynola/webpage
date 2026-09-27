@@ -55,5 +55,5 @@ select id, 0 from public.products
 on conflict (product_id) do nothing;
 `;
 
-writeFileSync(new URL("../supabase/migrations/20260927232009_seed_catalog.sql", import.meta.url), sql);
+writeFileSync(new URL("../supabase/migrations/20260927233543_seed_catalog.sql", import.meta.url), sql);
 console.log("ok");
