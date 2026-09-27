@@ -1,0 +1,928 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet data-dc-atomics>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,700;12..96,800&family=Work+Sans:ital,wght@0,400;0,500;0,600;1,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:#FBF3E4;color:#2A1018;font-family:'Work Sans',system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+a{color:#8B2150;text-decoration:none}
+a:hover{color:#5F1637}
+button{font-family:inherit;cursor:pointer}
+input,select,textarea{font-family:inherit;font-size:15px}
+input:focus,select:focus,textarea:focus{outline:2px solid #8B2150;outline-offset:1px}
+::selection{background:#EFB0CB;color:#5F1637}
+@keyframes nynSpin{to{transform:rotate(360deg)}}
+@keyframes nynUp{from{transform:translateY(10px);opacity:0}to{transform:translateY(0);opacity:1}}
+@keyframes nynMarquee{from{transform:translateX(-50%)}to{transform:translateX(0)}}
+</style>
+</helmet>
+
+<div style="min-height:100vh;display:flex;flex-direction:column;overflow-x:hidden">
+
+<div id="nynTop" style="position:sticky;top:0;z-index:50">
+<sc-if value="{{ showBar }}" hint-placeholder-val="{{ true }}">
+<div style="background:#5F1637;overflow:hidden;padding:11px 0;border-bottom:2px solid #2A1018">
+<div style="display:flex;width:max-content;align-items:center;animation:nynMarquee 26s linear infinite;will-change:transform">
+<span style="display:flex;align-items:center;gap:18px;padding-right:18px;font:500 12px 'DM Mono',ui-monospace,monospace;letter-spacing:.12em;text-transform:uppercase;color:#EFB0CB;white-space:nowrap">Envíos gratis desde {{ umbralFmt }}<span style="color:#DEA12C">✳</span></span>
+<span style="display:flex;align-items:center;gap:18px;padding-right:18px;font:500 12px 'DM Mono',ui-monospace,monospace;letter-spacing:.12em;text-transform:uppercase;color:#EFB0CB;white-space:nowrap">Envíos gratis desde {{ umbralFmt }}<span style="color:#DEA12C">✳</span></span>
+<span style="display:flex;align-items:center;gap:18px;padding-right:18px;font:500 12px 'DM Mono',ui-monospace,monospace;letter-spacing:.12em;text-transform:uppercase;color:#EFB0CB;white-space:nowrap">Envíos gratis desde {{ umbralFmt }}<span style="color:#DEA12C">✳</span></span>
+<span style="display:flex;align-items:center;gap:18px;padding-right:18px;font:500 12px 'DM Mono',ui-monospace,monospace;letter-spacing:.12em;text-transform:uppercase;color:#EFB0CB;white-space:nowrap">Envíos gratis desde {{ umbralFmt }}<span style="color:#DEA12C">✳</span></span>
+<span style="display:flex;align-items:center;gap:18px;padding-right:18px;font:500 12px 'DM Mono',ui-monospace,monospace;letter-spacing:.12em;text-transform:uppercase;color:#EFB0CB;white-space:nowrap">Envíos gratis desde {{ umbralFmt }}<span style="color:#DEA12C">✳</span></span>
+<span style="display:flex;align-items:center;gap:18px;padding-right:18px;font:500 12px 'DM Mono',ui-monospace,monospace;letter-spacing:.12em;text-transform:uppercase;color:#EFB0CB;white-space:nowrap">Envíos gratis desde {{ umbralFmt }}<span style="color:#DEA12C">✳</span></span>
+<span style="display:flex;align-items:center;gap:18px;padding-right:18px;font:500 12px 'DM Mono',ui-monospace,monospace;letter-spacing:.12em;text-transform:uppercase;color:#EFB0CB;white-space:nowrap">Envíos gratis desde {{ umbralFmt }}<span style="color:#DEA12C">✳</span></span>
+<span style="display:flex;align-items:center;gap:18px;padding-right:18px;font:500 12px 'DM Mono',ui-monospace,monospace;letter-spacing:.12em;text-transform:uppercase;color:#EFB0CB;white-space:nowrap">Envíos gratis desde {{ umbralFmt }}<span style="color:#DEA12C">✳</span></span>
+<span style="display:flex;align-items:center;gap:18px;padding-right:18px;font:500 12px 'DM Mono',ui-monospace,monospace;letter-spacing:.12em;text-transform:uppercase;color:#EFB0CB;white-space:nowrap">Envíos gratis desde {{ umbralFmt }}<span style="color:#DEA12C">✳</span></span>
+<span style="display:flex;align-items:center;gap:18px;padding-right:18px;font:500 12px 'DM Mono',ui-monospace,monospace;letter-spacing:.12em;text-transform:uppercase;color:#EFB0CB;white-space:nowrap">Envíos gratis desde {{ umbralFmt }}<span style="color:#DEA12C">✳</span></span>
+<span style="display:flex;align-items:center;gap:18px;padding-right:18px;font:500 12px 'DM Mono',ui-monospace,monospace;letter-spacing:.12em;text-transform:uppercase;color:#EFB0CB;white-space:nowrap">Envíos gratis desde {{ umbralFmt }}<span style="color:#DEA12C">✳</span></span>
+<span style="display:flex;align-items:center;gap:18px;padding-right:18px;font:500 12px 'DM Mono',ui-monospace,monospace;letter-spacing:.12em;text-transform:uppercase;color:#EFB0CB;white-space:nowrap">Envíos gratis desde {{ umbralFmt }}<span style="color:#DEA12C">✳</span></span>
+</div>
+</div>
+</sc-if>
+
+<header style="background:rgba(251,243,228,.96);backdrop-filter:blur(12px);border-bottom:2px solid #2A1018">
+<div style="max-width:1240px;margin:0 auto;padding:12px 22px;display:flex;align-items:center;gap:18px">
+<button onClick="{{ goInicio }}" style="display:flex;align-items:center;gap:10px;background:none;border:none;padding:0;text-align:left">
+<img src="img/logo.png" alt="" style="width:46px;height:46px;border-radius:11px;border:2px solid #2A1018;display:block;flex:none;object-fit:cover">
+<span style="display:flex;flex-direction:column;line-height:1;gap:4px">
+<span style="font:800 19px/1 'Bricolage Grotesque',sans-serif;letter-spacing:-.025em;color:#2A1018;white-space:nowrap">Nuto &amp; Nola</span>
+<span style="font:400 8px/1 'DM Mono',monospace;letter-spacing:.18em;color:rgba(42,16,24,.55);text-transform:uppercase;white-space:nowrap">granola de verdad</span>
+</span>
+</button>
+<nav style="display:flex;gap:2px;margin-left:auto;align-items:center;flex-wrap:wrap;justify-content:flex-end">
+<button onClick="{{ goInicio }}" style="background:none;border:none;padding:8px 11px;border-radius:8px;font:500 14px 'Work Sans',sans-serif;color:#2A1018" style-hover="background:#EFB0CB">Inicio</button>
+<button onClick="{{ goTienda }}" style="background:none;border:none;padding:8px 11px;border-radius:8px;font:500 14px 'Work Sans',sans-serif;color:#2A1018" style-hover="background:#EFB0CB">Tienda</button>
+<button onClick="{{ goNosotros }}" style="background:none;border:none;padding:8px 11px;border-radius:8px;font:500 14px 'Work Sans',sans-serif;color:#2A1018" style-hover="background:#EFB0CB">Nosotros</button>
+<button onClick="{{ goContacto }}" style="background:none;border:none;padding:8px 11px;border-radius:8px;font:500 14px 'Work Sans',sans-serif;color:#2A1018" style-hover="background:#EFB0CB">Contacto</button>
+</nav>
+<button onClick="{{ openCart }}" style="display:flex;align-items:center;gap:8px;background:#8B2150;color:#FBF3E4;border:2px solid #2A1018;padding:9px 15px;border-radius:999px;font:600 13.5px 'Work Sans',sans-serif;box-shadow:3px 3px 0 #2A1018;flex:none" style-hover="background:#5F1637">
+<span>Carrito</span>
+<span style="min-width:21px;height:21px;border-radius:999px;background:#EFB0CB;color:#5F1637;display:flex;align-items:center;justify-content:center;font:500 11.5px 'DM Mono',monospace;padding:0 5px">{{ count }}</span>
+</button>
+</div>
+</header>
+</div>
+
+<div style="flex:1">
+
+<sc-if value="{{ isHome }}" hint-placeholder-val="{{ true }}">
+<main>
+
+<section id="hero" style="position:relative;overflow:hidden;background:#FBF3E4;border-bottom:2px solid #2A1018;min-height:clamp(600px,86vh,820px);display:flex;flex-direction:column;justify-content:flex-end">
+<div aria-hidden="true" style="position:absolute;inset:0;pointer-events:none;user-select:none;font:700 18px 'Bricolage Grotesque',sans-serif;letter-spacing:.02em;color:rgba(222,161,44,.8);white-space:nowrap">
+<span style="position:absolute;left:-2%;top:1%">nuto &amp; nola</span>
+<span style="position:absolute;left:13%;top:3%">nuto &amp; nola</span>
+<span style="position:absolute;left:29%;top:1%">nuto &amp; nola</span>
+<span style="position:absolute;left:45%;top:4%">nuto &amp; nola</span>
+<span style="position:absolute;left:61%;top:1%">nuto &amp; nola</span>
+<span style="position:absolute;left:77%;top:4%">nuto &amp; nola</span>
+<span style="position:absolute;left:92%;top:2%">nuto &amp; nola</span>
+<span style="position:absolute;left:5%;top:8%">nuto &amp; nola</span>
+<span style="position:absolute;left:21%;top:10%">nuto &amp; nola</span>
+<span style="position:absolute;left:37%;top:8%">nuto &amp; nola</span>
+<span style="position:absolute;left:53%;top:11%">nuto &amp; nola</span>
+<span style="position:absolute;left:69%;top:8%">nuto &amp; nola</span>
+<span style="position:absolute;left:85%;top:11%">nuto &amp; nola</span>
+<span style="position:absolute;left:-1%;top:15%">nuto &amp; nola</span>
+<span style="position:absolute;left:15%;top:17%">nuto &amp; nola</span>
+<span style="position:absolute;left:31%;top:15%">nuto &amp; nola</span>
+<span style="position:absolute;left:47%;top:18%">nuto &amp; nola</span>
+<span style="position:absolute;left:63%;top:15%">nuto &amp; nola</span>
+<span style="position:absolute;left:79%;top:18%">nuto &amp; nola</span>
+<span style="position:absolute;left:93%;top:16%">nuto &amp; nola</span>
+<span style="position:absolute;left:7%;top:22%">nuto &amp; nola</span>
+<span style="position:absolute;left:23%;top:24%">nuto &amp; nola</span>
+<span style="position:absolute;left:39%;top:22%">nuto &amp; nola</span>
+<span style="position:absolute;left:55%;top:25%">nuto &amp; nola</span>
+<span style="position:absolute;left:71%;top:22%">nuto &amp; nola</span>
+<span style="position:absolute;left:87%;top:25%">nuto &amp; nola</span>
+<span style="position:absolute;left:1%;top:29%">nuto &amp; nola</span>
+<span style="position:absolute;left:17%;top:31%">nuto &amp; nola</span>
+<span style="position:absolute;left:33%;top:29%">nuto &amp; nola</span>
+<span style="position:absolute;left:49%;top:32%">nuto &amp; nola</span>
+<span style="position:absolute;left:65%;top:29%">nuto &amp; nola</span>
+<span style="position:absolute;left:81%;top:32%">nuto &amp; nola</span>
+<span style="position:absolute;left:95%;top:30%">nuto &amp; nola</span>
+<span style="position:absolute;left:9%;top:36%">nuto &amp; nola</span>
+<span style="position:absolute;left:25%;top:38%">nuto &amp; nola</span>
+<span style="position:absolute;left:41%;top:36%">nuto &amp; nola</span>
+<span style="position:absolute;left:57%;top:39%">nuto &amp; nola</span>
+<span style="position:absolute;left:73%;top:36%">nuto &amp; nola</span>
+<span style="position:absolute;left:89%;top:39%">nuto &amp; nola</span>
+<span style="position:absolute;left:-2%;top:43%">nuto &amp; nola</span>
+<span style="position:absolute;left:14%;top:45%">nuto &amp; nola</span>
+<span style="position:absolute;left:30%;top:43%">nuto &amp; nola</span>
+<span style="position:absolute;left:46%;top:46%">nuto &amp; nola</span>
+<span style="position:absolute;left:62%;top:43%">nuto &amp; nola</span>
+<span style="position:absolute;left:78%;top:46%">nuto &amp; nola</span>
+<span style="position:absolute;left:92%;top:44%">nuto &amp; nola</span>
+<span style="position:absolute;left:6%;top:50%">nuto &amp; nola</span>
+<span style="position:absolute;left:22%;top:52%">nuto &amp; nola</span>
+<span style="position:absolute;left:38%;top:50%">nuto &amp; nola</span>
+<span style="position:absolute;left:54%;top:53%">nuto &amp; nola</span>
+<span style="position:absolute;left:70%;top:50%">nuto &amp; nola</span>
+<span style="position:absolute;left:86%;top:53%">nuto &amp; nola</span>
+<span style="position:absolute;left:0%;top:57%">nuto &amp; nola</span>
+<span style="position:absolute;left:16%;top:59%">nuto &amp; nola</span>
+<span style="position:absolute;left:32%;top:57%">nuto &amp; nola</span>
+<span style="position:absolute;left:48%;top:60%">nuto &amp; nola</span>
+<span style="position:absolute;left:64%;top:57%">nuto &amp; nola</span>
+<span style="position:absolute;left:80%;top:60%">nuto &amp; nola</span>
+<span style="position:absolute;left:94%;top:58%">nuto &amp; nola</span>
+<span style="position:absolute;left:8%;top:64%">nuto &amp; nola</span>
+<span style="position:absolute;left:24%;top:66%">nuto &amp; nola</span>
+<span style="position:absolute;left:40%;top:64%">nuto &amp; nola</span>
+<span style="position:absolute;left:56%;top:67%">nuto &amp; nola</span>
+<span style="position:absolute;left:72%;top:64%">nuto &amp; nola</span>
+<span style="position:absolute;left:88%;top:67%">nuto &amp; nola</span>
+<span style="position:absolute;left:2%;top:71%">nuto &amp; nola</span>
+<span style="position:absolute;left:18%;top:73%">nuto &amp; nola</span>
+<span style="position:absolute;left:34%;top:71%">nuto &amp; nola</span>
+<span style="position:absolute;left:50%;top:74%">nuto &amp; nola</span>
+<span style="position:absolute;left:66%;top:71%">nuto &amp; nola</span>
+<span style="position:absolute;left:82%;top:74%">nuto &amp; nola</span>
+<span style="position:absolute;left:95%;top:72%">nuto &amp; nola</span>
+<span style="position:absolute;left:10%;top:78%">nuto &amp; nola</span>
+<span style="position:absolute;left:26%;top:80%">nuto &amp; nola</span>
+<span style="position:absolute;left:42%;top:78%">nuto &amp; nola</span>
+<span style="position:absolute;left:58%;top:81%">nuto &amp; nola</span>
+<span style="position:absolute;left:74%;top:78%">nuto &amp; nola</span>
+<span style="position:absolute;left:90%;top:81%">nuto &amp; nola</span>
+<span style="position:absolute;left:-1%;top:85%">nuto &amp; nola</span>
+<span style="position:absolute;left:15%;top:87%">nuto &amp; nola</span>
+<span style="position:absolute;left:31%;top:85%">nuto &amp; nola</span>
+<span style="position:absolute;left:47%;top:88%">nuto &amp; nola</span>
+<span style="position:absolute;left:63%;top:85%">nuto &amp; nola</span>
+<span style="position:absolute;left:79%;top:88%">nuto &amp; nola</span>
+<span style="position:absolute;left:93%;top:86%">nuto &amp; nola</span>
+<span style="position:absolute;left:7%;top:92%">nuto &amp; nola</span>
+<span style="position:absolute;left:23%;top:94%">nuto &amp; nola</span>
+<span style="position:absolute;left:39%;top:92%">nuto &amp; nola</span>
+<span style="position:absolute;left:55%;top:95%">nuto &amp; nola</span>
+<span style="position:absolute;left:71%;top:92%">nuto &amp; nola</span>
+<span style="position:absolute;left:87%;top:95%">nuto &amp; nola</span>
+</div>
+<div style="position:relative;flex:1;min-height:clamp(230px,38vh,430px);display:flex;align-items:center;justify-content:flex-start;padding:16px 0 0;pointer-events:none">
+<div style="width:min(52vw,520px);aspect-ratio:900/700;overflow:hidden">
+<img src="img/flatlay.jpg" alt="Bolsa de granola Nuto &amp; Nola abierta" style="width:100%;height:100%;object-fit:cover;object-position:center top;display:block;mix-blend-mode:multiply;filter:brightness(1.06)">
+</div>
+</div>
+<div style="position:relative;width:100%;background:linear-gradient(to bottom,rgba(251,243,228,0) 0,#FBF3E4 46px,#FBF3E4 100%);padding-top:6px">
+<div style="width:100%;max-width:1240px;margin:0 auto;padding:clamp(14px,3vh,30px) 22px clamp(34px,6vh,58px);display:flex;flex-wrap:wrap;gap:26px 40px;align-items:flex-end;justify-content:space-between">
+<div style="flex:1 1 420px;max-width:660px">
+<div style="display:inline-flex;align-items:center;gap:8px;background:#5F1637;color:#EFB0CB;padding:7px 14px;border-radius:999px;font:500 10.5px 'DM Mono',monospace;letter-spacing:.14em;text-transform:uppercase">Sin azúcar añadida</div>
+<h1 style="font:800 clamp(30px,3.9vw,54px)/1.02 'Bricolage Grotesque',sans-serif;letter-spacing:-.035em;margin:18px 0 0;color:#5F1637;text-wrap:balance">Prepara tus snacks, desayunos y postres sin sentirte culpable</h1>
+<p style="font:400 15px/1.6 'Work Sans',sans-serif;color:rgba(42,16,24,.8);margin:18px 0 0;max-width:52ch;text-wrap:pretty">En Nuto &amp; Nola somos una familia de productos deliciosos creados para disfrutar y nutrir de forma real, creemos que hay un sabor para cada personalidad. Te invitamos a descubrirlo tú mismo.</p>
+<div style="display:flex;flex-wrap:wrap;gap:12px;margin-top:26px">
+<button onClick="{{ goTienda }}" style="background:#5F1637;color:#FBF3E4;border:2px solid #2A1018;padding:15px 26px;border-radius:999px;font:600 15.5px 'Work Sans',sans-serif;box-shadow:5px 5px 0 #2A1018" style-hover="background:#8B2150;transform:translate(2px,2px);box-shadow:3px 3px 0 #2A1018">Comprar granola →</button>
+<button onClick="{{ addPack3 }}" style="background:#DEA12C;color:#2A1018;border:2px solid #2A1018;padding:15px 24px;border-radius:999px;font:600 15.5px 'Work Sans',sans-serif;box-shadow:5px 5px 0 #2A1018" style-hover="background:#EFB0CB;transform:translate(2px,2px);box-shadow:3px 3px 0 #2A1018">Pack de 3 · −15 %</button>
+</div>
+</div>
+</div>
+</div>
+</section>
+
+<section style="background:#FBF3E4;border-bottom:2px solid #2A1018">
+<div style="max-width:1240px;margin:0 auto;padding:0 22px">
+<div style="padding:22px 0;text-align:center;font:800 clamp(17px,2.2vw,24px) 'Bricolage Grotesque',sans-serif;color:#8B2150;letter-spacing:-.02em">Cero azúcar añadida</div>
+</div>
+</section>
+
+<section id="tienda" style="max-width:1240px;margin:0 auto;padding:66px 22px 0;scroll-margin-top:84px">
+<div style="display:flex;align-items:flex-end;justify-content:space-between;gap:20px;flex-wrap:wrap;margin-bottom:28px">
+<div>
+<div style="font:400 11px 'DM Mono',monospace;letter-spacing:.17em;text-transform:uppercase;color:#8B2150">01 — La tienda</div>
+<h2 style="font:800 clamp(32px,4.2vw,50px)/0.98 'Bricolage Grotesque',sans-serif;letter-spacing:-.035em;margin:10px 0 0">Elige tu antojo</h2>
+</div>
+</div>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(262px,1fr));gap:22px">
+
+<article style="background:#FBF3E4;border:2.5px solid #2A1018;border-radius:22px;overflow:hidden;display:flex;flex-direction:column;box-shadow:6px 6px 0 #DEA12C" style-hover="transform:translate(-2px,-2px);box-shadow:8px 8px 0 #DEA12C">
+<button onClick="{{ verCin }}" style="border:none;border-bottom:2.5px solid #2A1018;padding:0;background:#DEA12C;position:relative;display:block;aspect-ratio:1/1;overflow:hidden;width:100%">
+<img src="img/bag-table.jpg" alt="Bolsa de granola Cinnamon Roll" style="width:100%;height:100%;object-fit:cover;object-position:center 45%;display:block;mix-blend-mode:multiply">
+<span style="position:absolute;left:50%;top:41%;transform:translate(-50%,-50%);width:66%;background:#DEA12C;border:2.5px solid #2A1018;border-radius:12px;box-shadow:4px 4px 0 rgba(42,16,24,.5);padding:11px 10px;display:flex;flex-direction:column;align-items:center;gap:3px">
+<span style="font:400 8px 'DM Mono',monospace;letter-spacing:.2em;text-transform:uppercase;color:#5F1637">Nuto &amp; Nola</span>
+<span style="font:800 clamp(15px,2vw,21px)/1 'Bricolage Grotesque',sans-serif;color:#5F1637;text-align:center">Cinnamon Roll</span>
+<span style="display:flex;gap:7px;align-items:center;font:400 8.5px 'DM Mono',monospace;color:#5F1637;letter-spacing:.06em"><span>500 g</span><span style="width:4px;height:4px;border-radius:50%;background:#5F1637"></span><span>0 g azúcar</span><span style="width:4px;height:4px;border-radius:50%;background:#5F1637"></span><span>vegano</span></span>
+</span>
+<span style="position:absolute;top:13px;left:13px;background:#5F1637;color:#EFB0CB;padding:5px 11px;border-radius:999px;font:500 10px 'DM Mono',monospace;letter-spacing:.11em;text-transform:uppercase;border:2px solid #2A1018">Más vendida</span>
+</button>
+<div style="padding:20px;display:flex;flex-direction:column;gap:10px;flex:1">
+<div style="display:flex;align-items:center;gap:8px"><span style="width:10px;height:10px;border-radius:50%;background:#DEA12C;border:1.5px solid #2A1018;flex:none"></span><h3 style="font:800 22px/1.1 'Bricolage Grotesque',sans-serif;margin:0">Cinnamon Roll</h3></div>
+<p style="font:400 14px/1.5 'Work Sans',sans-serif;color:rgba(42,16,24,.68);margin:0;flex:1">Canela de Ceilán, macadamia y un hilo de miel al final. Huele a panadería a las 7 a.m.</p>
+<div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:4px">
+<span style="font:800 20px 'Bricolage Grotesque',sans-serif">{{ priceFmt }}</span>
+<button onClick="{{ addCin }}" style="background:#5F1637;color:#FBF3E4;border:2px solid #2A1018;padding:10px 18px;border-radius:999px;font:600 13.5px 'Work Sans',sans-serif;box-shadow:3px 3px 0 #2A1018" style-hover="background:#8B2150">Agregar</button>
+</div>
+</div>
+</article>
+
+<article style="background:#FBF3E4;border:2.5px solid #2A1018;border-radius:22px;overflow:hidden;display:flex;flex-direction:column;box-shadow:6px 6px 0 #5F1637" style-hover="transform:translate(-2px,-2px);box-shadow:8px 8px 0 #5F1637">
+<button onClick="{{ verCac }}" style="border:none;border-bottom:2.5px solid #2A1018;padding:0;background:#C9AB8B;position:relative;display:block;aspect-ratio:1/1;overflow:hidden;width:100%">
+<img src="img/mockups.jpg" alt="Bolsa de granola Cacao Crunch" style="width:100%;height:100%;object-fit:cover;object-position:22% 30%;display:block">
+<span style="position:absolute;left:50%;top:44%;transform:translate(-50%,-50%);width:66%;background:#5F1637;border:2.5px solid #2A1018;border-radius:12px;box-shadow:4px 4px 0 rgba(42,16,24,.5);padding:11px 10px;display:flex;flex-direction:column;align-items:center;gap:3px">
+<span style="font:400 8px 'DM Mono',monospace;letter-spacing:.2em;text-transform:uppercase;color:#EFB0CB">Nuto &amp; Nola</span>
+<span style="font:800 clamp(15px,2vw,21px)/1 'Bricolage Grotesque',sans-serif;color:#EFB0CB;text-align:center">Cacao Crunch</span>
+<span style="display:flex;gap:7px;align-items:center;font:400 8.5px 'DM Mono',monospace;color:#EFB0CB;letter-spacing:.06em"><span>500 g</span><span style="width:4px;height:4px;border-radius:50%;background:#EFB0CB"></span><span>0 g azúcar</span><span style="width:4px;height:4px;border-radius:50%;background:#EFB0CB"></span><span>vegano</span></span>
+</span>
+</button>
+<div style="padding:20px;display:flex;flex-direction:column;gap:10px;flex:1">
+<div style="display:flex;align-items:center;gap:8px"><span style="width:10px;height:10px;border-radius:50%;background:#5F1637;border:1.5px solid #2A1018;flex:none"></span><h3 style="font:800 22px/1.1 'Bricolage Grotesque',sans-serif;margin:0">Cacao Crunch</h3></div>
+<p style="font:400 14px/1.5 'Work Sans',sans-serif;color:rgba(42,16,24,.68);margin:0;flex:1">Cacao colombiano 70 %, almendra tostada y nibs enteros. Postre disfrazado de desayuno.</p>
+<div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:4px">
+<span style="font:800 20px 'Bricolage Grotesque',sans-serif">{{ priceFmt }}</span>
+<button onClick="{{ addCac }}" style="background:#5F1637;color:#FBF3E4;border:2px solid #2A1018;padding:10px 18px;border-radius:999px;font:600 13.5px 'Work Sans',sans-serif;box-shadow:3px 3px 0 #2A1018" style-hover="background:#8B2150">Agregar</button>
+</div>
+</div>
+</article>
+
+<article style="background:#FBF3E4;border:2.5px solid #2A1018;border-radius:22px;overflow:hidden;display:flex;flex-direction:column;box-shadow:6px 6px 0 #EFB0CB" style-hover="transform:translate(-2px,-2px);box-shadow:8px 8px 0 #EFB0CB">
+<button onClick="{{ verRoj }}" style="border:none;border-bottom:2.5px solid #2A1018;padding:0;background:#EFB0CB;position:relative;display:block;aspect-ratio:1/1;overflow:hidden;width:100%">
+<img src="img/bag-honey.jpg" alt="Bolsa de granola Frutos Rojos" style="width:100%;height:100%;object-fit:cover;object-position:32% 38%;display:block">
+<span style="position:absolute;left:50%;top:42%;transform:translate(-50%,-50%);width:66%;background:#EFB0CB;border:2.5px solid #2A1018;border-radius:12px;box-shadow:4px 4px 0 rgba(42,16,24,.5);padding:11px 10px;display:flex;flex-direction:column;align-items:center;gap:3px">
+<span style="font:400 8px 'DM Mono',monospace;letter-spacing:.2em;text-transform:uppercase;color:#5F1637">Nuto &amp; Nola</span>
+<span style="font:800 clamp(15px,2vw,21px)/1 'Bricolage Grotesque',sans-serif;color:#5F1637;text-align:center">Frutos Rojos</span>
+<span style="display:flex;gap:7px;align-items:center;font:400 8.5px 'DM Mono',monospace;color:#5F1637;letter-spacing:.06em"><span>500 g</span><span style="width:4px;height:4px;border-radius:50%;background:#5F1637"></span><span>0 g azúcar</span><span style="width:4px;height:4px;border-radius:50%;background:#5F1637"></span><span>vegano</span></span>
+</span>
+</button>
+<div style="padding:20px;display:flex;flex-direction:column;gap:10px;flex:1">
+<div style="display:flex;align-items:center;gap:8px"><span style="width:10px;height:10px;border-radius:50%;background:#EFB0CB;border:1.5px solid #2A1018;flex:none"></span><h3 style="font:800 22px/1.1 'Bricolage Grotesque',sans-serif;margin:0">Frutos Rojos</h3></div>
+<p style="font:400 14px/1.5 'Work Sans',sans-serif;color:rgba(42,16,24,.68);margin:0;flex:1">Arándano, fresa y uchuva deshidratados. Ácida y fresca; brutal con yogur griego.</p>
+<div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:4px">
+<span style="font:800 20px 'Bricolage Grotesque',sans-serif">{{ priceFmt }}</span>
+<button onClick="{{ addRoj }}" style="background:#5F1637;color:#FBF3E4;border:2px solid #2A1018;padding:10px 18px;border-radius:999px;font:600 13.5px 'Work Sans',sans-serif;box-shadow:3px 3px 0 #2A1018" style-hover="background:#8B2150">Agregar</button>
+</div>
+</div>
+</article>
+
+</div>
+
+<h3 id="combos" style="font:800 clamp(24px,3vw,32px) 'Bricolage Grotesque',sans-serif;margin:54px 0 18px;padding-bottom:12px;border-bottom:2.5px solid #2A1018;scroll-margin-top:84px">Combos y packs</h3>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(255px,1fr));gap:22px">
+
+<article style="background:#FBF3E4;border:2.5px solid #2A1018;border-radius:20px;padding:24px;display:flex;flex-direction:column;gap:12px;box-shadow:5px 5px 0 #EFB0CB">
+<div style="display:flex;align-items:center;justify-content:space-between;gap:10px"><span style="font:400 10px 'DM Mono',monospace;letter-spacing:.14em;text-transform:uppercase;color:rgba(42,16,24,.55)">2 bolsas · 1 kg</span><span style="background:#EFB0CB;border:1.5px solid #2A1018;border-radius:999px;padding:3px 9px;font:600 11px 'DM Mono',monospace;color:#5F1637">−8 %</span></div>
+<h4 style="font:800 22px/1.1 'Bricolage Grotesque',sans-serif;margin:0">Pack Dúo</h4>
+<p style="font:400 14px/1.5 'Work Sans',sans-serif;color:rgba(42,16,24,.68);margin:0;flex:1">Dos bolsas de los sabores que elijas. Para probar de a poco.</p>
+<div style="display:flex;align-items:baseline;gap:9px"><span style="font:800 22px 'Bricolage Grotesque',sans-serif">{{ pack2Fmt }}</span><span style="font:400 14px 'Work Sans',sans-serif;color:rgba(42,16,24,.45);text-decoration:line-through">{{ pack2FullFmt }}</span></div>
+<button onClick="{{ addPack2 }}" style="background:#5F1637;color:#FBF3E4;border:2px solid #2A1018;padding:12px;border-radius:999px;font:600 14px 'Work Sans',sans-serif;box-shadow:3px 3px 0 #2A1018" style-hover="background:#8B2150">Agregar Pack Dúo</button>
+</article>
+
+<article style="background:#DEA12C;border:2.5px solid #2A1018;border-radius:20px;padding:24px;display:flex;flex-direction:column;gap:12px;box-shadow:5px 5px 0 #2A1018">
+<div style="display:flex;align-items:center;justify-content:space-between;gap:10px"><span style="font:400 10px 'DM Mono',monospace;letter-spacing:.14em;text-transform:uppercase;color:#5F1637">3 bolsas · 1,5 kg</span><span style="background:#5F1637;border:1.5px solid #2A1018;border-radius:999px;padding:3px 9px;font:600 11px 'DM Mono',monospace;color:#EFB0CB">−15 %</span></div>
+<h4 style="font:800 22px/1.1 'Bricolage Grotesque',sans-serif;margin:0;color:#5F1637">Trío completo</h4>
+<p style="font:400 14px/1.5 'Work Sans',sans-serif;color:#3D1620;margin:0;flex:1">Un sabor de cada uno. Supera {{ umbralFmt }}, así que el envío es gratis.</p>
+<div style="display:flex;align-items:baseline;gap:9px"><span style="font:800 22px 'Bricolage Grotesque',sans-serif;color:#5F1637">{{ pack3Fmt }}</span><span style="font:400 14px 'Work Sans',sans-serif;color:rgba(61,22,32,.55);text-decoration:line-through">{{ pack3FullFmt }}</span></div>
+<button onClick="{{ addPack3 }}" style="background:#5F1637;color:#FBF3E4;border:2px solid #2A1018;padding:12px;border-radius:999px;font:600 14px 'Work Sans',sans-serif;box-shadow:3px 3px 0 #2A1018" style-hover="background:#8B2150">Agregar Trío</button>
+</article>
+
+<article style="background:#FBF3E4;border:2.5px solid #2A1018;border-radius:20px;padding:24px;display:flex;flex-direction:column;gap:12px;box-shadow:5px 5px 0 #5F1637">
+<div style="display:flex;align-items:center;justify-content:space-between;gap:10px"><span style="font:400 10px 'DM Mono',monospace;letter-spacing:.14em;text-transform:uppercase;color:rgba(42,16,24,.55)">6 bolsas · 3 kg</span><span style="background:#5F1637;border:1.5px solid #2A1018;border-radius:999px;padding:3px 9px;font:600 11px 'DM Mono',monospace;color:#EFB0CB">−22 %</span></div>
+<h4 style="font:800 22px/1.1 'Bricolage Grotesque',sans-serif;margin:0">Pack Familiar</h4>
+<p style="font:400 14px/1.5 'Work Sans',sans-serif;color:rgba(42,16,24,.68);margin:0;flex:1">Dos de cada sabor. El mejor precio por gramo de toda la tienda.</p>
+<div style="display:flex;align-items:baseline;gap:9px"><span style="font:800 22px 'Bricolage Grotesque',sans-serif">{{ pack6Fmt }}</span><span style="font:400 14px 'Work Sans',sans-serif;color:rgba(42,16,24,.45);text-decoration:line-through">{{ pack6FullFmt }}</span></div>
+<button onClick="{{ addPack6 }}" style="background:#5F1637;color:#FBF3E4;border:2px solid #2A1018;padding:12px;border-radius:999px;font:600 14px 'Work Sans',sans-serif;box-shadow:3px 3px 0 #2A1018" style-hover="background:#8B2150">Agregar Familiar</button>
+</article>
+
+<article style="background:#EFB0CB;border:2.5px solid #2A1018;border-radius:20px;padding:24px;display:flex;flex-direction:column;gap:12px;box-shadow:5px 5px 0 #2A1018">
+<div style="display:flex;align-items:center;justify-content:space-between;gap:10px"><span style="font:400 10px 'DM Mono',monospace;letter-spacing:.14em;text-transform:uppercase;color:#5F1637">2 bolsas + caja</span><span style="background:#5F1637;border:1.5px solid #2A1018;border-radius:999px;padding:3px 9px;font:600 11px 'DM Mono',monospace;color:#EFB0CB">Regalo</span></div>
+<h4 style="font:800 22px/1.1 'Bricolage Grotesque',sans-serif;margin:0;color:#5F1637">Caja Regalo</h4>
+<p style="font:400 14px/1.5 'Work Sans',sans-serif;color:#3D1620;margin:0;flex:1">Dos sabores en caja rígida con tarjeta escrita a mano. Llega listo para entregar.</p>
+<div style="font:800 22px 'Bricolage Grotesque',sans-serif;color:#5F1637">{{ regaloFmt }}</div>
+<button onClick="{{ addRegalo }}" style="background:#5F1637;color:#FBF3E4;border:2px solid #2A1018;padding:12px;border-radius:999px;font:600 14px 'Work Sans',sans-serif;box-shadow:3px 3px 0 #2A1018" style-hover="background:#8B2150">Agregar Caja Regalo</button>
+</article>
+
+</div>
+</section>
+
+<section style="max-width:1240px;margin:0 auto;padding:66px 22px 0">
+<div style="display:flex;flex-wrap:wrap;gap:40px;align-items:center">
+<div style="flex:1 1 320px;min-width:0;border:3px solid #2A1018;border-radius:24px;overflow:hidden;box-shadow:9px 9px 0 #EFB0CB">
+<img src="img/bowl.jpg" alt="Bowl de helado con granola y frambuesas" style="width:100%;display:block;aspect-ratio:1/1;object-fit:cover">
+</div>
+<div style="flex:1 1 380px;min-width:0">
+<div style="font:400 11px 'DM Mono',monospace;letter-spacing:.17em;text-transform:uppercase;color:#8B2150">02 — Cómo se come</div>
+<h2 style="font:800 clamp(30px,4vw,46px)/1 'Bricolage Grotesque',sans-serif;letter-spacing:-.035em;margin:12px 0 0">Prepara tus antojos de forma divertida</h2>
+<div style="display:flex;flex-direction:column;gap:2px;margin-top:26px;border:2.5px solid #2A1018;border-radius:18px;overflow:hidden;background:#2A1018">
+<div style="background:#FBF3E4;padding:16px 20px"><div style="font:700 16px 'Bricolage Grotesque',sans-serif">Con yogur griego y fruta</div><div style="font:400 13.5px/1.45 'Work Sans',sans-serif;color:rgba(42,16,24,.65);margin-top:3px">El clásico. Frutos Rojos aquí es imbatible.</div></div>
+<div style="background:#FBF3E4;padding:16px 20px"><div style="font:700 16px 'Bricolage Grotesque',sans-serif">Con helado de cualquier sabor</div><div style="font:400 13.5px/1.45 'Work Sans',sans-serif;color:rgba(42,16,24,.65);margin-top:3px">Cacao Crunch + un chorrito de arequipe. Confía.</div></div>
+<div style="background:#FBF3E4;padding:16px 20px"><div style="font:700 16px 'Bricolage Grotesque',sans-serif">Con queso cottage</div><div style="font:400 13.5px/1.45 'Work Sans',sans-serif;color:rgba(42,16,24,.65);margin-top:3px">Salado, cremoso y con crunch. Desayuno de 2 minutos.</div></div>
+<div style="background:#FBF3E4;padding:16px 20px"><div style="font:700 16px 'Bricolage Grotesque',sans-serif">Como cereal con leche</div><div style="font:400 13.5px/1.45 'Work Sans',sans-serif;color:rgba(42,16,24,.65);margin-top:3px">Aguanta el tazón sin volverse papilla.</div></div>
+<div style="background:#FBF3E4;padding:16px 20px"><div style="font:700 16px 'Bricolage Grotesque',sans-serif">Sácalo de la bolsa y directo a tu boca</div><div style="font:400 13.5px/1.45 'Work Sans',sans-serif;color:rgba(42,16,24,.65);margin-top:3px">No vamos a juzgarte. Así se acaba más rápido.</div></div>
+</div>
+</div>
+</div>
+</section>
+
+<section id="nosotros" style="max-width:1240px;margin:0 auto;padding:66px 22px 0;scroll-margin-top:84px">
+<div style="display:flex;flex-wrap:wrap;gap:40px;align-items:center">
+<div style="flex:1 1 380px;min-width:0;order:1">
+<div style="font:400 11px 'DM Mono',monospace;letter-spacing:.17em;text-transform:uppercase;color:#8B2150">03 — Nosotros</div>
+<h2 style="font:800 clamp(30px,4vw,46px)/1 'Bricolage Grotesque',sans-serif;letter-spacing:-.035em;margin:12px 0 0">Empezó como un<br>antojo de cocina</h2>
+<p style="font:400 15.5px/1.6 'Work Sans',sans-serif;color:rgba(42,16,24,.75);margin:20px 0 0;max-width:46ch;text-wrap:pretty">Una joven apasionada por la cocina buscó una granola que se sintiera real y trajo a su mente pequeños sabores que la hacían recordar a sus antojos de siempre.</p>
+<p style="font:400 15.5px/1.6 'Work Sans',sans-serif;color:rgba(42,16,24,.75);margin:14px 0 0;max-width:46ch;text-wrap:pretty">Ambiciosos queremos estar en tu lunch para el trabajo, en tus pre-entrenos, en esos postres y antojos de dulce de las tardes, inclusive en la lonchera de tus hijos.</p>
+<div style="display:inline-flex;align-items:center;gap:10px;margin-top:24px;background:#EFB0CB;border:2px solid #2A1018;border-radius:14px;padding:12px 16px;box-shadow:4px 4px 0 #2A1018">
+<span style="font:800 16px 'Bricolage Grotesque',sans-serif;color:#5F1637">Creado con ❤️ en 2026</span>
+</div>
+</div>
+<div style="flex:1 1 320px;min-width:0;order:2;border:3px solid #2A1018;border-radius:24px;overflow:hidden;box-shadow:9px 9px 0 #DEA12C">
+<img src="img/hand-bag.jpg" alt="Bolsa de granola Nuto &amp; Nola en la mano" style="width:100%;display:block;aspect-ratio:4/5;object-fit:cover">
+</div>
+</div>
+</section>
+
+<section style="max-width:1240px;margin:0 auto;padding:66px 22px 0">
+<div style="text-align:center;margin-bottom:30px">
+<div style="font:400 11px 'DM Mono',monospace;letter-spacing:.17em;text-transform:uppercase;color:#8B2150">04 — Lo que dicen</div>
+<h2 style="font:800 clamp(28px,3.6vw,42px)/1 'Bricolage Grotesque',sans-serif;letter-spacing:-.035em;margin:10px 0 0">Lo que dicen nuestros Nuto Lovers</h2>
+</div>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:20px">
+<div style="background:#FBF3E4;border:2.5px solid #2A1018;border-radius:18px;padding:24px;box-shadow:5px 5px 0 #DEA12C"><div style="font:500 13px 'DM Mono',monospace;color:#B77B12;letter-spacing:.1em">★★★★★</div><p style="font:400 15px/1.55 'Work Sans',sans-serif;margin:12px 0 0;color:#2A1018">"Pedí una bolsa el lunes. El jueves pedí tres. No sé qué le ponen al Cinnamon Roll."</p><div style="font:600 13px 'Work Sans',sans-serif;margin-top:14px;color:rgba(42,16,24,.6)">Laura M. · Chapinero</div></div>
+<div style="background:#FBF3E4;border:2.5px solid #2A1018;border-radius:18px;padding:24px;box-shadow:5px 5px 0 #EFB0CB"><div style="font:500 13px 'DM Mono',monospace;color:#B77B12;letter-spacing:.1em">★★★★★</div><p style="font:400 15px/1.55 'Work Sans',sans-serif;margin:12px 0 0;color:#2A1018">"Los clusters son enormes, no ese polvillo de las de supermercado. Y de verdad no sabe dulce."</p><div style="font:600 13px 'Work Sans',sans-serif;margin-top:14px;color:rgba(42,16,24,.6)">Andrés G. · Usaquén</div></div>
+<div style="background:#FBF3E4;border:2.5px solid #2A1018;border-radius:18px;padding:24px;box-shadow:5px 5px 0 #5F1637"><div style="font:500 13px 'DM Mono',monospace;color:#B77B12;letter-spacing:.1em">★★★★★</div><p style="font:400 15px/1.55 'Work Sans',sans-serif;margin:12px 0 0;color:#2A1018">"Los tres sabores en casa y mis hijos la comen sin pelear, milagro."</p><div style="font:600 13px 'Work Sans',sans-serif;margin-top:14px;color:rgba(42,16,24,.6)">Catalina R. · Suba</div></div>
+</div>
+</section>
+
+<section id="contacto" style="margin-top:70px;background:#EFB0CB;border-top:2px solid #2A1018;border-bottom:2px solid #2A1018;scroll-margin-top:84px">
+<div style="max-width:1240px;margin:0 auto;padding:60px 22px;display:flex;flex-wrap:wrap;gap:40px;align-items:center">
+<div style="flex:1 1 340px;min-width:0">
+<div style="font:400 11px 'DM Mono',monospace;letter-spacing:.17em;text-transform:uppercase;color:#8B2150">05 — Contacto</div>
+<h2 style="font:800 clamp(30px,4vw,48px)/1 'Bricolage Grotesque',sans-serif;letter-spacing:-.035em;margin:12px 0 0;color:#5F1637">Hablemos</h2>
+<p style="font:400 15.5px/1.6 'Work Sans',sans-serif;color:#3D1620;margin:16px 0 0;max-width:42ch">Dudas del pedido, ideas de sabores, ventas al por mayor o simplemente saludar. Contestamos rápido.</p>
+</div>
+<div style="flex:1 1 380px;min-width:0;display:flex;flex-direction:column;gap:12px">
+<a href="https://wa.me/573000000000" style="display:flex;align-items:center;gap:14px;background:#DEA12C;border:2.5px solid #2A1018;border-radius:16px;padding:18px 20px;box-shadow:5px 5px 0 #2A1018;text-decoration:none"><span style="font:800 17px 'Bricolage Grotesque',sans-serif;color:#5F1637">WhatsApp</span><span style="font:400 14px 'DM Mono',monospace;color:#3D1620;margin-left:auto">+57 300 000 0000</span></a>
+<a href="mailto:productosnutoynola@gmail.com" style="display:flex;align-items:center;gap:14px;background:#FBF3E4;border:2.5px solid #2A1018;border-radius:16px;padding:18px 20px;box-shadow:5px 5px 0 #2A1018;text-decoration:none"><span style="font:800 17px 'Bricolage Grotesque',sans-serif;color:#8B2150">Correo</span><span style="font:400 12.5px 'DM Mono',monospace;color:rgba(42,16,24,.7);margin-left:auto;text-align:right">productosnutoynola@gmail.com</span></a>
+<a href="https://instagram.com/nutoynola" style="display:flex;align-items:center;gap:14px;background:#5F1637;border:2.5px solid #2A1018;border-radius:16px;padding:18px 20px;box-shadow:5px 5px 0 #2A1018;text-decoration:none"><span style="font:800 17px 'Bricolage Grotesque',sans-serif;color:#EFB0CB">Instagram</span><span style="font:400 14px 'DM Mono',monospace;color:rgba(239,176,203,.85);margin-left:auto">@nutoynola</span></a>
+<div style="font:400 11.5px/1.6 'DM Mono',monospace;color:#5F1637">Reemplaza el número de WhatsApp por el real cuando lo tengas.</div>
+</div>
+</div>
+</section>
+
+</main>
+</sc-if>
+
+<sc-if value="{{ isProduct }}" hint-placeholder-val="{{ false }}">
+<main style="max-width:1240px;margin:0 auto;padding:30px 22px 72px">
+<button onClick="{{ goTienda }}" style="background:none;border:none;padding:0;font:500 13.5px 'Work Sans',sans-serif;color:#8B2150;margin-bottom:22px">← Volver a la tienda</button>
+<div style="display:flex;flex-wrap:wrap;gap:44px">
+<div style="flex:1 1 380px;min-width:0">
+<div style="border:3px solid #2A1018;border-radius:24px;overflow:hidden;position:relative;aspect-ratio:1/1;box-shadow:10px 10px 0 #DEA12C;background:#C9AB8B">
+<sc-if value="{{ pIsCin }}" hint-placeholder-val="{{ true }}"><img src="img/bag-table.jpg" alt="Bolsa de granola Cinnamon Roll" style="width:100%;height:100%;object-fit:cover;object-position:center 45%;display:block"></sc-if>
+<sc-if value="{{ pIsCac }}" hint-placeholder-val="{{ false }}"><img src="img/mockups.jpg" alt="Bolsa de granola Cacao Crunch" style="width:100%;height:100%;object-fit:cover;object-position:22% 30%;display:block"></sc-if>
+<sc-if value="{{ pIsRoj }}" hint-placeholder-val="{{ false }}"><img src="img/bag-honey.jpg" alt="Bolsa de granola Frutos Rojos" style="width:100%;height:100%;object-fit:cover;object-position:32% 38%;display:block"></sc-if>
+</div>
+<div style="display:flex;gap:12px;margin-top:14px">
+<div style="flex:1;border:2px solid #2A1018;border-radius:14px;overflow:hidden;aspect-ratio:1/1"><img src="img/granola-tray.jpg" alt="Textura de la granola" style="width:100%;height:100%;object-fit:cover;display:block"></div>
+<div style="flex:1;border:2px solid #2A1018;border-radius:14px;overflow:hidden;aspect-ratio:1/1"><img src="img/bowl.jpg" alt="Servida en bowl" style="width:100%;height:100%;object-fit:cover;display:block"></div>
+<div style="flex:1;border:2px solid #2A1018;border-radius:14px;overflow:hidden;aspect-ratio:1/1;background:#FBF3E4"><img src="img/flatlay.jpg" alt="En la mesa del desayuno" style="width:100%;height:100%;object-fit:cover;object-position:center 80%;display:block;mix-blend-mode:multiply"></div>
+</div>
+</div>
+<div style="flex:1 1 360px;min-width:0">
+<div style="font:400 11px 'DM Mono',monospace;letter-spacing:.17em;text-transform:uppercase;color:#8B2150">Granola · 500 g</div>
+<h1 style="font:800 clamp(34px,4.6vw,52px)/0.98 'Bricolage Grotesque',sans-serif;letter-spacing:-.04em;margin:10px 0 0">{{ pName }}</h1>
+<div style="display:flex;align-items:center;gap:10px;margin-top:12px"><span style="font:500 13px 'DM Mono',monospace;color:#B77B12;letter-spacing:.1em">★★★★★</span><span style="font:400 13px 'Work Sans',sans-serif;color:rgba(42,16,24,.55)">{{ pReviews }} reseñas</span></div>
+<p style="font:400 16.5px/1.6 'Work Sans',sans-serif;color:rgba(42,16,24,.72);margin:18px 0 0;text-wrap:pretty">{{ pLong }}</p>
+<div style="font:800 32px 'Bricolage Grotesque',sans-serif;margin-top:22px">{{ priceFmt }}</div>
+<div style="font:400 13px 'DM Mono',monospace;color:rgba(42,16,24,.55);margin-top:4px">14 porciones · IVA incluido</div>
+<div style="display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin-top:24px">
+<div style="display:flex;align-items:center;border:2.5px solid #2A1018;border-radius:999px;overflow:hidden;background:#FBF3E4">
+<button onClick="{{ pDec }}" style="background:none;border:none;padding:12px 16px;font:600 17px 'Work Sans',sans-serif;color:#2A1018" style-hover="background:#EFB0CB">−</button>
+<span style="min-width:34px;text-align:center;font:600 16px 'DM Mono',monospace">{{ pQty }}</span>
+<button onClick="{{ pInc }}" style="background:none;border:none;padding:12px 16px;font:600 17px 'Work Sans',sans-serif;color:#2A1018" style-hover="background:#EFB0CB">+</button>
+</div>
+<button onClick="{{ pAdd }}" style="flex:1 1 200px;background:#8B2150;color:#FBF3E4;border:2.5px solid #2A1018;padding:15px 24px;border-radius:999px;font:600 15.5px 'Work Sans',sans-serif;box-shadow:5px 5px 0 #2A1018" style-hover="background:#5F1637;transform:translate(2px,2px);box-shadow:3px 3px 0 #2A1018">Agregar al carrito · {{ pLineFmt }}</button>
+</div>
+<h3 style="font:800 18px 'Bricolage Grotesque',sans-serif;margin:32px 0 12px">Ingredientes</h3>
+<p style="font:400 14.5px/1.6 'Work Sans',sans-serif;color:rgba(42,16,24,.7);margin:0">{{ pIngred }}</p>
+<h3 style="font:800 18px 'Bricolage Grotesque',sans-serif;margin:26px 0 12px">Información nutricional</h3>
+<div style="border:2.5px solid #2A1018;border-radius:14px;overflow:hidden;background:#2A1018;display:flex;flex-direction:column;gap:2px">
+<div style="background:#FBF3E4;padding:11px 16px;display:flex;justify-content:space-between;font:500 13.5px 'Work Sans',sans-serif"><span style="color:rgba(42,16,24,.65)">Porción</span><span style="font-family:'DM Mono',monospace">35 g</span></div>
+<div style="background:#FBF3E4;padding:11px 16px;display:flex;justify-content:space-between;font:500 13.5px 'Work Sans',sans-serif"><span style="color:rgba(42,16,24,.65)">Calorías</span><span style="font-family:'DM Mono',monospace">158 kcal</span></div>
+<div style="background:#FBF3E4;padding:11px 16px;display:flex;justify-content:space-between;font:500 13.5px 'Work Sans',sans-serif"><span style="color:rgba(42,16,24,.65)">Proteína</span><span style="font-family:'DM Mono',monospace">8 g</span></div>
+<div style="background:#FBF3E4;padding:11px 16px;display:flex;justify-content:space-between;font:500 13.5px 'Work Sans',sans-serif"><span style="color:rgba(42,16,24,.65)">Grasa total</span><span style="font-family:'DM Mono',monospace">9 g</span></div>
+<div style="background:#FBF3E4;padding:11px 16px;display:flex;justify-content:space-between;font:500 13.5px 'Work Sans',sans-serif"><span style="color:rgba(42,16,24,.65)">Azúcares añadidos</span><span style="font-family:'DM Mono',monospace">0 g</span></div>
+<div style="background:#FBF3E4;padding:11px 16px;display:flex;justify-content:space-between;font:500 13.5px 'Work Sans',sans-serif"><span style="color:rgba(42,16,24,.65)">Fibra</span><span style="font-family:'DM Mono',monospace">5 g</span></div>
+</div>
+</div>
+</div>
+</main>
+</sc-if>
+
+<sc-if value="{{ isCheckout }}" hint-placeholder-val="{{ false }}">
+<main style="max-width:1240px;margin:0 auto;padding:36px 22px 72px">
+<button onClick="{{ goTienda }}" style="background:none;border:none;padding:0;font:500 13.5px 'Work Sans',sans-serif;color:#8B2150;margin-bottom:20px">← Seguir comprando</button>
+<div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:28px">
+<span style="font:800 13px 'DM Mono',monospace;color:{{ step1Color }};letter-spacing:.06em">01 DATOS</span>
+<span style="width:30px;height:2px;background:#2A1018;opacity:.3"></span>
+<span style="font:800 13px 'DM Mono',monospace;color:{{ step2Color }};letter-spacing:.06em">02 PAGO</span>
+<span style="width:30px;height:2px;background:#2A1018;opacity:.3"></span>
+<span style="font:800 13px 'DM Mono',monospace;color:rgba(42,16,24,.35);letter-spacing:.06em">03 LISTO</span>
+</div>
+
+<div style="display:flex;flex-wrap:wrap;gap:30px;align-items:flex-start">
+<div style="flex:1 1 400px;min-width:0">
+
+<sc-if value="{{ isStep1 }}" hint-placeholder-val="{{ true }}">
+<div>
+<h1 style="font:800 clamp(28px,3.6vw,40px)/1 'Bricolage Grotesque',sans-serif;letter-spacing:-.035em;margin:0 0 6px">¿A dónde la enviamos?</h1>
+<p style="font:400 14.5px 'Work Sans',sans-serif;color:rgba(42,16,24,.6);margin:0 0 24px">Todos los campos con * son obligatorios.</p>
+<sc-if value="{{ hasErr }}" hint-placeholder-val="{{ false }}">
+<div style="background:#8B2150;color:#FBF3E4;border:2.5px solid #2A1018;border-radius:14px;padding:14px 16px;margin-bottom:20px;font:500 13.5px/1.5 'Work Sans',sans-serif">{{ errMsg }}</div>
+</sc-if>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px">
+<label style="display:flex;flex-direction:column;gap:6px"><span style="font:600 12.5px 'Work Sans',sans-serif;color:rgba(42,16,24,.7)">Nombre completo *</span><input name="nombre" value="{{ fNombre }}" onChange="{{ onField }}" placeholder="María Rodríguez" style="border:2px solid #2A1018;border-radius:10px;padding:12px 14px;background:#fff"></label>
+<label style="display:flex;flex-direction:column;gap:6px"><span style="font:600 12.5px 'Work Sans',sans-serif;color:rgba(42,16,24,.7)">Cédula / NIT</span><input name="cedula" value="{{ fCedula }}" onChange="{{ onField }}" placeholder="1.020.304.050" style="border:2px solid #2A1018;border-radius:10px;padding:12px 14px;background:#fff"></label>
+<label style="display:flex;flex-direction:column;gap:6px"><span style="font:600 12.5px 'Work Sans',sans-serif;color:rgba(42,16,24,.7)">Correo electrónico *</span><input name="correo" value="{{ fCorreo }}" onChange="{{ onField }}" placeholder="maria@correo.com" style="border:2px solid #2A1018;border-radius:10px;padding:12px 14px;background:#fff"></label>
+<label style="display:flex;flex-direction:column;gap:6px"><span style="font:600 12.5px 'Work Sans',sans-serif;color:rgba(42,16,24,.7)">Celular *</span><input name="celular" value="{{ fCelular }}" onChange="{{ onField }}" placeholder="300 000 0000" style="border:2px solid #2A1018;border-radius:10px;padding:12px 14px;background:#fff"></label>
+</div>
+<div style="height:1px;background:rgba(42,16,24,.15);margin:24px 0"></div>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px">
+<label style="display:flex;flex-direction:column;gap:6px"><span style="font:600 12.5px 'Work Sans',sans-serif;color:rgba(42,16,24,.7)">Ciudad *</span>
+<select name="ciudad" value="{{ fCiudad }}" onChange="{{ onField }}" style="border:2px solid #2A1018;border-radius:10px;padding:12px 14px;background:#fff">
+<option value="Bogotá">Bogotá</option><option value="Medellín">Medellín</option><option value="Cali">Cali</option><option value="Barranquilla">Barranquilla</option><option value="Cartagena">Cartagena</option><option value="Bucaramanga">Bucaramanga</option><option value="Pereira">Pereira</option><option value="Otra ciudad">Otra ciudad</option>
+</select></label>
+<label style="display:flex;flex-direction:column;gap:6px"><span style="font:600 12.5px 'Work Sans',sans-serif;color:rgba(42,16,24,.7)">Barrio</span><input name="barrio" value="{{ fBarrio }}" onChange="{{ onField }}" placeholder="Chapinero Alto" style="border:2px solid #2A1018;border-radius:10px;padding:12px 14px;background:#fff"></label>
+</div>
+<label style="display:flex;flex-direction:column;gap:6px;margin-top:16px"><span style="font:600 12.5px 'Work Sans',sans-serif;color:rgba(42,16,24,.7)">Dirección de entrega *</span><input name="direccion" value="{{ fDireccion }}" onChange="{{ onField }}" placeholder="Cra 7 # 45-32, apto 402" style="border:2px solid #2A1018;border-radius:10px;padding:12px 14px;background:#fff"></label>
+<label style="display:flex;flex-direction:column;gap:6px;margin-top:16px"><span style="font:600 12.5px 'Work Sans',sans-serif;color:rgba(42,16,24,.7)">Indicaciones para el mensajero</span><textarea name="notas" value="{{ fNotas }}" onChange="{{ onField }}" rows="3" placeholder="Dejar en portería, torre 2. Timbre no funciona." style="border:2px solid #2A1018;border-radius:10px;padding:12px 14px;background:#fff;resize:vertical"></textarea></label>
+<button onClick="{{ toStep2 }}" style="width:100%;margin-top:24px;background:#8B2150;color:#FBF3E4;border:2.5px solid #2A1018;padding:16px;border-radius:999px;font:600 16px 'Work Sans',sans-serif;box-shadow:5px 5px 0 #2A1018" style-hover="background:#5F1637;transform:translate(2px,2px);box-shadow:3px 3px 0 #2A1018">Continuar al pago →</button>
+</div>
+</sc-if>
+
+<sc-if value="{{ isStep2 }}" hint-placeholder-val="{{ false }}">
+<div>
+<h1 style="font:800 clamp(28px,3.6vw,40px)/1 'Bricolage Grotesque',sans-serif;letter-spacing:-.035em;margin:0 0 6px">Pasarela de pago</h1>
+<p style="font:400 14.5px 'Work Sans',sans-serif;color:rgba(42,16,24,.6);margin:0 0 6px">Simulación segura · no se cobra nada real.</p>
+<div style="font:400 12.5px 'DM Mono',monospace;color:rgba(42,16,24,.5);margin-bottom:22px">Entrega en: {{ resumenDir }}</div>
+<sc-if value="{{ hasErr }}" hint-placeholder-val="{{ false }}">
+<div style="background:#8B2150;color:#FBF3E4;border:2.5px solid #2A1018;border-radius:14px;padding:14px 16px;margin-bottom:20px;font:500 13.5px/1.5 'Work Sans',sans-serif">{{ errMsg }}</div>
+</sc-if>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px">
+<button onClick="{{ payCard }}" style="text-align:left;background:{{ cardBg }};border:2.5px solid #2A1018;border-radius:14px;padding:16px;box-shadow:4px 4px 0 #2A1018"><div style="font:800 16px 'Bricolage Grotesque',sans-serif;color:#2A1018">Tarjeta</div><div style="font:400 12px 'DM Mono',monospace;color:rgba(42,16,24,.6);margin-top:3px">Visa · MC · Amex</div></button>
+<button onClick="{{ payPse }}" style="text-align:left;background:{{ pseBg }};border:2.5px solid #2A1018;border-radius:14px;padding:16px;box-shadow:4px 4px 0 #2A1018"><div style="font:800 16px 'Bricolage Grotesque',sans-serif;color:#2A1018">PSE</div><div style="font:400 12px 'DM Mono',monospace;color:rgba(42,16,24,.6);margin-top:3px">Débito bancario</div></button>
+</div>
+
+<sc-if value="{{ isCard }}" hint-placeholder-val="{{ true }}">
+<div style="margin-top:22px;background:#FBF3E4;border:2.5px solid #2A1018;border-radius:18px;padding:22px;box-shadow:5px 5px 0 #EFB0CB">
+<label style="display:flex;flex-direction:column;gap:6px"><span style="font:600 12.5px 'Work Sans',sans-serif;color:rgba(42,16,24,.7)">Número de tarjeta *</span><input name="card" value="{{ fCard }}" onChange="{{ onField }}" placeholder="4242 4242 4242 4242" style="border:2px solid #2A1018;border-radius:10px;padding:12px 14px;background:#fff;font-family:'DM Mono',monospace"></label>
+<label style="display:flex;flex-direction:column;gap:6px;margin-top:14px"><span style="font:600 12.5px 'Work Sans',sans-serif;color:rgba(42,16,24,.7)">Nombre en la tarjeta *</span><input name="titular" value="{{ fTitular }}" onChange="{{ onField }}" placeholder="MARIA RODRIGUEZ" style="border:2px solid #2A1018;border-radius:10px;padding:12px 14px;background:#fff"></label>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:14px;margin-top:14px">
+<label style="display:flex;flex-direction:column;gap:6px"><span style="font:600 12.5px 'Work Sans',sans-serif;color:rgba(42,16,24,.7)">Vencimiento *</span><input name="exp" value="{{ fExp }}" onChange="{{ onField }}" placeholder="MM/AA" style="border:2px solid #2A1018;border-radius:10px;padding:12px 14px;background:#fff;font-family:'DM Mono',monospace"></label>
+<label style="display:flex;flex-direction:column;gap:6px"><span style="font:600 12.5px 'Work Sans',sans-serif;color:rgba(42,16,24,.7)">CVV *</span><input name="cvv" value="{{ fCvv }}" onChange="{{ onField }}" placeholder="123" style="border:2px solid #2A1018;border-radius:10px;padding:12px 14px;background:#fff;font-family:'DM Mono',monospace"></label>
+<label style="display:flex;flex-direction:column;gap:6px"><span style="font:600 12.5px 'Work Sans',sans-serif;color:rgba(42,16,24,.7)">Cuotas</span>
+<select name="cuotas" value="{{ fCuotas }}" onChange="{{ onField }}" style="border:2px solid #2A1018;border-radius:10px;padding:12px 14px;background:#fff"><option value="1">1 cuota</option><option value="3">3 cuotas</option><option value="6">6 cuotas</option><option value="12">12 cuotas</option></select></label>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{ isPse }}" hint-placeholder-val="{{ false }}">
+<div style="margin-top:22px;background:#FBF3E4;border:2.5px solid #2A1018;border-radius:18px;padding:22px;box-shadow:5px 5px 0 #EFB0CB">
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:14px">
+<label style="display:flex;flex-direction:column;gap:6px"><span style="font:600 12.5px 'Work Sans',sans-serif;color:rgba(42,16,24,.7)">Banco *</span>
+<select name="banco" value="{{ fBanco }}" onChange="{{ onField }}" style="border:2px solid #2A1018;border-radius:10px;padding:12px 14px;background:#fff"><option value="Bancolombia">Bancolombia</option><option value="Davivienda">Davivienda</option><option value="Banco de Bogotá">Banco de Bogotá</option><option value="BBVA">BBVA</option><option value="Nu">Nu</option><option value="Lulo Bank">Lulo Bank</option><option value="Banco Caja Social">Banco Caja Social</option></select></label>
+<label style="display:flex;flex-direction:column;gap:6px"><span style="font:600 12.5px 'Work Sans',sans-serif;color:rgba(42,16,24,.7)">Tipo de persona</span>
+<select name="persona" value="{{ fPersona }}" onChange="{{ onField }}" style="border:2px solid #2A1018;border-radius:10px;padding:12px 14px;background:#fff"><option value="Natural">Persona natural</option><option value="Jurídica">Persona jurídica</option></select></label>
+</div>
+<div style="font:400 12.5px/1.5 'DM Mono',monospace;color:rgba(42,16,24,.55);margin-top:14px">Al continuar te redirigimos al portal de tu banco para autorizar el débito.</div>
+</div>
+</sc-if>
+
+<div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:24px">
+<button onClick="{{ toStep1 }}" style="background:none;color:#2A1018;border:2.5px solid #2A1018;padding:16px 22px;border-radius:999px;font:600 15px 'Work Sans',sans-serif" style-hover="background:#EFB0CB">← Volver</button>
+<button onClick="{{ pay }}" style="flex:1 1 220px;background:#8B2150;color:#FBF3E4;border:2.5px solid #2A1018;padding:16px;border-radius:999px;font:600 16px 'Work Sans',sans-serif;box-shadow:5px 5px 0 #2A1018" style-hover="background:#5F1637;transform:translate(2px,2px);box-shadow:3px 3px 0 #2A1018">Pagar {{ totalFmt }}</button>
+</div>
+<div style="display:flex;align-items:center;gap:8px;margin-top:16px;font:400 12px 'DM Mono',monospace;color:rgba(42,16,24,.5)"><span style="width:8px;height:8px;border-radius:50%;background:#5F1637"></span>Conexión cifrada · Simulación de pasarela, no se realiza ningún cobro</div>
+</div>
+</sc-if>
+
+</div>
+
+<aside style="flex:1 1 300px;max-width:400px;background:#5F1637;border:3px solid #2A1018;border-radius:22px;padding:24px;box-shadow:8px 8px 0 #DEA12C;position:sticky;top:96px">
+<div style="font:400 10.5px 'DM Mono',monospace;letter-spacing:.16em;text-transform:uppercase;color:#EFB0CB">Tu pedido</div>
+<div style="display:flex;flex-direction:column;gap:12px;margin:16px 0 18px">
+<sc-for list="{{ items }}" as="it" hint-placeholder-count="0">
+<div style="display:flex;gap:12px;align-items:center">
+<div style="width:46px;height:46px;border-radius:10px;overflow:hidden;border:2px solid #2A1018;flex:none;background:#C9AB8B;background-image:{{ it.bg }};background-size:cover;background-position:center"></div>
+<div style="flex:1;min-width:0"><div style="font:700 14px 'Bricolage Grotesque',sans-serif;color:#FBF3E4">{{ it.name }}</div><div style="font:400 11.5px 'DM Mono',monospace;color:rgba(239,176,203,.8)">{{ it.qty }} × {{ it.priceFmt }}</div></div>
+<div style="font:600 13.5px 'DM Mono',monospace;color:#DEA12C;flex:none">{{ it.lineFmt }}</div>
+</div>
+</sc-for>
+</div>
+<div style="display:flex;flex-direction:column;gap:9px;padding:18px 0;border-top:2px dashed rgba(239,176,203,.35);border-bottom:2px dashed rgba(239,176,203,.35)">
+<div style="display:flex;justify-content:space-between;font:400 14px 'Work Sans',sans-serif;color:rgba(251,243,228,.85)"><span>Subtotal</span><span>{{ subtotalFmt }}</span></div>
+<sc-if value="{{ hasDescuento }}" hint-placeholder-val="{{ false }}">
+<div style="display:flex;justify-content:space-between;font:400 14px 'Work Sans',sans-serif;color:#EFB0CB"><span>Descuento pack</span><span>−{{ descuentoFmt }}</span></div>
+</sc-if>
+<div style="display:flex;justify-content:space-between;font:400 14px 'Work Sans',sans-serif;color:rgba(251,243,228,.85)"><span>Envío · {{ envioCiudad }}</span><span>{{ shipFmt }}</span></div>
+</div>
+<div style="display:flex;justify-content:space-between;align-items:baseline;margin-top:16px"><span style="font:700 15px 'Bricolage Grotesque',sans-serif;color:#FBF3E4">Total</span><span style="font:800 30px 'Bricolage Grotesque',sans-serif;color:#DEA12C">{{ totalFmt }}</span></div>
+<div style="font:400 11px 'DM Mono',monospace;color:rgba(239,176,203,.7);margin-top:4px;text-align:right">IVA incluido</div>
+</aside>
+</div>
+</main>
+</sc-if>
+
+<sc-if value="{{ isDone }}" hint-placeholder-val="{{ false }}">
+<main style="max-width:720px;margin:0 auto;padding:60px 22px 90px;text-align:center">
+<div style="display:inline-flex;align-items:center;justify-content:center;width:72px;height:72px;border-radius:50%;background:#DEA12C;border:3px solid #2A1018;box-shadow:5px 5px 0 #2A1018;font:800 34px 'Bricolage Grotesque',sans-serif;color:#5F1637">✳</div>
+<h1 style="font:800 clamp(32px,4.6vw,52px)/1 'Bricolage Grotesque',sans-serif;letter-spacing:-.04em;margin:26px 0 0;color:#8B2150">¡Pedido confirmado!</h1>
+<p style="font:400 17px/1.6 'Work Sans',sans-serif;color:rgba(42,16,24,.7);margin:14px 0 0">Gracias {{ oNombre }}. Te enviamos la confirmación a <strong>{{ oCorreo }}</strong> y te escribimos por WhatsApp cuando el mensajero salga.</p>
+<div style="background:#FBF3E4;border:3px solid #2A1018;border-radius:22px;padding:26px;margin-top:32px;text-align:left;box-shadow:8px 8px 0 #EFB0CB">
+<div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;padding-bottom:16px;border-bottom:2px dashed rgba(42,16,24,.2)">
+<div><div style="font:400 10.5px 'DM Mono',monospace;letter-spacing:.14em;text-transform:uppercase;color:rgba(42,16,24,.5)">Número de pedido</div><div style="font:800 21px 'Bricolage Grotesque',sans-serif;margin-top:3px">{{ oId }}</div></div>
+<div style="text-align:right"><div style="font:400 10.5px 'DM Mono',monospace;letter-spacing:.14em;text-transform:uppercase;color:rgba(42,16,24,.5)">Entrega estimada</div><div style="font:800 21px 'Bricolage Grotesque',sans-serif;margin-top:3px">{{ oEta }}</div></div>
+</div>
+<div style="display:flex;flex-direction:column;gap:11px;padding:16px 0;border-bottom:2px dashed rgba(42,16,24,.2)">
+<sc-for list="{{ oItems }}" as="it" hint-placeholder-count="2">
+<div style="display:flex;justify-content:space-between;gap:12px;font:400 14.5px 'Work Sans',sans-serif"><span>{{ it.qty }} × {{ it.name }}</span><span style="font-family:'DM Mono',monospace">{{ it.lineFmt }}</span></div>
+</sc-for>
+</div>
+<div style="display:flex;flex-direction:column;gap:9px;padding:16px 0;border-bottom:2px dashed rgba(42,16,24,.2)">
+<div style="display:flex;justify-content:space-between;font:400 14px 'Work Sans',sans-serif;color:rgba(42,16,24,.7)"><span>Subtotal</span><span style="font-family:'DM Mono',monospace">{{ oGross }}</span></div>
+<sc-if value="{{ oHasDesc }}" hint-placeholder-val="{{ false }}">
+<div style="display:flex;justify-content:space-between;font:400 14px 'Work Sans',sans-serif;color:#8B2150"><span>Descuento pack {{ oRate }}</span><span style="font-family:'DM Mono',monospace">−{{ oDesc }}</span></div>
+</sc-if>
+<div style="display:flex;justify-content:space-between;font:400 14px 'Work Sans',sans-serif;color:rgba(42,16,24,.7)"><span>Envío · {{ oCiudad }}</span><span style="font-family:'DM Mono',monospace">{{ oShip }}</span></div>
+</div>
+<div style="display:flex;justify-content:space-between;align-items:baseline;padding-top:16px"><span style="font:700 16px 'Bricolage Grotesque',sans-serif">Total pagado</span><span style="font:800 26px 'Bricolage Grotesque',sans-serif;color:#8B2150">{{ oTotal }}</span></div>
+<div style="font:400 12.5px/1.6 'DM Mono',monospace;color:rgba(42,16,24,.55);margin-top:14px">{{ oPago }} · Enviamos a {{ oDir }}</div>
+</div>
+<button onClick="{{ goInicio }}" style="margin-top:30px;background:#5F1637;color:#FBF3E4;border:2.5px solid #2A1018;padding:15px 28px;border-radius:999px;font:600 15.5px 'Work Sans',sans-serif;box-shadow:5px 5px 0 #2A1018" style-hover="background:#8B2150">Volver al inicio</button>
+</main>
+</sc-if>
+
+</div>
+
+<footer style="background:#2A1018;color:#FBF3E4;border-top:2px solid #2A1018">
+<div style="max-width:1240px;margin:0 auto;padding:50px 22px 26px;display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:34px">
+<div>
+<img src="img/logo.png" alt="Nuto &amp; Nola" style="width:104px;height:104px;border-radius:16px;border:2px solid rgba(251,243,228,.25);display:block;object-fit:cover">
+</div>
+<div>
+<div style="font:400 10.5px 'DM Mono',monospace;letter-spacing:.16em;text-transform:uppercase;color:#DEA12C">Tienda</div>
+<div style="display:flex;flex-direction:column;gap:9px;margin-top:14px;align-items:flex-start">
+<button onClick="{{ goTienda }}" style="background:none;border:none;padding:0;font:400 14px 'Work Sans',sans-serif;color:rgba(251,243,228,.75)" style-hover="color:#EFB0CB">Todos los productos</button>
+<button onClick="{{ verCin }}" style="background:none;border:none;padding:0;font:400 14px 'Work Sans',sans-serif;color:rgba(251,243,228,.75)" style-hover="color:#EFB0CB">Cinnamon Roll</button>
+<button onClick="{{ verCac }}" style="background:none;border:none;padding:0;font:400 14px 'Work Sans',sans-serif;color:rgba(251,243,228,.75)" style-hover="color:#EFB0CB">Cacao Crunch</button>
+<button onClick="{{ verRoj }}" style="background:none;border:none;padding:0;font:400 14px 'Work Sans',sans-serif;color:rgba(251,243,228,.75)" style-hover="color:#EFB0CB">Frutos Rojos</button>
+<button onClick="{{ goCombos }}" style="background:none;border:none;padding:0;font:400 14px 'Work Sans',sans-serif;color:rgba(251,243,228,.75)" style-hover="color:#EFB0CB">Combos y packs</button>
+</div>
+</div>
+<div>
+<div style="font:400 10.5px 'DM Mono',monospace;letter-spacing:.16em;text-transform:uppercase;color:#DEA12C">Contacto</div>
+<div style="display:flex;flex-direction:column;gap:9px;margin-top:14px;align-items:flex-start">
+<a href="https://wa.me/573000000000" style="font:400 14px 'Work Sans',sans-serif;color:rgba(251,243,228,.75)">WhatsApp</a>
+<a href="https://instagram.com/nutoynola" style="font:400 14px 'Work Sans',sans-serif;color:rgba(251,243,228,.75)">Instagram</a>
+<a href="mailto:productosnutoynola@gmail.com" style="font:400 13px 'DM Mono',monospace;color:rgba(251,243,228,.75)">productosnutoynola@gmail.com</a>
+</div>
+</div>
+<div>
+<div style="font:400 10.5px 'DM Mono',monospace;letter-spacing:.16em;text-transform:uppercase;color:#DEA12C">Pagos</div>
+<div style="display:flex;gap:7px;flex-wrap:wrap;margin-top:14px">
+<span style="border:1.5px solid rgba(251,243,228,.3);border-radius:6px;padding:5px 9px;font:500 10.5px 'DM Mono',monospace;color:rgba(251,243,228,.7)">VISA</span>
+<span style="border:1.5px solid rgba(251,243,228,.3);border-radius:6px;padding:5px 9px;font:500 10.5px 'DM Mono',monospace;color:rgba(251,243,228,.7)">MASTERCARD</span>
+<span style="border:1.5px solid rgba(251,243,228,.3);border-radius:6px;padding:5px 9px;font:500 10.5px 'DM Mono',monospace;color:rgba(251,243,228,.7)">AMEX</span>
+<span style="border:1.5px solid rgba(251,243,228,.3);border-radius:6px;padding:5px 9px;font:500 10.5px 'DM Mono',monospace;color:rgba(251,243,228,.7)">PSE</span>
+</div>
+</div>
+</div>
+<div style="max-width:1240px;margin:0 auto;padding:20px 22px 34px;border-top:1px solid rgba(251,243,228,.15);font:400 12px 'DM Mono',monospace;color:rgba(251,243,228,.45)">
+<span>© 2026 Nuto &amp; Nola · productosnutoynola.com</span>
+</div>
+</footer>
+
+<sc-if value="{{ cartOpen }}" hint-placeholder-val="{{ false }}">
+<div style="position:fixed;inset:0;z-index:60;display:flex;justify-content:flex-end">
+<div onClick="{{ closeCart }}" style="position:absolute;inset:0;background:rgba(42,16,24,.55);backdrop-filter:blur(2px)"></div>
+<div style="position:relative;width:min(430px,100%);height:100%;background:#FBF3E4;border-left:3px solid #2A1018;display:flex;flex-direction:column;animation:nynUp .22s ease">
+<div style="padding:20px 22px;border-bottom:2.5px solid #2A1018;display:flex;align-items:center;justify-content:space-between;gap:12px;flex:none">
+<div><div style="font:800 21px 'Bricolage Grotesque',sans-serif">Tu carrito</div><div style="font:400 12px 'DM Mono',monospace;color:rgba(42,16,24,.55);margin-top:2px">{{ count }} producto(s)</div></div>
+<button onClick="{{ closeCart }}" style="background:none;border:2px solid #2A1018;border-radius:50%;width:34px;height:34px;font:600 16px 'Work Sans',sans-serif;color:#2A1018;flex:none" style-hover="background:#EFB0CB">✕</button>
+</div>
+
+<sc-if value="{{ isEmpty }}" hint-placeholder-val="{{ true }}">
+<div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:40px 30px;text-align:center">
+<div style="font:800 20px 'Bricolage Grotesque',sans-serif">Tu carrito está vacío</div>
+<p style="font:400 14.5px/1.55 'Work Sans',sans-serif;color:rgba(42,16,24,.6);margin:0;max-width:30ch">Tres sabores esperando. Empieza por el Cinnamon Roll, nunca falla.</p>
+<button onClick="{{ shopFromCart }}" style="background:#8B2150;color:#FBF3E4;border:2.5px solid #2A1018;padding:14px 24px;border-radius:999px;font:600 15px 'Work Sans',sans-serif;box-shadow:4px 4px 0 #2A1018" style-hover="background:#5F1637">Ver la tienda →</button>
+</div>
+</sc-if>
+
+<sc-if value="{{ hasItems }}" hint-placeholder-val="{{ false }}">
+<div style="flex:1;overflow-y:auto;padding:20px 22px;display:flex;flex-direction:column;gap:14px">
+<div style="background:#EFB0CB;border:2.5px solid #2A1018;border-radius:14px;padding:14px 16px">
+<div style="font:600 13px/1.4 'Work Sans',sans-serif;color:#5F1637">{{ shipMsg }}</div>
+<div style="height:10px;background:#FBF3E4;border:2px solid #2A1018;border-radius:999px;margin-top:10px;overflow:hidden"><div style="height:100%;background:#5F1637;width:{{ progressPct }};transition:width .3s ease"></div></div>
+</div>
+<sc-for list="{{ items }}" as="it" hint-placeholder-count="0">
+<div style="display:flex;gap:13px;background:#fff;border:2.5px solid #2A1018;border-radius:16px;padding:12px">
+<div style="width:64px;height:64px;border-radius:10px;overflow:hidden;border:2px solid #2A1018;flex:none;background:#C9AB8B;background-image:{{ it.bg }};background-size:cover;background-position:center"></div>
+<div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:6px">
+<div style="display:flex;justify-content:space-between;gap:8px;align-items:flex-start">
+<div style="min-width:0"><div style="font:700 15px/1.2 'Bricolage Grotesque',sans-serif">{{ it.name }}</div><div style="font:400 11.5px 'DM Mono',monospace;color:rgba(42,16,24,.55);margin-top:2px">{{ it.meta }}</div></div>
+<button onClick="{{ it.rm }}" style="background:none;border:none;padding:0;font:400 12px 'DM Mono',monospace;color:#8B2150;flex:none" style-hover="color:#5F1637">Quitar</button>
+</div>
+<div style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:auto">
+<div style="display:flex;align-items:center;border:2px solid #2A1018;border-radius:999px;overflow:hidden">
+<button onClick="{{ it.dec }}" style="background:none;border:none;padding:5px 11px;font:600 14px 'Work Sans',sans-serif" style-hover="background:#EFB0CB">−</button>
+<span style="min-width:24px;text-align:center;font:500 13px 'DM Mono',monospace">{{ it.qty }}</span>
+<button onClick="{{ it.inc }}" style="background:none;border:none;padding:5px 11px;font:600 14px 'Work Sans',sans-serif" style-hover="background:#EFB0CB">+</button>
+</div>
+<span style="font:700 15px 'Bricolage Grotesque',sans-serif">{{ it.lineFmt }}</span>
+</div>
+</div>
+</div>
+</sc-for>
+</div>
+<div style="flex:none;border-top:2.5px solid #2A1018;padding:20px 22px;background:#FBF3E4">
+<div style="display:flex;flex-direction:column;gap:8px">
+<div style="display:flex;justify-content:space-between;font:400 14px 'Work Sans',sans-serif;color:rgba(42,16,24,.7)"><span>Subtotal</span><span>{{ subtotalFmt }}</span></div>
+<sc-if value="{{ hasDescuento }}" hint-placeholder-val="{{ false }}">
+<div style="display:flex;justify-content:space-between;font:400 14px 'Work Sans',sans-serif;color:#8B2150"><span>Descuento pack</span><span>−{{ descuentoFmt }}</span></div>
+</sc-if>
+<div style="display:flex;justify-content:space-between;font:400 14px 'Work Sans',sans-serif;color:rgba(42,16,24,.7)"><span>Envío estimado</span><span>{{ shipFmt }}</span></div>
+<div style="display:flex;justify-content:space-between;align-items:baseline;margin-top:6px;padding-top:12px;border-top:2px dashed rgba(42,16,24,.25)"><span style="font:700 16px 'Bricolage Grotesque',sans-serif">Total</span><span style="font:800 25px 'Bricolage Grotesque',sans-serif;color:#8B2150">{{ totalFmt }}</span></div>
+</div>
+<button onClick="{{ goCheckout }}" style="width:100%;margin-top:16px;background:#8B2150;color:#FBF3E4;border:2.5px solid #2A1018;padding:16px;border-radius:999px;font:600 16px 'Work Sans',sans-serif;box-shadow:4px 4px 0 #2A1018" style-hover="background:#5F1637">Finalizar compra →</button>
+<button onClick="{{ shopFromCart }}" style="width:100%;margin-top:10px;background:none;border:none;padding:6px;font:500 13.5px 'Work Sans',sans-serif;color:#8B2150">Seguir comprando</button>
+</div>
+</sc-if>
+
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{ processing }}" hint-placeholder-val="{{ false }}">
+<div style="position:fixed;inset:0;z-index:80;background:rgba(42,16,24,.9);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:22px;padding:30px;text-align:center">
+<div style="width:56px;height:56px;border:5px solid rgba(239,176,203,.3);border-top-color:#DEA12C;border-radius:50%;animation:nynSpin .8s linear infinite"></div>
+<div style="font:800 24px 'Bricolage Grotesque',sans-serif;color:#FBF3E4">Procesando tu pago…</div>
+<div style="font:400 13.5px/1.6 'DM Mono',monospace;color:rgba(239,176,203,.8);max-width:34ch">{{ payMsg }}</div>
+</div>
+</sc-if>
+
+<sc-if value="{{ toast }}" hint-placeholder-val="{{ false }}">
+<div style="position:fixed;left:50%;bottom:26px;transform:translateX(-50%);z-index:70;background:#DEA12C;color:#2A1018;border:2.5px solid #2A1018;border-radius:999px;padding:13px 22px;font:600 14px 'Work Sans',sans-serif;box-shadow:5px 5px 0 #5F1637;animation:nynUp .2s ease">{{ toast }}</div>
+</sc-if>
+
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;precio&quot;:{&quot;editor&quot;:&quot;int&quot;,&quot;default&quot;:37000,&quot;tsType&quot;:&quot;number&quot;,&quot;unit&quot;:&quot;COP&quot;,&quot;section&quot;:&quot;Precios&quot;,&quot;min&quot;:10000,&quot;max&quot;:80000,&quot;step&quot;:1000},&quot;envioBogota&quot;:{&quot;editor&quot;:&quot;int&quot;,&quot;default&quot;:12000,&quot;tsType&quot;:&quot;number&quot;,&quot;unit&quot;:&quot;COP&quot;,&quot;section&quot;:&quot;Precios&quot;,&quot;min&quot;:0,&quot;max&quot;:40000,&quot;step&quot;:1000},&quot;envioNacional&quot;:{&quot;editor&quot;:&quot;int&quot;,&quot;default&quot;:18000,&quot;tsType&quot;:&quot;number&quot;,&quot;unit&quot;:&quot;COP&quot;,&quot;section&quot;:&quot;Precios&quot;,&quot;min&quot;:0,&quot;max&quot;:60000,&quot;step&quot;:1000},&quot;umbralEnvio&quot;:{&quot;editor&quot;:&quot;int&quot;,&quot;default&quot;:100000,&quot;tsType&quot;:&quot;number&quot;,&quot;unit&quot;:&quot;COP&quot;,&quot;section&quot;:&quot;Precios&quot;,&quot;min&quot;:0,&quot;max&quot;:300000,&quot;step&quot;:10000},&quot;umbralNacional&quot;:{&quot;editor&quot;:&quot;int&quot;,&quot;default&quot;:150000,&quot;tsType&quot;:&quot;number&quot;,&quot;unit&quot;:&quot;COP&quot;,&quot;section&quot;:&quot;Precios&quot;,&quot;min&quot;:0,&quot;max&quot;:400000,&quot;step&quot;:10000},&quot;mostrarBarra&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Diseño&quot;}}">
+class Component extends DCLogic {
+  state = {
+    view: 'home', pkey: 'cinnamon', pQty: 1,
+    cart: {}, cartOpen: false, step: 1, pay: 'tarjeta',
+    processing: false, order: null, toast: null,
+    err: [],
+    form: { nombre:'', cedula:'', correo:'', celular:'', ciudad:'Bogotá', barrio:'', direccion:'', notas:'',
+            card:'', titular:'', exp:'', cvv:'', cuotas:'1', banco:'Bancolombia', persona:'Natural' }
+  };
+
+  P() {
+    const p = this.props.precio ?? 37000;
+    return {
+      cinnamon: { name:'Cinnamon Roll', price:p, img:'img/bag-table.jpg', meta:'500 g · canela',
+        long:'Avena tostada con canela de Ceilán, macadamia y marañón, terminada con un hilo de miel que forma clusters del tamaño de una moneda. Es la que más se repite: huele a panadería a las 7 de la mañana y desaparece de la bolsa sin que te des cuenta.',
+        ingred:'Avena en hojuelas, almendra, marañón, macadamia, semillas de calabaza, coco deshidratado, miel de abejas, canela de Ceilán, aceite de coco, sal marina.', reviews:128 },
+      cacao: { name:'Cacao Crunch', price:p, img:'img/mockups.jpg', meta:'500 g · cacao 70 %',
+        long:'Cacao colombiano al 70 % amasado con la avena antes de hornear, más almendra tostada y nibs enteros que crujen distinto. Amarga en el mejor sentido: es postre disfrazado de desayuno y funciona brutal sobre helado de vainilla.',
+        ingred:'Avena en hojuelas, almendra, marañón, cacao en polvo 70 %, nibs de cacao, semillas de calabaza, miel de abejas, aceite de coco, extracto de vainilla, sal marina.', reviews:94 },
+      rojos: { name:'Frutos Rojos', price:p, img:'img/bag-honey.jpg', meta:'500 g · fruta deshidratada',
+        long:'Arándano, fresa y uchuva deshidratados sin azúcar, con avena tostada y almendra laminada. Ácida, fresca y con la acidez justa para cortar lo dulce del yogur griego. La favorita de quienes dicen que la granola les empalaga.',
+        ingred:'Avena en hojuelas, almendra laminada, marañón, arándano deshidratado, fresa deshidratada, uchuva deshidratada, semillas de girasol, miel de abejas, aceite de coco, sal marina.', reviews:71 }
+    };
+  }
+
+  money(n) { return '$' + Math.round(n).toLocaleString('es-CO'); }
+
+  set(k, v) { this.setState({ [k]: v }); }
+
+  toSec(id) {
+    const el = document.getElementById(id);
+    if (!el) { window.scrollTo({ top: 0, behavior: 'smooth' }); return; }
+    const top = document.getElementById('nynTop');
+    const off = (top ? top.offsetHeight : 84) + 12;
+    const y = el.getBoundingClientRect().top + window.pageYOffset - off;
+    window.scrollTo({ top: Math.max(0, y), behavior: 'smooth' });
+  }
+  goSec(id) {
+    if (this.state.view !== 'home') {
+      this.setState({ view: 'home', cartOpen: false, err: [] }, () => setTimeout(() => this.toSec(id), 70));
+    } else {
+      this.setState({ cartOpen: false });
+      this.toSec(id);
+    }
+  }
+  goTop() {
+    if (this.state.view !== 'home') this.setState({ view: 'home', cartOpen: false, err: [] }, () => window.scrollTo(0, 0));
+    else { this.setState({ cartOpen: false }); window.scrollTo({ top: 0, behavior: 'smooth' }); }
+  }
+  go(view) { this.setState({ view, cartOpen: false, err: [] }); window.scrollTo(0, 0); }
+
+  flash(msg) {
+    this.setState({ toast: msg });
+    clearTimeout(this._t);
+    this._t = setTimeout(() => this.setState({ toast: null }), 2200);
+  }
+  add(key, n) {
+    const q = n || 1;
+    this.setState(s => ({ cart: { ...s.cart, [key]: (s.cart[key] || 0) + q }, cartOpen: true }));
+  }
+  addMany(map, label) {
+    this.setState(s => {
+      const c = { ...s.cart };
+      Object.keys(map).forEach(k => { c[k] = (c[k] || 0) + map[k]; });
+      return { cart: c, cartOpen: true };
+    });
+    this.flash(label);
+  }
+  setQty(key, q) {
+    this.setState(s => {
+      const c = { ...s.cart };
+      if (q <= 0) delete c[key]; else c[key] = q;
+      return { cart: c };
+    });
+  }
+
+  totals() {
+    const P = this.P();
+    const cart = this.state.cart;
+    const keys = Object.keys(cart).filter(k => cart[k] > 0);
+    const count = keys.reduce((a, k) => a + cart[k], 0);
+    const gross = keys.reduce((a, k) => a + P[k].price * cart[k], 0);
+    let rate = 0;
+    if (count >= 6) rate = 0.22; else if (count >= 3) rate = 0.15; else if (count === 2) rate = 0.08;
+    const descuento = Math.round(gross * rate);
+    const subtotal = gross - descuento;
+    const umbral = this.props.umbralEnvio ?? 100000;
+    const bogota = this.state.form.ciudad === 'Bogotá';
+    const fee = bogota ? (this.props.envioBogota ?? 12000) : (this.props.envioNacional ?? 18000);
+    const umbralCity = bogota ? umbral : (this.props.umbralNacional ?? 150000);
+    const free = subtotal >= umbralCity;
+    const ship = count === 0 ? 0 : (free ? 0 : fee);
+    return { P, cart, keys, count, gross, rate, descuento, subtotal, ship, free, umbralCity, total: subtotal + ship };
+  }
+
+  validate1() {
+    const f = this.state.form, e = [];
+    if (!f.nombre.trim()) e.push('nombre completo');
+    if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(f.correo)) e.push('un correo válido');
+    if (f.celular.replace(/\D/g, '').length < 7) e.push('un celular válido');
+    if (!f.direccion.trim()) e.push('la dirección de entrega');
+    return e;
+  }
+  validate2() {
+    const f = this.state.form, e = [];
+    if (this.state.pay === 'tarjeta') {
+      if (f.card.replace(/\D/g, '').length < 15) e.push('el número de tarjeta (15–16 dígitos)');
+      if (!f.titular.trim()) e.push('el nombre del titular');
+      if (!/^\d{2}\/\d{2}$/.test(f.exp.trim())) e.push('el vencimiento en formato MM/AA');
+      if (f.cvv.replace(/\D/g, '').length < 3) e.push('el CVV');
+    }
+    return e;
+  }
+
+  doPay() {
+    const e = this.validate2();
+    if (e.length) { this.setState({ err: e }); return; }
+    const t = this.totals();
+    const items = t.keys.map(k => ({ name: t.P[k].name, qty: t.cart[k], lineFmt: this.money(t.P[k].price * t.cart[k]) }));
+    const f = this.state.form;
+    const d = new Date(Date.now() + (f.ciudad === 'Bogotá' ? 2 : 4) * 86400000);
+    const meses = ['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
+    this.setState({ processing: true, err: [] });
+    setTimeout(() => {
+      this.setState({
+        processing: false, view: 'done', cart: {}, step: 1,
+        order: {
+          id: 'NYN-' + String(Math.floor(1000 + Math.random() * 8999)),
+          nombre: f.nombre.split(' ')[0] || 'crack',
+          correo: f.correo, dir: f.direccion + ', ' + f.ciudad,
+          eta: d.getDate() + ' ' + meses[d.getMonth()],
+          items, total: this.money(t.total),
+          gross: this.money(t.gross), desc: this.money(t.descuento),
+          hasDesc: t.descuento > 0, rate: '−' + Math.round(t.rate * 100) + ' %',
+          ciudad: f.ciudad, ship: t.ship === 0 ? 'Gratis' : this.money(t.ship),
+          pago: this.state.pay === 'tarjeta' ? ('Tarjeta terminada en ' + f.card.replace(/\D/g, '').slice(-4) + ' · ' + f.cuotas + ' cuota(s)') : ('PSE · ' + f.banco)
+        }
+      });
+      window.scrollTo(0, 0);
+    }, 2400);
+  }
+
+  renderVals() {
+    const s = this.state, f = s.form, t = this.totals(), P = t.P;
+    const m = n => this.money(n);
+    const price = this.props.precio ?? 37000;
+    const cur = P[s.pkey];
+
+    const items = t.keys.map(k => ({
+      key: k, name: P[k].name, img: P[k].img, bg: 'url(' + P[k].img + ')', meta: P[k].meta, qty: t.cart[k],
+      priceFmt: m(P[k].price), lineFmt: m(P[k].price * t.cart[k]),
+      inc: () => this.setQty(k, t.cart[k] + 1),
+      dec: () => this.setQty(k, t.cart[k] - 1),
+      rm: () => this.setQty(k, 0)
+    }));
+
+    const falta = t.umbralCity - t.subtotal;
+    const sel = '#DEA12C', un = '#FBF3E4';
+
+    return {
+      showBar: this.props.mostrarBarra ?? true,
+      isHome: s.view === 'home', isProduct: s.view === 'product',
+      isCheckout: s.view === 'checkout', isDone: s.view === 'done',
+
+      goInicio: () => this.goTop(),
+      goTienda: () => this.goSec('tienda'),
+      goCombos: () => this.goSec('combos'),
+      goNosotros: () => this.goSec('nosotros'),
+      goContacto: () => this.goSec('contacto'),
+      goCheckout: () => this.go('checkout'),
+      shopFromCart: () => this.goSec('tienda'),
+      openCart: () => this.set('cartOpen', true), closeCart: () => this.set('cartOpen', false),
+      cartOpen: s.cartOpen, toast: s.toast, processing: s.processing,
+      payMsg: s.pay === 'tarjeta' ? 'Autorizando con el banco emisor. No cierres esta ventana.' : 'Conectando con el portal de ' + f.banco + '.',
+
+      priceFmt: m(price), umbralFmt: m(this.props.umbralEnvio ?? 100000),
+      envioFmt: m(this.props.envioBogota ?? 12000), envioNalFmt: m(this.props.envioNacional ?? 18000),
+      pack2Fmt: m(price * 2 * 0.92), pack2FullFmt: m(price * 2),
+      pack3Fmt: m(price * 3 * 0.85), pack3FullFmt: m(price * 3),
+      pack6Fmt: m(price * 6 * 0.78), pack6FullFmt: m(price * 6),
+      regaloFmt: m(price * 2 * 0.92 + 14000),
+
+      addCin: () => { this.add('cinnamon'); this.flash('Cinnamon Roll agregada'); },
+      addCac: () => { this.add('cacao'); this.flash('Cacao Crunch agregada'); },
+      addRoj: () => { this.add('rojos'); this.flash('Frutos Rojos agregada'); },
+      addPack2: () => this.addMany({ cinnamon: 1, rojos: 1 }, 'Pack Dúo agregado · −8 %'),
+      addPack3: () => this.addMany({ cinnamon: 1, cacao: 1, rojos: 1 }, 'Trío completo agregado · −15 %'),
+      addPack6: () => this.addMany({ cinnamon: 2, cacao: 2, rojos: 2 }, 'Pack Familiar agregado · −22 %'),
+      addRegalo: () => this.addMany({ cinnamon: 1, cacao: 1 }, 'Caja Regalo agregada'),
+      verCin: () => this.setState({ view: 'product', pkey: 'cinnamon', pQty: 1, cartOpen: false }, () => window.scrollTo(0, 0)),
+      verCac: () => this.setState({ view: 'product', pkey: 'cacao', pQty: 1, cartOpen: false }, () => window.scrollTo(0, 0)),
+      verRoj: () => this.setState({ view: 'product', pkey: 'rojos', pQty: 1, cartOpen: false }, () => window.scrollTo(0, 0)),
+
+      pIsCin: s.pkey === 'cinnamon', pIsCac: s.pkey === 'cacao', pIsRoj: s.pkey === 'rojos',
+      pName: cur.name, pLong: cur.long, pIngred: cur.ingred, pReviews: cur.reviews,
+      pQty: s.pQty, pLineFmt: m(price * s.pQty),
+      pInc: () => this.setState(st => ({ pQty: Math.min(20, st.pQty + 1) })),
+      pDec: () => this.setState(st => ({ pQty: Math.max(1, st.pQty - 1) })),
+      pAdd: () => { this.add(s.pkey, s.pQty); this.flash(cur.name + ' × ' + s.pQty + ' agregada'); },
+
+      items, count: t.count, isEmpty: t.count === 0, hasItems: t.count > 0,
+      subtotalFmt: m(t.subtotal), descuentoFmt: m(t.descuento), hasDescuento: t.descuento > 0,
+      shipFmt: t.count === 0 ? '—' : (t.ship === 0 ? 'Gratis' : m(t.ship)),
+      totalFmt: m(t.total), envioCiudad: f.ciudad,
+      progressPct: Math.min(100, Math.round((t.subtotal / t.umbralCity) * 100)) + '%',
+      shipMsg: t.free ? '¡Listo! Tu envío va gratis 🎉' : ('Te faltan ' + m(falta) + ' para envío gratis'),
+
+      onField: e => {
+        const { name, value } = e.target;
+        this.setState(st => ({ form: { ...st.form, [name]: value } }));
+      },
+      fNombre: f.nombre, fCedula: f.cedula, fCorreo: f.correo, fCelular: f.celular,
+      fCiudad: f.ciudad, fBarrio: f.barrio, fDireccion: f.direccion, fNotas: f.notas,
+      fCard: f.card, fTitular: f.titular, fExp: f.exp, fCvv: f.cvv, fCuotas: f.cuotas,
+      fBanco: f.banco, fPersona: f.persona,
+
+      isStep1: s.step === 1, isStep2: s.step === 2,
+      step1Color: s.step >= 1 ? '#8B2150' : 'rgba(42,16,24,.35)',
+      step2Color: s.step >= 2 ? '#8B2150' : 'rgba(42,16,24,.35)',
+      toStep1: () => this.setState({ step: 1, err: [] }),
+      toStep2: () => {
+        const e = this.validate1();
+        if (e.length) { this.setState({ err: e }); return; }
+        this.setState({ step: 2, err: [] });
+        window.scrollTo(0, 0);
+      },
+      hasErr: s.err.length > 0,
+      errMsg: s.err.length ? 'Nos falta ' + s.err.join(', ') + '.' : '',
+      resumenDir: f.direccion + ' · ' + f.ciudad,
+      isCard: s.pay === 'tarjeta', isPse: s.pay === 'pse',
+      payCard: () => this.setState({ pay: 'tarjeta', err: [] }),
+      payPse: () => this.setState({ pay: 'pse', err: [] }),
+      cardBg: s.pay === 'tarjeta' ? sel : un, pseBg: s.pay === 'pse' ? sel : un,
+      pay: () => this.doPay(),
+
+      oId: s.order ? s.order.id : '', oNombre: s.order ? s.order.nombre : '',
+      oCorreo: s.order ? s.order.correo : '', oDir: s.order ? s.order.dir : '',
+      oEta: s.order ? s.order.eta : '', oItems: s.order ? s.order.items : [],
+      oTotal: s.order ? s.order.total : '', oPago: s.order ? s.order.pago : '',
+      oGross: s.order ? s.order.gross : '', oDesc: s.order ? s.order.desc : '',
+      oHasDesc: s.order ? s.order.hasDesc : false, oRate: s.order ? s.order.rate : '',
+      oCiudad: s.order ? s.order.ciudad : '', oShip: s.order ? s.order.ship : ''
+    };
+  }
+}
+</script>
+</body>
+</html>
