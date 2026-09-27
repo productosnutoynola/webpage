@@ -1,0 +1,76 @@
+@import "tailwindcss";
+
+@theme {
+  --color-crema: #FBF3E4;
+  --color-mostaza: #DEA12C;
+  --color-ciruela: #5F1637;
+  --color-vino: #8B2150;
+  --color-rosa: #EFB0CB;
+  --color-tinta: #2A1018;
+  --color-cafe: #3D1620;
+  --color-kraft: #C9AB8B;
+  --color-oro: #B77B12;
+
+  --font-display: var(--font-bricolage), system-ui, sans-serif;
+  --font-sans: var(--font-work), system-ui, sans-serif;
+  --font-mono: var(--font-dm-mono), ui-monospace, monospace;
+
+  --animate-marquee: nyn-marquee 26s linear infinite;
+  --animate-up: nyn-up 0.22s ease;
+  --animate-spin-fast: spin 0.8s linear infinite;
+}
+
+@keyframes nyn-marquee {
+  from { transform: translateX(-50%); }
+  to { transform: translateX(0); }
+}
+@keyframes nyn-up {
+  from { transform: translateY(10px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+@layer base {
+  html { scroll-behavior: smooth; scroll-padding-top: 124px; }
+  body {
+    margin: 0;
+    background: var(--color-crema);
+    color: var(--color-tinta);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: var(--color-vino); text-decoration: none; }
+  a:hover { color: var(--color-ciruela); }
+  button { cursor: pointer; font-family: inherit; }
+  input, select, textarea { font-family: inherit; font-size: 15px; }
+  input:focus, select:focus, textarea:focus { outline: 2px solid var(--color-vino); outline-offset: 1px; }
+  ::selection { background: var(--color-rosa); color: var(--color-ciruela); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .animate-marquee { animation: none; }
+}
+
+/* Botón con sombra dura de la marca */
+@utility btn {
+  @apply inline-flex items-center justify-center gap-2 rounded-full border-2 border-tinta font-sans font-semibold transition-[transform,box-shadow,background-color] duration-100;
+}
+@utility btn-primary {
+  @apply btn bg-ciruela text-crema hover:bg-vino;
+}
+@utility btn-vino {
+  @apply btn bg-vino text-crema hover:bg-ciruela;
+}
+@utility press {
+  box-shadow: 5px 5px 0 var(--color-tinta);
+  &:hover { transform: translate(2px, 2px); box-shadow: 3px 3px 0 var(--color-tinta); }
+}
+@utility eyebrow {
+  @apply font-mono text-[11px] uppercase tracking-[.17em] text-vino;
+}
+@utility field {
+  @apply rounded-[10px] border-2 border-tinta bg-white px-3.5 py-3;
+}
+@utility field-label {
+  @apply text-[12.5px] font-semibold text-tinta/70;
+}
