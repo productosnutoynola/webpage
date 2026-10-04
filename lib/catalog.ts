@@ -7,18 +7,6 @@ export const SHIPPING = {
   nacional: { fee: 18000, freeFrom: 150000 },
 } as const;
 
-export const CITIES = [
-  "Bogotá",
-  "Medellín",
-  "Cali",
-  "Barranquilla",
-  "Cartagena",
-  "Bucaramanga",
-  "Pereira",
-  "Otra ciudad",
-] as const;
-export type City = (typeof CITIES)[number];
-
 export type FlavorKey = "cinnamon-roll" | "melted-cocoa" | "berries";
 
 export type Flavor = {

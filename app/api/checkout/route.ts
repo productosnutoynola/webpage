@@ -35,7 +35,7 @@ export async function POST(req: Request) {
     // Precios, envío y stock los decide la base de datos.
     order = await createOrder({
       customer: { name: f.nombre, legalId: f.cedula, email: f.correo, phone },
-      shipping: { city, region, neighborhood: f.barrio, address: f.direccion, notes: f.notas },
+      shipping: { city, region, neighborhood: "", address: f.direccion, notes: f.notas },
       lines,
     });
   } catch (err) {
@@ -52,7 +52,7 @@ export async function POST(req: Request) {
     amountInCents: order.totals.total * 100,
     redirectUrl: `${origin}/pedido`,
     customer: { email: f.correo, fullName: f.nombre, phone, legalId: f.cedula.replace(/\D/g, "") || undefined },
-    shipping: { address: [f.direccion, f.barrio].filter(Boolean).join(", "), city, region, phone },
+    shipping: { address: f.direccion, city, region, phone },
   });
 
   return NextResponse.json({ url, reference: order.reference, lines, totals: order.totals, city: order.city, etaDays: order.etaDays });

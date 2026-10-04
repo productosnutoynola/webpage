@@ -57,7 +57,7 @@ export function CartDrawer() {
             <div className="flex flex-1 flex-col gap-3.5 overflow-y-auto px-[22px] py-5">
               <div className="rounded-[14px] border-[2.5px] border-tinta bg-rosa px-4 py-3.5">
                 <div className="text-[13px] font-semibold leading-[1.4] text-ciruela">
-                  {t.free ? "¡Listo! Tu envío va gratis 🎉" : `Te faltan ${money(falta)} para envío gratis en Bogotá`}
+                  {t.free ? "¡Listo! Tu envío va gratis 🎉" : `Te faltan ${money(falta)} para envío gratis`}
                 </div>
                 <div className="mt-2.5 h-2.5 overflow-hidden rounded-full border-2 border-tinta bg-crema">
                   <div
@@ -101,7 +101,7 @@ export function CartDrawer() {
               <div className="flex flex-col gap-2">
                 <Row label="Subtotal" value={money(t.gross)} />
                 {t.discount > 0 && <Row label="Descuento packs" value={`−${money(t.discount)}`} accent />}
-                <Row label="Envío estimado (Bogotá)" value={t.shipping === 0 ? "Gratis" : money(t.shipping)} />
+                <Row label="Envío estimado" value={t.shipping === 0 ? "Gratis" : money(t.shipping)} />
                 <div className="mt-1.5 flex items-baseline justify-between border-t-2 border-dashed border-tinta/25 pt-3">
                   <span className="font-display text-base font-bold">Total</span>
                   <span className="font-display text-[25px] font-extrabold text-vino">{money(t.total)}</span>

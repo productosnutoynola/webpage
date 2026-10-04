@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { CITIES } from "@/lib/catalog";
+import { COLOMBIA, DEPARTMENTS, isValidPlace } from "@/lib/colombia";
 import { EMPTY_FORM, validateCustomer, type CustomerForm } from "@/lib/customer";
 import { saveSnapshot } from "@/lib/order-snapshot";
 import { computeTotals, lineId, lineImage, lineName, lineUnitPrice, money, type CartLine, type Totals } from "@/lib/pricing";
@@ -20,7 +20,15 @@ export default function CheckoutPage() {
   useEffect(() => {
     try {
       const raw = sessionStorage.getItem(FORM_KEY);
-      if (raw) setForm({ ...EMPTY_FORM, ...JSON.parse(raw) });
+      if (raw) {
+        const saved = { ...EMPTY_FORM, ...JSON.parse(raw) } as CustomerForm;
+        // Datos guardados con el formulario anterior (ciudad libre / barrio) se normalizan.
+        if (!isValidPlace(saved.departamento, saved.ciudad)) {
+          saved.departamento = EMPTY_FORM.departamento;
+          saved.ciudad = EMPTY_FORM.ciudad;
+        }
+        setForm(saved);
+      }
     } catch {}
   }, []);
   useEffect(() => {
@@ -32,6 +40,13 @@ export default function CheckoutPage() {
   const t = computeTotals(lines, form.ciudad);
   const set = (k: keyof CustomerForm) => (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) =>
     setForm((f) => ({ ...f, [k]: e.target.value }));
+  const setDepartamento = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const departamento = e.target.value;
+    const cities = COLOMBIA[departamento] ?? [];
+    // Si el departamento tiene un solo municipio (p. ej. Bogotá D.C.) se elige solo.
+    setForm((f) => ({ ...f, departamento, ciudad: cities.length === 1 ? cities[0] : "" }));
+  };
+  const cities = COLOMBIA[form.departamento] ?? [];
 
   const toStep2 = () => {
     const missing = validateCustomer(form);
@@ -114,18 +129,24 @@ export default function CheckoutPage() {
               </div>
               <div className="my-6 h-px bg-tinta/15" />
               <div className="grid grid-cols-[repeat(auto-fit,minmax(200px,1fr))] gap-4">
-                <Field label="Ciudad *">
-                  <select value={form.ciudad} onChange={set("ciudad")} className="field">
-                    {CITIES.map((c) => <option key={c} value={c}>{c}</option>)}
+                <Field label="Departamento *">
+                  <select autoComplete="address-level1" value={form.departamento} onChange={setDepartamento} className="field">
+                    <option value="" disabled>Elige el departamento</option>
+                    {DEPARTMENTS.map((d) => <option key={d} value={d}>{d}</option>)}
                   </select>
                 </Field>
-                <Field label="Barrio"><input value={form.barrio} onChange={set("barrio")} placeholder="Chapinero Alto" className="field" /></Field>
-                {form.ciudad === "Otra ciudad" && (
-                  <>
-                    <Field label="Ciudad o municipio *"><input autoComplete="address-level2" value={form.otraCiudad} onChange={set("otraCiudad")} placeholder="Chía" className="field" /></Field>
-                    <Field label="Departamento *"><input autoComplete="address-level1" value={form.departamento} onChange={set("departamento")} placeholder="Cundinamarca" className="field" /></Field>
-                  </>
-                )}
+                <Field label="Ciudad o municipio *">
+                  <select
+                    autoComplete="address-level2"
+                    value={form.ciudad}
+                    onChange={set("ciudad")}
+                    disabled={!form.departamento}
+                    className="field disabled:cursor-not-allowed disabled:opacity-50"
+                  >
+                    <option value="" disabled>{form.departamento ? "Elige la ciudad" : "Primero elige el departamento"}</option>
+                    {cities.map((c) => <option key={c} value={c}>{c}</option>)}
+                  </select>
+                </Field>
               </div>
               <Field label="Dirección de entrega *" className="mt-4"><input autoComplete="street-address" value={form.direccion} onChange={set("direccion")} placeholder="Cra 7 # 45-32, apto 402" className="field" /></Field>
               <Field label="Indicaciones para el mensajero" className="mt-4">
@@ -138,7 +159,7 @@ export default function CheckoutPage() {
               <h1 className="m-0 mb-1.5 font-display text-[clamp(28px,3.6vw,40px)] font-extrabold leading-none tracking-[-.035em]">Pasarela de pago</h1>
               <p className="m-0 mb-1.5 text-[14.5px] text-tinta/60">Pagas en la pasarela segura de Wompi (Bancolombia). Nosotros nunca vemos los datos de tu tarjeta.</p>
               <div className="mb-[22px] font-mono text-[12.5px] text-tinta/50">
-                Entrega en: {form.direccion} · {form.ciudad === "Otra ciudad" ? form.otraCiudad : form.ciudad}
+                Entrega en: {form.direccion} · {form.ciudad}, {form.departamento}
               </div>
               {err && <ErrorBox msg={err} />}
               <div className="grid grid-cols-[repeat(auto-fit,minmax(140px,1fr))] gap-3">
@@ -169,7 +190,7 @@ export default function CheckoutPage() {
           )}
         </div>
 
-        <OrderAside lines={lines} t={t} city={form.ciudad === "Otra ciudad" ? form.otraCiudad || "Otra ciudad" : form.ciudad} />
+        <OrderAside lines={lines} t={t} city={form.ciudad || "—"} />
       </div>
 
       {redirecting && (

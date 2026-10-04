@@ -113,3 +113,61 @@ export async function logPaymentEvent(e: {
   });
   if (error) console.error("[orders] payment_events", error);
 }
+
+export type OrderSummary = {
+  orderId: string;
+  status: string;
+  firstName: string;
+  email: string;
+  city: string;
+  region: string;
+  address: string;
+  etaDays: number;
+  items: { name: string; flavors: string[]; quantity: number; lineTotal: number }[];
+  totals: { gross: number; discount: number; shipping: number; total: number };
+  paymentMethod: string | null;
+  createdAt: string;
+};
+
+/**
+ * Resumen del pedido guardado en Supabase. Solo se llama con una referencia
+ * obtenida de una transacción verificada en Wompi (no adivinable por el cliente).
+ */
+export async function getOrderSummary(reference: string): Promise<OrderSummary | null> {
+  const d = db();
+  if (!d) return null;
+  const { data, error } = await d
+    .from("orders")
+    .select(
+      "reference, status, ship_name, ship_city, ship_region, ship_address, gross_cop, discount_cop, shipping_cop, total_cop, created_at, " +
+        "customers(email), shipping_zones(eta_days), order_items(name, flavors, quantity, line_total_cop), payments(status, payment_method)",
+    )
+    .eq("reference", reference)
+    .maybeSingle();
+  if (error) {
+    console.error("[orders] getOrderSummary", error);
+    return null;
+  }
+  if (!data) return null;
+  const o = data as unknown as {
+    reference: string; status: string; ship_name: string; ship_city: string; ship_region: string; ship_address: string;
+    gross_cop: number; discount_cop: number; shipping_cop: number; total_cop: number; created_at: string;
+    customers: { email: string } | null; shipping_zones: { eta_days: number } | null;
+    order_items: { name: string; flavors: string[]; quantity: number; line_total_cop: number }[];
+    payments: { status: string; payment_method: string | null }[];
+  };
+  return {
+    orderId: o.reference,
+    status: o.status,
+    firstName: o.ship_name.split(" ")[0] || o.ship_name,
+    email: o.customers?.email ?? "",
+    city: o.ship_city,
+    region: o.ship_region,
+    address: o.ship_address,
+    etaDays: o.shipping_zones?.eta_days ?? 2,
+    items: o.order_items.map((i) => ({ name: i.name, flavors: i.flavors, quantity: i.quantity, lineTotal: i.line_total_cop })),
+    totals: { gross: o.gross_cop, discount: o.discount_cop, shipping: o.shipping_cop, total: o.total_cop },
+    paymentMethod: o.payments.find((p) => p.status === "APPROVED")?.payment_method ?? null,
+    createdAt: o.created_at,
+  };
+}

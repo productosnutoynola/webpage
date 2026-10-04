@@ -7,7 +7,27 @@ import { isBogota, lineName, lineUnitPrice, money } from "@/lib/pricing";
 import { loadSnapshot, type OrderSnapshot } from "@/lib/order-snapshot";
 import { useCart } from "@/components/cart-context";
 
-type Tx = { id: string; status: string; reference: string; amountInCents: number; paymentMethodType: string | null };
+type DbOrder = {
+  orderId: string;
+  firstName: string;
+  email: string;
+  city: string;
+  region: string;
+  address: string;
+  etaDays: number;
+  items: { name: string; flavors: string[]; quantity: number; lineTotal: number }[];
+  totals: { gross: number; discount: number; shipping: number; total: number };
+  createdAt: string;
+};
+type Tx = {
+  id: string;
+  status: string;
+  reference: string;
+  amountInCents: number;
+  paymentMethodType: string | null;
+  /** Pedido leído de Supabase (fuente de verdad); null si no se pudo leer. */
+  order: DbOrder | null;
+};
 
 const METHOD: Record<string, string> = {
   CARD: "Tarjeta",
@@ -96,45 +116,71 @@ function Pedido() {
     );
   }
 
-  const order = snap && snap.reference === tx.reference ? snap : null;
-  const eta = new Date((order?.createdAt ?? Date.now()) + (order?.etaDays ?? (order && !isBogota(order.city) ? 4 : 2)) * 86400000);
+  // Fuente principal: el pedido guardado en Supabase. Respaldo: copia local del checkout.
+  const local = snap && snap.reference === tx.reference ? snap : null;
+  const view = tx.order
+    ? {
+        orderId: tx.order.orderId,
+        name: tx.order.firstName,
+        email: tx.order.email,
+        place: `${tx.order.address}, ${tx.order.city}`,
+        city: tx.order.city,
+        items: tx.order.items.map((i) => ({ label: `${i.quantity} × ${i.name}`, amount: i.lineTotal })),
+        totals: tx.order.totals,
+        etaFrom: new Date(tx.order.createdAt).getTime(),
+        etaDays: tx.order.etaDays,
+      }
+    : local
+      ? {
+          orderId: local.reference,
+          name: local.nombre,
+          email: local.correo,
+          place: `${local.direccion}, ${local.city}`,
+          city: local.city,
+          items: local.lines.map((l) => ({ label: `${l.qty} × ${lineName(l)}`, amount: lineUnitPrice(l) * l.qty })),
+          totals: local.totals,
+          etaFrom: local.createdAt,
+          etaDays: local.etaDays ?? (isBogota(local.city) ? 2 : 4),
+        }
+      : null;
+  const eta = new Date((view?.etaFrom ?? Date.now()) + (view?.etaDays ?? 2) * 86400000);
   const method = tx.paymentMethodType ? METHOD[tx.paymentMethodType] ?? tx.paymentMethodType : "Wompi";
 
   return (
     <Shell icon="✳" title="¡Pedido confirmado!">
       <p className="m-0 mt-3.5 text-[17px] leading-[1.6] text-tinta/70">
-        Gracias{order ? ` ${order.nombre}` : ""}. Te enviamos la confirmación{order ? <> a <strong>{order.correo}</strong></> : ""} y te
+        Gracias{view ? ` ${view.name}` : ""}. Te enviamos la confirmación{view?.email ? <> a <strong>{view.email}</strong></> : ""} y te
         escribimos por WhatsApp cuando el mensajero salga.
       </p>
       <div className="mt-8 rounded-[22px] border-[3px] border-tinta bg-crema p-[26px] text-left shadow-[8px_8px_0_var(--color-rosa)]">
         <div className="flex flex-wrap justify-between gap-3 border-b-2 border-dashed border-tinta/20 pb-4">
           <div>
-            <div className="font-mono text-[10.5px] uppercase tracking-[.14em] text-tinta/50">Número de pedido</div>
-            <div className="mt-[3px] font-display text-[21px] font-extrabold">{tx.reference}</div>
+            <div className="font-mono text-[10.5px] uppercase tracking-[.14em] text-tinta/50">Número de pedido (order ID)</div>
+            <div className="mt-[3px] font-display text-[21px] font-extrabold">{view?.orderId ?? tx.reference}</div>
           </div>
           <div className="text-right">
             <div className="font-mono text-[10.5px] uppercase tracking-[.14em] text-tinta/50">Entrega estimada</div>
             <div className="mt-[3px] font-display text-[21px] font-extrabold">{eta.getDate()} {MESES[eta.getMonth()]}</div>
           </div>
         </div>
-        {order && (
+        {view && (
           <>
             <div className="flex flex-col gap-[11px] border-b-2 border-dashed border-tinta/20 py-4">
-              {order.lines.map((l, i) => (
+              {view.items.map((it, i) => (
                 <div key={i} className="flex justify-between gap-3 text-[14.5px]">
-                  <span>{l.qty} × {lineName(l)}</span>
-                  <span className="font-mono">{money(lineUnitPrice(l) * l.qty)}</span>
+                  <span>{it.label}</span>
+                  <span className="font-mono">{money(it.amount)}</span>
                 </div>
               ))}
             </div>
             <div className="flex flex-col gap-[9px] border-b-2 border-dashed border-tinta/20 py-4 text-sm">
-              <div className="flex justify-between text-tinta/70"><span>Subtotal</span><span className="font-mono">{money(order.totals.gross)}</span></div>
-              {order.totals.discount > 0 && (
-                <div className="flex justify-between text-vino"><span>Descuento packs</span><span className="font-mono">−{money(order.totals.discount)}</span></div>
+              <div className="flex justify-between text-tinta/70"><span>Subtotal</span><span className="font-mono">{money(view.totals.gross)}</span></div>
+              {view.totals.discount > 0 && (
+                <div className="flex justify-between text-vino"><span>Descuento packs</span><span className="font-mono">−{money(view.totals.discount)}</span></div>
               )}
               <div className="flex justify-between text-tinta/70">
-                <span>Envío · {order.city}</span>
-                <span className="font-mono">{order.totals.shipping === 0 ? "Gratis" : money(order.totals.shipping)}</span>
+                <span>Envío · {view.city}</span>
+                <span className="font-mono">{view.totals.shipping === 0 ? "Gratis" : money(view.totals.shipping)}</span>
               </div>
             </div>
           </>
@@ -145,7 +191,7 @@ function Pedido() {
         </div>
         <div className="mt-3.5 font-mono text-[12.5px] leading-[1.6] text-tinta/55">
           {method}
-          {order ? ` · Enviamos a ${order.direccion}, ${order.city}` : ""}
+          {view ? ` · Enviamos a ${view.place}` : ""}
         </div>
       </div>
       <Link href="/" className="btn-primary press mt-[30px] px-7 py-[15px] text-[15.5px] hover:text-crema">Volver al inicio</Link>
