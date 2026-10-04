@@ -34,7 +34,7 @@ create trigger orders_confirmation_email
   execute function public._enqueue_order_confirmation_email();
 
 -- Reenvío manual (p. ej. tras configurar RESEND_API_KEY):
---   select public.resend_order_confirmation('NYN-261004-ABC123');
+--   select public.resend_order_confirmation('4827150936');
 create or replace function public.resend_order_confirmation(p_reference text)
 returns bigint
 language plpgsql

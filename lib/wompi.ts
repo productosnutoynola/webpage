@@ -112,8 +112,3 @@ export async function fetchTransaction(publicKey: string, id: string): Promise<T
     paymentMethodType: (d.payment_method_type as string) ?? null,
   };
 }
-
-export function newReference(): string {
-  const rand = Math.floor(Math.random() * 36 ** 4).toString(36).padStart(4, "0");
-  return `NYN-${Date.now().toString(36).toUpperCase()}-${rand.toUpperCase()}`;
-}
