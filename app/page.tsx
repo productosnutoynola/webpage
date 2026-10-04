@@ -5,20 +5,20 @@ import { CONTACT } from "@/lib/contact";
 import { FlavorCard } from "@/components/flavor-card";
 import { PackGrid } from "@/components/pack-card";
 import { AddPackButton } from "@/components/add-pack-button";
-import { WATERMARK } from "@/components/watermark-positions";
+import { Marquee } from "@/components/marquee";
 
 const WAYS = [
-  ["Con yogur griego y fruta", "El clásico. Frutos Rojos aquí es imbatible."],
-  ["Con helado de cualquier sabor", "Cacao Crunch + un chorrito de arequipe. Confía."],
+  ["Con yogur griego y fruta", "El clásico. Berries aquí es imbatible."],
+  ["Con helado de cualquier sabor", "Melted Cocoa + un chorrito de arequipe. Confía."],
   ["Con queso cottage", "Salado, cremoso y con crunch. Desayuno de 2 minutos."],
   ["Como cereal con leche", "Aguanta el tazón sin volverse papilla."],
   ["Sácalo de la bolsa y directo a tu boca", "No vamos a juzgarte. Así se acaba más rápido."],
 ];
 
 const REVIEWS = [
-  ["Pedí una bolsa el lunes. El jueves pedí tres. No sé qué le ponen al Cinnamon Roll.", "Laura M. · Chapinero", "var(--color-mostaza)"],
-  ["Los clusters son enormes, no ese polvillo de las de supermercado. Y de verdad no sabe dulce.", "Andrés G. · Usaquén", "var(--color-rosa)"],
-  ["Los tres sabores en casa y mis hijos la comen sin pelear, milagro.", "Catalina R. · Suba", "var(--color-ciruela)"],
+  ["Pedí una bolsa el lunes. El jueves pedí tres. No sé qué le ponen al Cinnamon Roll.", "Laura", "var(--color-mostaza)"],
+  ["Los clusters son enormes, no ese polvillo de las de supermercado. Y de verdad no sabe dulce.", "Andrés", "var(--color-rosa)"],
+  ["Los tres sabores en casa y mis hijos la comen sin pelear, milagro.", "Catalina", "var(--color-ciruela)"],
 ];
 
 const h2 = "m-0 mt-3 font-display text-[clamp(30px,4vw,46px)] font-extrabold leading-none tracking-[-.035em]";
@@ -29,58 +29,51 @@ export default function Home() {
       {/* HERO */}
       <section
         id="inicio"
-        className="relative flex min-h-[clamp(600px,86vh,820px)] flex-col justify-end overflow-hidden border-b-2 border-tinta bg-crema"
+        className="relative flex flex-col overflow-hidden lg:min-h-[clamp(560px,calc(100svh-190px),860px)] lg:flex-row lg:items-center"
       >
-        <div aria-hidden="true" className="pointer-events-none absolute inset-0 select-none whitespace-nowrap font-display text-lg font-bold tracking-[.02em] text-mostaza/80">
-          {WATERMARK.map(([l, t], i) => (
-            <span key={i} className="absolute" style={{ left: `${l}%`, top: `${t}%` }}>
-              nuto &amp; nola
-            </span>
-          ))}
+        {/* Foto a sangre por la izquierda, fundida con el fondo (multiply + desvanecido) */}
+        <div className="pointer-events-none relative aspect-[900/760] w-full max-w-[680px] lg:absolute lg:inset-y-0 lg:left-0 lg:aspect-auto lg:w-[min(56vw,1000px)] lg:max-w-none">
+          <Image
+            src="/img/flatlay.jpg"
+            alt="Bolsa de granola Nuto & Nola abierta con granola regada"
+            fill
+            priority
+            sizes="(max-width: 1024px) 100vw, 56vw"
+            className="object-cover object-[left_top] mix-blend-multiply brightness-[1.06] [mask-image:linear-gradient(to_bottom,#000_72%,transparent),linear-gradient(to_right,#000_80%,transparent)] [mask-composite:intersect]"
+          />
         </div>
-        <div className="pointer-events-none relative flex min-h-[clamp(230px,38vh,430px)] flex-1 items-center justify-start pt-4">
-          <div className="relative aspect-[900/700] w-[min(52vw,520px)] overflow-hidden">
-            <Image
-              src="/img/flatlay.jpg"
-              alt="Bolsa de granola Nuto & Nola abierta"
-              fill
-              priority
-              sizes="(max-width: 1000px) 52vw, 520px"
-              className="block object-cover object-top mix-blend-multiply brightness-[1.06]"
-            />
-          </div>
-        </div>
-        <div className="relative w-full bg-[linear-gradient(to_bottom,rgba(251,243,228,0)_0,#FBF3E4_46px,#FBF3E4_100%)] pt-1.5">
-          <div className="mx-auto flex w-full max-w-[1240px] flex-wrap items-end justify-between gap-x-10 gap-y-[26px] px-[22px] pb-[clamp(34px,6vh,58px)] pt-[clamp(14px,3vh,30px)]">
-            <div className="max-w-[660px] flex-[1_1_420px]">
-              <div className="inline-flex items-center gap-2 rounded-full bg-ciruela px-3.5 py-[7px] font-mono text-[10.5px] font-medium uppercase tracking-[.14em] text-rosa">
-                Sin azúcar añadida
-              </div>
-              <h1 className="m-0 mt-[18px] text-balance font-display text-[clamp(30px,3.9vw,54px)] font-extrabold leading-[1.02] tracking-[-.035em] text-ciruela">
-                Prepara tus snacks, desayunos y postres sin sentirte culpable
-              </h1>
-              <p className="m-0 mt-[18px] max-w-[52ch] text-pretty text-[15px] leading-[1.6] text-tinta/80">
-                En Nuto &amp; Nola somos una familia de productos deliciosos creados para disfrutar y nutrir de forma real,
-                creemos que hay un sabor para cada personalidad. Te invitamos a descubrirlo tú mismo.
-              </p>
-              <div className="mt-[26px] flex flex-wrap gap-3">
-                <Link href="/#tienda" className="btn-primary press px-[26px] py-[15px] text-[15.5px] hover:text-crema">
-                  Comprar granola →
-                </Link>
-                <AddPackButton />
-              </div>
+        <div className="relative mx-auto flex w-full max-w-[1240px] px-[22px] pb-[clamp(34px,6vh,58px)] pt-2 lg:justify-end lg:py-16">
+          <div className="max-w-[560px] lg:w-[44%]">
+            <h1 className="m-0 text-balance font-display text-[clamp(30px,3.9vw,54px)] font-extrabold leading-[1.02] tracking-[-.035em] text-ciruela">
+              Prepara tus snacks, desayunos y postres sin sentirte culpable
+            </h1>
+            <p className="m-0 mt-[18px] max-w-[52ch] text-pretty text-[15px] leading-[1.6] text-tinta/80">
+              En Nuto &amp; Nola somos una familia de productos deliciosos creados para disfrutar y nutrir de forma real,
+              creemos que hay un sabor para cada personalidad. Te invitamos a descubrirlo tú mismo.
+            </p>
+            <div className="mt-[26px] flex flex-wrap gap-3">
+              <Link href="/#tienda" className="btn-primary press px-[26px] py-[15px] text-[15.5px] hover:text-crema">
+                Comprar granola →
+              </Link>
+              <AddPackButton />
             </div>
           </div>
         </div>
       </section>
 
-      <section className="border-b-2 border-tinta bg-crema">
-        <div className="mx-auto max-w-[1240px] px-[22px]">
-          <div className="py-[22px] text-center font-display text-[clamp(17px,2.2vw,24px)] font-extrabold tracking-[-.02em] text-vino">
-            Cero azúcar añadida
-          </div>
-        </div>
-      </section>
+      <Marquee
+        items={[
+          "Productos naturales",
+          "Listos para acompañar tus comidas",
+          "Mata tus antojos de forma saludable",
+          "¿Es posible crear un sabor para cada gusto?",
+        ]}
+        repeat={2}
+        duration="48s"
+        className="border-y-2 border-tinta bg-crema py-[18px]"
+        itemClassName="gap-[22px] pr-[22px] font-display text-[clamp(17px,2.2vw,24px)] font-extrabold tracking-[-.02em] text-vino"
+        separatorClassName="text-mostaza"
+      />
 
       {/* TIENDA */}
       <section id="tienda" className="mx-auto max-w-[1240px] px-[22px] pt-[66px]">

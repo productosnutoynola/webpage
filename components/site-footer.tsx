@@ -22,8 +22,8 @@ export function SiteFooter() {
           <div className="mt-3.5 flex flex-col items-start gap-[9px]">
             <Link href="/#tienda" className={linkCls}>Todos los productos</Link>
             <Link href="/producto/cinnamon-roll" className={linkCls}>Cinnamon Roll</Link>
-            <Link href="/producto/cacao-crunch" className={linkCls}>Cacao Crunch</Link>
-            <Link href="/producto/frutos-rojos" className={linkCls}>Frutos Rojos</Link>
+            <Link href="/producto/melted-cocoa" className={linkCls}>Melted Cocoa</Link>
+            <Link href="/producto/berries" className={linkCls}>Berries</Link>
             <Link href="/#combos" className={linkCls}>Combos y packs</Link>
           </div>
         </div>

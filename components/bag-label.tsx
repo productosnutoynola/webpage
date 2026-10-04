@@ -11,9 +11,9 @@ export function BagLabel({ f }: { f: Flavor }) {
       <span className="font-mono text-[8px] uppercase tracking-[.2em]">Nuto &amp; Nola</span>
       <span className="text-center font-display text-[clamp(15px,2vw,21px)] font-extrabold leading-none">{f.name}</span>
       <span className="flex items-center gap-[7px] font-mono text-[8.5px] tracking-[.06em]">
-        <span>0 g azúcar</span>
+        <span>granola</span>
         {dot}
-        <span>vegano</span>
+        <span>{f.meta}</span>
       </span>
     </span>
   );

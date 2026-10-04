@@ -7,6 +7,7 @@ import { SiteFooter } from "@/components/site-footer";
 import { CartDrawer } from "@/components/cart-drawer";
 import { PackPicker } from "@/components/pack-picker";
 import { Toast } from "@/components/toast";
+import { BrandPattern } from "@/components/brand-pattern";
 
 const bricolage = Bricolage_Grotesque({
   subsets: ["latin"],
@@ -23,9 +24,9 @@ const dmMono = DM_Mono({ subsets: ["latin"], weight: ["400", "500"], variable: "
 
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? "https://productosnutoynola.com"),
-  title: "Nuto & Nola · Granola sin azúcar añadida",
+  title: "Nuto & Nola · Granola artesanal",
   description:
-    "Granola Cinnamon Roll, Cacao Crunch y Frutos Rojos. Prepara tus snacks, desayunos y postres sin sentirte culpable. Envío gratis en Bogotá desde $100.000.",
+    "Granola Cinnamon Roll, Melted Cocoa y Berries. Prepara tus snacks, desayunos y postres sin sentirte culpable. Envío gratis en Bogotá desde $100.000.",
   icons: { icon: "/img/logo.png" },
   openGraph: { images: ["/img/flatlay.jpg"], locale: "es_CO", siteName: "Nuto & Nola" },
 };
@@ -36,6 +37,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="es-CO" className={`${bricolage.variable} ${work.variable} ${dmMono.variable}`}>
       <body>
+        <BrandPattern />
         <CartProvider>
           <div className="flex min-h-screen flex-col overflow-x-clip">
             <SiteHeader />

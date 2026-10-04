@@ -40,6 +40,7 @@ export function FlavorCard({ f }: { f: Flavor }) {
           <span className="size-2.5 flex-none rounded-full border-[1.5px] border-tinta" style={{ background: f.color }} />
           <h3 className="m-0 font-display text-[22px] font-extrabold leading-[1.1]">{f.name}</h3>
         </div>
+        <p className="m-0 font-mono text-[11.5px] leading-[1.55] text-vino">{f.ingredients}</p>
         <p className="m-0 flex-1 text-sm leading-normal text-tinta/68">{f.short}</p>
         <div className="mt-1 flex items-center justify-between gap-3">
           <span className="font-display text-xl font-extrabold">{money(PRICE)}</span>

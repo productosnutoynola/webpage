@@ -19,7 +19,7 @@ export const CITIES = [
 ] as const;
 export type City = (typeof CITIES)[number];
 
-export type FlavorKey = "cinnamon-roll" | "cacao-crunch" | "frutos-rojos";
+export type FlavorKey = "cinnamon-roll" | "melted-cocoa" | "berries";
 
 export type Flavor = {
   key: FlavorKey;
@@ -53,17 +53,17 @@ export const FLAVORS: Record<FlavorKey, Flavor> = {
     objectPosition: "center 45%",
     blend: true,
     labelTop: "41%",
-    short: "Canela de Ceilán, macadamia y marañón tostados. Huele a panadería a las 7 a.m.",
-    long: "Avena tostada con canela de Ceilán, macadamia y marañón, horneada lento hasta formar clusters del tamaño de una moneda. Es la que más se repite: huele a panadería a las 7 de la mañana y desaparece de la bolsa sin que te des cuenta.",
+    short: "Canela, vainilla, almendras y pecanas tostadas. Huele a panadería a las 7 a.m.",
+    long: "Avena tostada con almendras, pecanas y semillas de calabaza, con canela y vainilla, horneada lento hasta formar clusters del tamaño de una moneda. Es la que más se repite: huele a panadería a las 7 de la mañana y desaparece de la bolsa sin que te des cuenta.",
     ingredients:
-      "Avena en hojuelas, almendra, marañón, macadamia, semillas de calabaza, coco deshidratado, canela de Ceilán, aceite de coco, sal marina.",
+      "Avena + almendras + pecanas + semillas de calabaza + 25 g azúcar de dátiles + 20 g miel + stevia + aceite de coco + canela + vainilla",
     meta: "canela",
     reviews: 128,
     badge: "Más vendida",
   },
-  "cacao-crunch": {
-    key: "cacao-crunch",
-    name: "Cacao Crunch",
+  "melted-cocoa": {
+    key: "melted-cocoa",
+    name: "Melted Cocoa",
     color: "#5F1637",
     ink: "#EFB0CB",
     photoBg: "#C9AB8B",
@@ -71,16 +71,16 @@ export const FLAVORS: Record<FlavorKey, Flavor> = {
     objectPosition: "22% 30%",
     blend: false,
     labelTop: "44%",
-    short: "Cacao colombiano 70 %, almendra tostada y nibs enteros. Postre disfrazado de desayuno.",
-    long: "Cacao colombiano al 70 % amasado con la avena antes de hornear, más almendra tostada y nibs enteros que crujen distinto. Amarga en el mejor sentido: es postre disfrazado de desayuno y funciona brutal sobre helado de vainilla.",
+    short: "Cocoa sin azúcar y cacao amargo al 58 %. Postre disfrazado de desayuno.",
+    long: "Cocoa en polvo sin azúcar y cacao amargo al 58 % con avena, almendras y pecanas tostadas. Intensa en el mejor sentido: es postre disfrazado de desayuno y funciona brutal sobre helado de vainilla.",
     ingredients:
-      "Avena en hojuelas, almendra, marañón, cacao en polvo 70 %, nibs de cacao, semillas de calabaza, aceite de coco, extracto de vainilla, sal marina.",
-    meta: "cacao 70 %",
+      "Avena + almendras + pecanas + semillas de calabaza + 25 g azúcar de dátiles + 20 g miel + stevia + aceite de coco + vainilla + cocoa sin azúcar en polvo + cacao amargo al 58 %",
+    meta: "cacao 58 %",
     reviews: 94,
   },
-  "frutos-rojos": {
-    key: "frutos-rojos",
-    name: "Frutos Rojos",
+  berries: {
+    key: "berries",
+    name: "Berries",
     color: "#EFB0CB",
     ink: "#5F1637",
     photoBg: "#EFB0CB",
@@ -88,11 +88,11 @@ export const FLAVORS: Record<FlavorKey, Flavor> = {
     objectPosition: "32% 38%",
     blend: false,
     labelTop: "42%",
-    short: "Arándano, fresa y uchuva deshidratados. Ácida y fresca; brutal con yogur griego.",
-    long: "Arándano, fresa y uchuva deshidratados sin azúcar, con avena tostada y almendra laminada. Ácida, fresca y con la acidez justa para cortar lo dulce del yogur griego. La favorita de quienes dicen que la granola les empalaga.",
+    short: "Arándanos deshidratados con un toque de canela. Fresca y brutal con yogur griego.",
+    long: "Arándanos deshidratados con avena, almendras y pecanas tostadas y un toque de canela. Fresca y con la acidez justa para cortar lo dulce del yogur griego. La favorita de quienes dicen que la granola les empalaga.",
     ingredients:
-      "Avena en hojuelas, almendra laminada, marañón, arándano deshidratado, fresa deshidratada, uchuva deshidratada, semillas de girasol, aceite de coco, sal marina.",
-    meta: "fruta deshidratada",
+      "Avena + almendras + pecanas + semillas de calabaza + 25 g azúcar de dátiles + 20 g miel + stevia + aceite de coco + canela + vainilla + arándanos deshidratados",
+    meta: "arándanos",
     reviews: 71,
   },
 };
@@ -125,7 +125,7 @@ export const PACKS: Record<PackKey, Pack> = {
     bags: 3,
     rate: 0.15,
     extra: 0,
-    fixed: ["cinnamon-roll", "cacao-crunch", "frutos-rojos"],
+    fixed: ["cinnamon-roll", "melted-cocoa", "berries"],
   },
   familiar: {
     key: "familiar",
@@ -133,7 +133,7 @@ export const PACKS: Record<PackKey, Pack> = {
     bags: 6,
     rate: 0.22,
     extra: 0,
-    fixed: ["cinnamon-roll", "cinnamon-roll", "cacao-crunch", "cacao-crunch", "frutos-rojos", "frutos-rojos"],
+    fixed: ["cinnamon-roll", "cinnamon-roll", "melted-cocoa", "melted-cocoa", "berries", "berries"],
   },
   regalo: { key: "regalo", name: "Caja Regalo", bags: 2, rate: 0.08, extra: 14000, fixed: null },
 };

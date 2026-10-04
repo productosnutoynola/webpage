@@ -1,9 +1,9 @@
-// TODO: reemplazar el número de WhatsApp por el real (formato internacional sin "+").
-const WHATSAPP = "573000000000";
+// Formato internacional sin "+" para wa.me.
+const WHATSAPP = "573014373392";
 
 export const CONTACT = {
   email: "productosnutoynola@gmail.com",
-  whatsappDisplay: "+57 300 000 0000",
+  whatsappDisplay: "+57 301 437 3392",
   whatsappUrl: `https://wa.me/${WHATSAPP}`,
   instagram: "@nutoynola",
   instagramUrl: "https://instagram.com/nutoynola",

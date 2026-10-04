@@ -4,7 +4,7 @@ import { writeFileSync } from "node:fs";
 import { FLAVORS, FLAVOR_KEYS, PACKS, PRICE, SHIPPING } from "../lib/catalog.ts";
 
 const q = (s: string | null | undefined) => (s == null ? "null" : `'${s.replace(/'/g, "''")}'`);
-const SKU: Record<string, string> = { "cinnamon-roll": "NYN-CIN", "cacao-crunch": "NYN-CAC", "frutos-rojos": "NYN-ROJ" };
+const SKU: Record<string, string> = { "cinnamon-roll": "NYN-CIN", "melted-cocoa": "NYN-MEL", berries: "NYN-BER" };
 const PACK_DESC: Record<string, string> = {
   duo: "Dos bolsas de los sabores que elijas.",
   trio: "Un sabor de cada uno.",

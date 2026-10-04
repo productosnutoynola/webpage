@@ -5,6 +5,7 @@ import Image from "next/image";
 import { money } from "@/lib/pricing";
 import { SHIPPING } from "@/lib/catalog";
 import { useCart } from "./cart-context";
+import { Marquee } from "./marquee";
 
 const NAV = [
   { href: "/#inicio", label: "Inicio" },
@@ -20,19 +21,14 @@ export function SiteHeader() {
 
   return (
     <div className="sticky top-0 z-50">
-      <div className="overflow-hidden border-b-2 border-tinta bg-ciruela py-[11px]" aria-label={msg}>
-        <div className="flex w-max animate-marquee items-center will-change-transform" aria-hidden="true">
-          {Array.from({ length: 12 }, (_, i) => (
-            <span
-              key={i}
-              className="flex items-center gap-[18px] whitespace-nowrap pr-[18px] font-mono text-xs font-medium uppercase tracking-[.12em] text-rosa"
-            >
-              {msg}
-              <span className="text-mostaza">✳</span>
-            </span>
-          ))}
-        </div>
-      </div>
+      <Marquee
+        items={[msg]}
+        repeat={6}
+        label={msg}
+        className="border-b-2 border-tinta bg-ciruela py-[11px]"
+        itemClassName="gap-[18px] pr-[18px] font-mono text-xs font-medium uppercase tracking-[.12em] text-rosa"
+        separatorClassName="text-mostaza"
+      />
 
       <header className="border-b-2 border-tinta bg-crema/96 backdrop-blur-md">
         <div className="mx-auto flex max-w-[1240px] items-center gap-[18px] px-[22px] py-3">

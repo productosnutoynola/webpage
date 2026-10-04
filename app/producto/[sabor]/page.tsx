@@ -25,7 +25,6 @@ const NUTRITION = [
   ["Calorías", "158 kcal"],
   ["Proteína", "8 g"],
   ["Grasa total", "9 g"],
-  ["Azúcares añadidos", "0 g"],
   ["Fibra", "5 g"],
 ];
 
