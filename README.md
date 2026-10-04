@@ -60,6 +60,8 @@ select * from public.sales_daily;                                 -- ventas por 
 update public.orders set status = 'shipped', shipped_at = now(), tracking_code = '...' where reference = 'NYN-...';
 ```
 
+**Correo de confirmación:** al pasar un pedido a `paid`, el trigger `orders_confirmation_email` (pg_net) llama a la Edge Function `order-confirmation-email` (`supabase/functions/`), que relee el pedido y envía el resumen con su número de pedido (`orders.reference`, el *order ID* que ve el cliente) vía Resend. El resultado queda en `orders.confirmation_email_sent_at` / `confirmation_email_error`. Secretos en Supabase → Edge Functions → Secrets: `RESEND_API_KEY` (obligatorio), `EMAIL_FROM` y `ORDER_NOTIFY_EMAIL` (opcionales). Reenviar: `select public.resend_order_confirmation('NYN-...');`
+
 **Precios:** la base es la fuente de verdad del cobro. `lib/catalog.ts` alimenta lo que se muestra en el sitio; si cambias un precio, cámbialo en ambos (o regenera la semilla con `npm run db:seed-sql` para entornos nuevos).
 
 **Pruebas de la base:** `psql "$DATABASE_URL" -f supabase/tests/checkout_flow.sql` (corre en una transacción y la revierte; 25 escenarios).
