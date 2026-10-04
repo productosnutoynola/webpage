@@ -3,9 +3,10 @@
 //
 // Secretos (Supabase → Edge Functions → Secrets):
 //   RESEND_API_KEY        obligatorio — https://resend.com/api-keys
-//   EMAIL_FROM            opcional — "Nuto & Nola <pedidos@productosnutoynola.com>"
-//                         (por defecto onboarding@resend.dev, que solo entrega al
-//                         correo dueño de la cuenta de Resend hasta verificar el dominio)
+//   EMAIL_FROM            remitente, p. ej. compras@productosnutoynola.com (dominio
+//                         verificado en Resend). Si es solo la dirección se envía
+//                         como "Nuto & Nola <dirección>". Sin él se usa
+//                         onboarding@resend.dev, que solo entrega al dueño de la cuenta.
 //   ORDER_NOTIFY_EMAIL    opcional — copia oculta para la tienda
 //
 // verify_jwt = false: el cuerpo solo trae el UUID del pedido (no adivinable), la
@@ -19,6 +20,15 @@ const METHOD: Record<string, string> = {
   BANCOLOMBIA_TRANSFER: "Botón Bancolombia", BANCOLOMBIA_QR: "QR Bancolombia",
 };
 const MESES = ["enero", "febrero", "marzo", "abril", "mayo", "junio", "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"];
+
+const SENDER_NAME = "Nuto & Nola";
+
+/** Acepta "correo@dominio" o "Nombre <correo@dominio>" y siempre devuelve el segundo formato. */
+function sender(): string {
+  const raw = (Deno.env.get("EMAIL_FROM") ?? "").trim();
+  if (!raw) return `${SENDER_NAME} <onboarding@resend.dev>`;
+  return raw.includes("<") ? raw : `${SENDER_NAME} <${raw}>`;
+}
 
 const money = (n: number) => "$" + Math.round(n).toLocaleString("es-CO");
 const esc = (s: unknown) =>
@@ -171,7 +181,7 @@ Deno.serve(async (req) => {
     method: "POST",
     headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
     body: JSON.stringify({
-      from: Deno.env.get("EMAIL_FROM") ?? "Nuto & Nola <onboarding@resend.dev>",
+      from: sender(),
       to: [to],
       ...(bcc ? { bcc: [bcc] } : {}),
       reply_to: "productosnutoynola@gmail.com",
