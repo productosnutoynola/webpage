@@ -1,13 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Bricolage_Grotesque, DM_Mono, Work_Sans } from "next/font/google";
 import "./globals.css";
-import { CartProvider } from "@/components/cart-context";
-import { SiteHeader } from "@/components/site-header";
-import { SiteFooter } from "@/components/site-footer";
-import { CartDrawer } from "@/components/cart-drawer";
-import { PackPicker } from "@/components/pack-picker";
-import { Toast } from "@/components/toast";
-import { BrandPattern } from "@/components/brand-pattern";
 
 const bricolage = Bricolage_Grotesque({
   subsets: ["latin"],
@@ -36,19 +29,7 @@ export const viewport: Viewport = { themeColor: "#5F1637" };
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="es-CO" className={`${bricolage.variable} ${work.variable} ${dmMono.variable}`}>
-      <body>
-        <BrandPattern />
-        <CartProvider>
-          <div className="flex min-h-screen flex-col overflow-x-clip">
-            <SiteHeader />
-            <div className="flex-1">{children}</div>
-            <SiteFooter />
-          </div>
-          <CartDrawer />
-          <PackPicker />
-          <Toast />
-        </CartProvider>
-      </body>
+      <body>{children}</body>
     </html>
   );
 }

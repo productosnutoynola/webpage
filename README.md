@@ -66,6 +66,13 @@ update public.orders set status = 'shipped', shipped_at = now(), tracking_code =
 
 **Pruebas de la base:** `psql "$DATABASE_URL" -f supabase/tests/checkout_flow.sql` (corre en una transacción y la revierte; 25 escenarios).
 
+## Panel de administración (`/admin`)
+
+`www.productosnutoynola.com/admin` → login → `/admin/panel`: ventas del período (7/30/90 días/todo), pedidos, ticket promedio, bolsas y clientes; ingresos diarios; producto más vendido (bolsas por sabor, incluye las de los packs); ventas por ciudad y por producto/pack; inventario; y seguimiento de pedidos con dirección, cliente, artículos, pago y botones **Marcar enviado** (con guía opcional) → **Marcar entregado**.
+
+- Datos: RPC `admin_dashboard(p_days)` y `admin_set_order_status(reference, status, tracking)` (solo `service_role`; migración `admin_dashboard`). Transiciones válidas: `paid/preparing → shipped → delivered`.
+- Acceso: variables en Vercel `ADMIN_EMAIL`, `ADMIN_PASSWORD_HASH` y `ADMIN_SESSION_SECRET` (*Sensitive*). La clave nunca se guarda en texto plano: para cambiarla, `npm run admin:hash -- 'nueva-clave'`, reemplaza las dos últimas variables y haz *Redeploy*. Sesión de 12 h en cookie HttpOnly firmada.
+
 ## Puesta en producción
 
 1. **Supabase** — proyecto oficial `mmtqemsapypaptcoqilr` ("Productos Nuto & Nola - Sao Paulo", región `sa-east-1`). Migraciones aplicadas y stock inicial cargado (50 bolsas por sabor). El proyecto anterior `teqicnlvqhkpksfyorae` (Canadá) queda en desuso.
