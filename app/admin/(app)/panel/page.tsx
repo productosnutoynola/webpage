@@ -3,11 +3,12 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { getAdminSession } from "@/lib/admin-auth";
 import { getDashboard, listOrders, ORDER_TABS, RANGES, type AdminOrder, type OrderStatus, type OrderTab, type Range } from "@/lib/admin-data";
-import { FLAVORS, isFlavorKey } from "@/lib/catalog";
+import { findFlavor } from "@/lib/catalog";
+import { getCatalog } from "@/lib/store";
 import { BarList, DailyColumns } from "@/components/admin/charts";
 import { dayLabel, money } from "@/lib/admin-format";
 import { OrderActions } from "@/components/admin/order-actions";
-import { logout } from "../actions";
+import { logout } from "../../actions";
 
 export const dynamic = "force-dynamic";
 
@@ -32,7 +33,6 @@ const PAY: Record<string, string> = { APPROVED: "Aprobado", DECLINED: "Rechazado
 const dateTime = (iso: string) =>
   new Date(iso).toLocaleString("es-CO", { timeZone: "America/Bogota", day: "numeric", month: "short", year: "numeric", hour: "numeric", minute: "2-digit" });
 
-const flavorName = (s: string) => (isFlavorKey(s) ? FLAVORS[s].name : s);
 
 const card = "rounded-[20px] border-2 border-tinta bg-white p-6";
 const eyebrow = "font-mono text-[10.5px] uppercase tracking-[.16em] text-tinta/55";
@@ -51,9 +51,9 @@ export default async function Panel({ searchParams }: { searchParams: SP }) {
     return `/admin/panel?${u}`;
   };
 
-  let dash, orders: AdminOrder[];
+  let dash, orders: AdminOrder[], catalog;
   try {
-    [dash, orders] = await Promise.all([getDashboard(range), listOrders(tab, q)]);
+    [dash, orders, catalog] = await Promise.all([getDashboard(range), listOrders(tab, q), getCatalog()]);
   } catch (e) {
     return (
       <main className="mx-auto max-w-[760px] px-5 py-20 text-center">
@@ -63,6 +63,8 @@ export default async function Panel({ searchParams }: { searchParams: SP }) {
     );
   }
 
+  const cat = catalog;
+  const flavorName = (s: string) => findFlavor(cat, s)?.name ?? s;
   const k = dash.kpis;
   const st = dash.status;
   const count = (keys: readonly OrderStatus[]) => keys.reduce((a, s) => a + (st[s] ?? 0), 0);
@@ -100,7 +102,7 @@ export default async function Panel({ searchParams }: { searchParams: SP }) {
               </Link>
             ))}
           </nav>
-          <form action={logout}>
+          <form action={logout} className="lg:hidden">
             <button className="rounded-xl border-2 border-tinta/25 px-4 py-2 font-mono text-[11px] uppercase tracking-[.14em] text-tinta/70 hover:border-tinta hover:text-tinta">
               Cerrar sesión
             </button>

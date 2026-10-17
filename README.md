@@ -62,7 +62,7 @@ update public.orders set status = 'shipped', shipped_at = now(), tracking_code =
 
 **Correo de confirmación:** al pasar un pedido a `paid`, el trigger `orders_confirmation_email` (pg_net) llama a la Edge Function `order-confirmation-email` (`supabase/functions/`), que relee el pedido y envía el resumen con su número de pedido (`orders.reference`, el *order ID* que ve el cliente) vía Resend. El resultado queda en `orders.confirmation_email_sent_at` / `confirmation_email_error`. Secretos en Supabase → Edge Functions → Secrets: `RESEND_API_KEY` (obligatorio), `EMAIL_FROM` (remitente; hoy `compras@productosnutoynola.com`, se muestra como "Nuto & Nola") y `ORDER_NOTIFY_EMAIL` (opcional, copia para la tienda). Reenviar: `select public.resend_order_confirmation('4827150936');`
 
-**Precios:** la base es la fuente de verdad del cobro. `lib/catalog.ts` alimenta lo que se muestra en el sitio; si cambias un precio, cámbialo en ambos (o regenera la semilla con `npm run db:seed-sql` para entornos nuevos).
+**Catálogo:** productos, packs y envíos viven en Supabase (`products`, `bundles`, `bundle_items`, `shipping_zones`) y se editan en `/admin/tienda`. La tienda los lee con `lib/store.ts` (caché de 5 min que se invalida al guardar en el panel); `lib/catalog.ts` solo tiene tipos y valores de respaldo. Las fotos subidas van al bucket público `productos` de Supabase Storage.
 
 **Pruebas de la base:** `psql "$DATABASE_URL" -f supabase/tests/checkout_flow.sql` (corre en una transacción y la revierte; 25 escenarios).
 
@@ -72,6 +72,15 @@ update public.orders set status = 'shipped', shipped_at = now(), tracking_code =
 
 - Datos: RPC `admin_dashboard(p_days)` y `admin_set_order_status(reference, status, tracking)` (solo `service_role`; migración `admin_dashboard`). Transiciones válidas: `paid/preparing → shipped → delivered`.
 - Acceso: variables en Vercel `ADMIN_EMAIL`, `ADMIN_PASSWORD_HASH` y `ADMIN_SESSION_SECRET` (*Sensitive*). La clave nunca se guarda en texto plano: para cambiarla, `npm run admin:hash -- 'nueva-clave'`, reemplaza las dos últimas variables y haz *Redeploy*. Sesión de 12 h en cookie HttpOnly firmada.
+
+### Configuración de la tienda (`/admin/tienda`)
+
+Barra lateral → **Configuración de la tienda**:
+- **Productos / Agregar producto:** asistente de 5 pasos (básico, fotos, descripción, etiqueta y estilo, stock y publicar) con vista previa en vivo de la tarjeta y la página. Los productos se ocultan, no se borran (los pedidos históricos los referencian).
+- **Combos y packs:** bolsas, descuento, cargo adicional, sabores fijos o a elección, apariencia y botón de portada.
+- **Envíos por ciudad:** tarifa de Bogotá, del resto del país y tarifas propias por ciudad (`shipping_zones.city`; `create_order` usa `_shipping_zone_for`).
+- **Inventario:** sumar bolsas (`restock`), corregir conteo (`set_stock`), alerta de stock bajo y movimientos recientes.
+- **Clientes:** búsqueda, compras y total por cliente (`admin_customers`) y descarga en CSV.
 
 ## Puesta en producción
 

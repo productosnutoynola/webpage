@@ -1,25 +1,25 @@
 "use client";
 
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
-import { FLAVORS, MAX_QTY, PACKS, type FlavorKey, type PackKey, type ShippingRules } from "@/lib/catalog";
+import { MAX_QTY, findFlavor, findPack, type Catalog } from "@/lib/catalog";
 import { lineId, sanitizeLines, type CartLine } from "@/lib/pricing";
 
 const STORAGE_KEY = "nyn-cart-v1";
 
 type CartCtx = {
   lines: CartLine[];
-  /** Tarifas de envío vigentes (Supabase). */
-  shipping: ShippingRules;
+  /** Catálogo vigente (Supabase): productos, packs y envíos. */
+  catalog: Catalog;
   hydrated: boolean;
   cartOpen: boolean;
   setCartOpen: (v: boolean) => void;
-  addFlavor: (f: FlavorKey, qty?: number) => void;
-  addPack: (p: PackKey, flavors?: FlavorKey[]) => void;
+  addFlavor: (f: string, qty?: number) => void;
+  addPack: (p: string, flavors?: string[]) => void;
   setQty: (id: string, qty: number) => void;
   clear: () => void;
   /** Pack cuyo selector de sabores está abierto. */
-  picking: PackKey | null;
-  openPicker: (p: PackKey) => void;
+  picking: string | null;
+  openPicker: (p: string) => void;
   closePicker: () => void;
   toast: string | null;
   flash: (msg: string) => void;
@@ -33,18 +33,18 @@ export function useCart(): CartCtx {
   return c;
 }
 
-export function CartProvider({ children, shipping }: { children: React.ReactNode; shipping: ShippingRules }) {
+export function CartProvider({ children, catalog }: { children: React.ReactNode; catalog: Catalog }) {
   const [lines, setLines] = useState<CartLine[]>([]);
   const [hydrated, setHydrated] = useState(false);
   const [cartOpen, setCartOpen] = useState(false);
-  const [picking, setPicking] = useState<PackKey | null>(null);
+  const [picking, setPicking] = useState<string | null>(null);
   const [toast, setToast] = useState<string | null>(null);
   const toastTimer = useRef<ReturnType<typeof setTimeout>>(undefined);
 
   useEffect(() => {
     try {
       const raw = localStorage.getItem(STORAGE_KEY);
-      if (raw) setLines(sanitizeLines(JSON.parse(raw)));
+      if (raw) setLines(sanitizeLines(catalog, JSON.parse(raw)));
     } catch {}
     setHydrated(true);
   }, []);
@@ -75,31 +75,34 @@ export function CartProvider({ children, shipping }: { children: React.ReactNode
   }, []);
 
   const addFlavor = useCallback(
-    (flavor: FlavorKey, qty = 1) => {
+    (flavor: string, qty = 1) => {
+      const f = findFlavor(catalog, flavor);
+      if (!f) return;
       addLine({ kind: "flavor", flavor, qty });
-      flash(qty > 1 ? `${FLAVORS[flavor].name} × ${qty} agregada` : `${FLAVORS[flavor].name} agregada`);
+      flash(qty > 1 ? `${f.name} × ${qty} agregada` : `${f.name} agregada`);
     },
-    [addLine, flash],
+    [addLine, flash, catalog],
   );
 
   const addPack = useCallback(
-    (pack: PackKey, flavors?: FlavorKey[]) => {
-      const p = PACKS[pack];
+    (pack: string, flavors?: string[]) => {
+      const p = findPack(catalog, pack);
+      if (!p) return;
       const chosen = p.fixed ?? flavors;
       if (!chosen || chosen.length !== p.bags) return;
       addLine({ kind: "pack", pack, flavors: [...chosen], qty: 1 });
       setPicking(null);
-      flash(p.rate > 0 && pack !== "regalo" ? `${p.name} agregado · −${Math.round(p.rate * 100)} %` : `${p.name} agregada`);
+      flash(p.rate > 0 && p.extra === 0 ? `${p.name} agregado · −${Math.round(p.rate * 100)} %` : `${p.name} agregado`);
     },
-    [addLine, flash],
+    [addLine, flash, catalog],
   );
 
   const openPicker = useCallback(
-    (pack: PackKey) => {
-      if (PACKS[pack].fixed) addPack(pack);
+    (pack: string) => {
+      if (findPack(catalog, pack)?.fixed) addPack(pack);
       else setPicking(pack);
     },
-    [addPack],
+    [addPack, catalog],
   );
 
   const setQty = useCallback((id: string, qty: number) => {
@@ -113,7 +116,7 @@ export function CartProvider({ children, shipping }: { children: React.ReactNode
   const value = useMemo<CartCtx>(
     () => ({
       lines,
-      shipping,
+      catalog,
       hydrated,
       cartOpen,
       setCartOpen,
@@ -127,7 +130,7 @@ export function CartProvider({ children, shipping }: { children: React.ReactNode
       toast,
       flash,
     }),
-    [lines, shipping, hydrated, cartOpen, addFlavor, addPack, setQty, picking, openPicker, toast, flash],
+    [lines, catalog, hydrated, cartOpen, addFlavor, addPack, setQty, picking, openPicker, toast, flash],
   );
 
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;

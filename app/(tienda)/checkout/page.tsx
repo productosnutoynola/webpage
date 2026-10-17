@@ -11,7 +11,7 @@ import { useCart } from "@/components/cart-context";
 const FORM_KEY = "nyn-checkout-form";
 
 export default function CheckoutPage() {
-  const { lines, hydrated, shipping } = useCart();
+  const { lines, hydrated, catalog } = useCart();
   const [step, setStep] = useState<1 | 2>(1);
   const [form, setForm] = useState<CustomerForm>(EMPTY_FORM);
   const [err, setErr] = useState<string | null>(null);
@@ -37,7 +37,7 @@ export default function CheckoutPage() {
     } catch {}
   }, [form]);
 
-  const t = computeTotals(lines, form.ciudad, shipping);
+  const t = computeTotals(catalog, lines, form.ciudad);
   const set = (k: keyof CustomerForm) => (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) =>
     setForm((f) => ({ ...f, [k]: e.target.value }));
   const setDepartamento = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -205,18 +205,19 @@ export default function CheckoutPage() {
 }
 
 function OrderAside({ lines, t, city }: { lines: CartLine[]; t: Totals; city: string }) {
+  const { catalog } = useCart();
   return (
     <aside className="sticky top-[132px] max-w-[400px] flex-[1_1_300px] rounded-[22px] border-[3px] border-tinta bg-ciruela p-6 shadow-[8px_8px_0_var(--color-mostaza)]">
       <div className="font-mono text-[10.5px] uppercase tracking-[.16em] text-rosa">Tu pedido</div>
       <div className="mb-[18px] mt-4 flex flex-col gap-3">
         {lines.map((l) => (
           <div key={lineId(l)} className="flex items-center gap-3">
-            <div className="size-[46px] flex-none overflow-hidden rounded-[10px] border-2 border-tinta bg-kraft bg-cover bg-center" style={{ backgroundImage: `url(${lineImage(l)})` }} />
+            <div className="size-[46px] flex-none overflow-hidden rounded-[10px] border-2 border-tinta bg-kraft bg-cover bg-center" style={{ backgroundImage: `url(${lineImage(catalog, l)})` }} />
             <div className="min-w-0 flex-1">
-              <div className="font-display text-sm font-bold text-crema">{lineName(l)}</div>
-              <div className="font-mono text-[11.5px] text-rosa/80">{l.qty} × {money(lineUnitPrice(l))}</div>
+              <div className="font-display text-sm font-bold text-crema">{lineName(catalog, l)}</div>
+              <div className="font-mono text-[11.5px] text-rosa/80">{l.qty} × {money(lineUnitPrice(catalog, l))}</div>
             </div>
-            <div className="flex-none font-mono text-[13.5px] font-semibold text-mostaza">{money(lineUnitPrice(l) * l.qty)}</div>
+            <div className="flex-none font-mono text-[13.5px] font-semibold text-mostaza">{money(lineUnitPrice(catalog, l) * l.qty)}</div>
           </div>
         ))}
       </div>

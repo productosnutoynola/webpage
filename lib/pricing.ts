@@ -1,19 +1,8 @@
-import {
-  FLAVORS,
-  MAX_QTY,
-  PACKS,
-  PRICE,
-  SHIPPING,
-  isFlavorKey,
-  isPackKey,
-  type FlavorKey,
-  type PackKey,
-  type ShippingRules,
-} from "./catalog.ts";
+import { MAX_QTY, findFlavor, findPack, packChoices, shippingFor, type Catalog, type Pack } from "./catalog.ts";
 
 export type CartLine =
-  | { kind: "flavor"; flavor: FlavorKey; qty: number }
-  | { kind: "pack"; pack: PackKey; flavors: FlavorKey[]; qty: number };
+  | { kind: "flavor"; flavor: string; qty: number }
+  | { kind: "pack"; pack: string; flavors: string[]; qty: number };
 
 /** Identificador estable: dos packs con los mismos sabores se agrupan en una línea. */
 export function lineId(line: CartLine): string {
@@ -21,45 +10,69 @@ export function lineId(line: CartLine): string {
   return `${line.pack}:${[...line.flavors].sort().join("+")}`;
 }
 
-export function packUnitFull(pack: PackKey): number {
-  const p = PACKS[pack];
-  return p.bags * PRICE + p.extra;
+const priceOf = (cat: Catalog, key: string) => findFlavor(cat, key)?.price ?? 0;
+
+/** Sabores con los que se calcula el precio de un pack (fijos, elegidos o, si no hay, los más económicos). */
+function packFlavors(cat: Catalog, p: Pack, flavors?: string[]): string[] {
+  if (p.fixed) return p.fixed;
+  if (flavors?.length === p.bags) return flavors;
+  const cheapest = [...packChoices(cat)].sort((a, b) => a.price - b.price)[0];
+  return cheapest ? Array(p.bags).fill(cheapest.key) : [];
 }
 
-export function packUnitPrice(pack: PackKey): number {
-  const p = PACKS[pack];
-  return Math.round(p.bags * PRICE * (1 - p.rate)) + p.extra;
+export function packUnitFull(cat: Catalog, p: Pack, flavors?: string[]): number {
+  return packFlavors(cat, p, flavors).reduce((a, k) => a + priceOf(cat, k), 0) + p.extra;
 }
 
-export function lineName(line: CartLine): string {
-  return line.kind === "flavor" ? FLAVORS[line.flavor].name : PACKS[line.pack].name;
+export function packUnitPrice(cat: Catalog, p: Pack, flavors?: string[]): number {
+  const sum = packFlavors(cat, p, flavors).reduce((a, k) => a + priceOf(cat, k), 0);
+  return Math.round(sum * (1 - p.rate)) + p.extra;
 }
 
-export function lineMeta(line: CartLine): string {
-  if (line.kind === "flavor") return FLAVORS[line.flavor].meta;
-  const p = PACKS[line.pack];
+/** true si el precio del pack depende de los sabores elegidos. */
+export function packPriceVaries(cat: Catalog, p: Pack): boolean {
+  if (p.fixed) return false;
+  return new Set(packChoices(cat).map((f) => f.price)).size > 1;
+}
+
+export function lineName(cat: Catalog, line: CartLine): string {
+  return line.kind === "flavor"
+    ? findFlavor(cat, line.flavor)?.name ?? line.flavor
+    : findPack(cat, line.pack)?.name ?? line.pack;
+}
+
+export function lineMeta(cat: Catalog, line: CartLine): string {
+  if (line.kind === "flavor") return findFlavor(cat, line.flavor)?.meta ?? "";
+  const p = findPack(cat, line.pack);
   const names = countFlavors(line.flavors)
-    .map(([k, n]) => (n > 1 ? `${n}× ${FLAVORS[k].name}` : FLAVORS[k].name))
+    .map(([k, n]) => {
+      const name = findFlavor(cat, k)?.name ?? k;
+      return n > 1 ? `${n}× ${name}` : name;
+    })
     .join(" · ");
-  return p.rate > 0 ? `${names} · −${Math.round(p.rate * 100)} %` : names;
+  return p && p.rate > 0 ? `${names} · −${Math.round(p.rate * 100)} %` : names;
 }
 
-export function lineImage(line: CartLine): string {
-  return FLAVORS[line.kind === "flavor" ? line.flavor : line.flavors[0]].img;
+export function lineImage(cat: Catalog, line: CartLine): string {
+  return findFlavor(cat, line.kind === "flavor" ? line.flavor : line.flavors[0])?.img ?? "/img/logo.png";
 }
 
-function countFlavors(flavors: FlavorKey[]): [FlavorKey, number][] {
-  const m = new Map<FlavorKey, number>();
+function countFlavors(flavors: string[]): [string, number][] {
+  const m = new Map<string, number>();
   for (const f of flavors) m.set(f, (m.get(f) ?? 0) + 1);
   return [...m.entries()];
 }
 
-export function lineUnitPrice(line: CartLine): number {
-  return line.kind === "flavor" ? PRICE : packUnitPrice(line.pack);
+export function lineUnitPrice(cat: Catalog, line: CartLine): number {
+  if (line.kind === "flavor") return priceOf(cat, line.flavor);
+  const p = findPack(cat, line.pack);
+  return p ? packUnitPrice(cat, p, line.flavors) : 0;
 }
 
-export function lineUnitFull(line: CartLine): number {
-  return line.kind === "flavor" ? PRICE : packUnitFull(line.pack);
+export function lineUnitFull(cat: Catalog, line: CartLine): number {
+  if (line.kind === "flavor") return priceOf(cat, line.flavor);
+  const p = findPack(cat, line.pack);
+  return p ? packUnitFull(cat, p, line.flavors) : 0;
 }
 
 export function isBogota(city: string): boolean {
@@ -77,16 +90,16 @@ export type Totals = {
   total: number;
 };
 
-export function computeTotals(lines: CartLine[], city: string = "Bogotá", rules: ShippingRules = SHIPPING): Totals {
+export function computeTotals(cat: Catalog, lines: CartLine[], city: string = "Bogotá"): Totals {
   let bags = 0;
   let gross = 0;
   let subtotal = 0;
   for (const l of lines) {
-    bags += (l.kind === "flavor" ? 1 : PACKS[l.pack].bags) * l.qty;
-    gross += lineUnitFull(l) * l.qty;
-    subtotal += lineUnitPrice(l) * l.qty;
+    bags += (l.kind === "flavor" ? 1 : findPack(cat, l.pack)?.bags ?? 0) * l.qty;
+    gross += lineUnitFull(cat, l) * l.qty;
+    subtotal += lineUnitPrice(cat, l) * l.qty;
   }
-  const rule = isBogota(city) ? rules.bogota : rules.nacional;
+  const rule = shippingFor(cat.shipping, city);
   const free = rule.fee === 0 || subtotal >= rule.freeFrom;
   const shipping = lines.length === 0 || free ? 0 : rule.fee;
   return {
@@ -103,10 +116,12 @@ export function computeTotals(lines: CartLine[], city: string = "Bogotá", rules
 
 /**
  * Valida un carrito que viene del cliente (no confiable). Descarta líneas
- * inválidas, fuerza los sabores de los packs fijos y agrupa duplicados.
+ * inválidas o de productos que ya no están a la venta, fuerza los sabores de
+ * los packs fijos y agrupa duplicados.
  */
-export function sanitizeLines(input: unknown): CartLine[] {
+export function sanitizeLines(cat: Catalog, input: unknown): CartLine[] {
   if (!Array.isArray(input)) return [];
+  const choices = new Set(packChoices(cat).map((f) => f.key));
   const out = new Map<string, CartLine>();
   for (const raw of input) {
     if (!raw || typeof raw !== "object") continue;
@@ -114,13 +129,14 @@ export function sanitizeLines(input: unknown): CartLine[] {
     const qty = Number(r.qty);
     if (!Number.isInteger(qty) || qty < 1) continue;
     let line: CartLine | null = null;
-    if (r.kind === "flavor" && isFlavorKey(r.flavor)) {
+    if (r.kind === "flavor" && typeof r.flavor === "string" && findFlavor(cat, r.flavor)) {
       line = { kind: "flavor", flavor: r.flavor, qty };
-    } else if (r.kind === "pack" && isPackKey(r.pack)) {
-      const p = PACKS[r.pack];
-      const flavors = p.fixed ?? (Array.isArray(r.flavors) ? r.flavors.filter(isFlavorKey) : []);
+    } else if (r.kind === "pack" && typeof r.pack === "string") {
+      const p = findPack(cat, r.pack);
+      if (!p) continue;
+      const flavors = p.fixed ?? (Array.isArray(r.flavors) ? r.flavors.filter((f): f is string => typeof f === "string" && choices.has(f)) : []);
       if (flavors.length !== p.bags) continue;
-      line = { kind: "pack", pack: r.pack, flavors: [...flavors], qty };
+      line = { kind: "pack", pack: p.key, flavors: [...flavors], qty };
     }
     if (!line) continue;
     const id = lineId(line);

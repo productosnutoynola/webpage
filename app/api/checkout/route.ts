@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { sanitizeLines } from "@/lib/pricing";
+import { getCatalog } from "@/lib/store";
 import { parseCustomer, resolvePlace, validateCustomer } from "@/lib/customer";
 import { buildCheckoutUrl } from "@/lib/wompi";
 import { createOrder, OrderError } from "@/lib/orders";
@@ -20,7 +21,7 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Solicitud inválida." }, { status: 400 });
   }
 
-  const lines = sanitizeLines(body.lines);
+  const lines = sanitizeLines(await getCatalog(), body.lines);
   if (lines.length === 0) return NextResponse.json({ error: "Tu carrito está vacío." }, { status: 400 });
 
   const f = parseCustomer(body.customer);

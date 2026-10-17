@@ -1,6 +1,5 @@
 import "server-only";
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
-import { FLAVORS, isFlavorKey } from "./catalog";
 import type { CartLine, Totals } from "./pricing";
 import type { TransactionStatus } from "./wompi";
 
@@ -57,7 +56,8 @@ export async function createOrder(input: NewOrderInput): Promise<CreatedOrder> {
 
   if (error) {
     if (error.message === "OUT_OF_STOCK") {
-      const name = isFlavorKey(error.details) ? FLAVORS[error.details].name : "uno de los sabores";
+      const { data: p } = await d.from("products").select("name").eq("slug", error.details ?? "").maybeSingle();
+      const name = (p as { name: string } | null)?.name ?? "uno de los sabores";
       throw new OrderError(`Se nos agotó ${name} para la cantidad que pediste. Ajusta tu carrito o escríbenos por WhatsApp.`, 409);
     }
     if (["EMPTY_CART", "INVALID_LINE", "UNKNOWN_PRODUCT", "UNKNOWN_BUNDLE", "INVALID_FLAVORS"].includes(error.message)) {

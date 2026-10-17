@@ -8,7 +8,6 @@
     "start": "next start",
     "typecheck": "tsc --noEmit",
     "test": "node --test --experimental-strip-types lib/*.test.ts",
-    "db:seed-sql": "node --experimental-strip-types scripts/gen-seed.ts",
     "admin:hash": "node --experimental-strip-types scripts/admin-hash.ts"
   },
   "dependencies": {

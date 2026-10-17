@@ -2,12 +2,14 @@ import Image from "next/image";
 import { redirect } from "next/navigation";
 import { adminConfigured, getAdminSession } from "@/lib/admin-auth";
 import { LoginForm } from "@/components/admin/login-form";
+import { LoginFrame } from "@/components/admin/login-frame";
 
 export const dynamic = "force-dynamic";
 
 export default async function AdminLogin() {
   if (await getAdminSession()) redirect("/admin/panel");
   return (
+    <LoginFrame>
     <main className="flex flex-col items-center px-5 py-16 sm:py-20">
       <Image src="/img/logo.png" alt="" width={64} height={64} priority className="size-16 rounded-2xl border-2 border-tinta" />
       <div className="mt-4 font-display text-[22px] font-extrabold tracking-[-.02em]">Nuto &amp; Nola</div>
@@ -27,5 +29,6 @@ export default async function AdminLogin() {
         )}
       </div>
     </main>
+    </LoginFrame>
   );
 }

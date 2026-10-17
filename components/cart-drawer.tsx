@@ -6,7 +6,7 @@ import { computeTotals, lineId, lineImage, lineMeta, lineName, lineUnitPrice, mo
 import { useCart } from "./cart-context";
 
 export function CartDrawer() {
-  const { lines, cartOpen, setCartOpen, setQty, shipping } = useCart();
+  const { lines, cartOpen, setCartOpen, setQty, catalog } = useCart();
 
   useEffect(() => {
     if (!cartOpen) return;
@@ -16,7 +16,7 @@ export function CartDrawer() {
   }, [cartOpen, setCartOpen]);
 
   if (!cartOpen) return null;
-  const t = computeTotals(lines, "Bogotá", shipping);
+  const t = computeTotals(catalog, lines, "Bogotá");
   const count = lines.reduce((a, l) => a + l.qty, 0);
   const falta = t.freeFrom - t.subtotal;
 
@@ -72,13 +72,13 @@ export function CartDrawer() {
                   <div key={id} className="flex gap-[13px] rounded-2xl border-[2.5px] border-tinta bg-white p-3">
                     <div
                       className="size-16 flex-none overflow-hidden rounded-[10px] border-2 border-tinta bg-kraft bg-cover bg-center"
-                      style={{ backgroundImage: `url(${lineImage(l)})` }}
+                      style={{ backgroundImage: `url(${lineImage(catalog, l)})` }}
                     />
                     <div className="flex min-w-0 flex-1 flex-col gap-1.5">
                       <div className="flex items-start justify-between gap-2">
                         <div className="min-w-0">
-                          <div className="font-display text-[15px] font-bold leading-[1.2]">{lineName(l)}</div>
-                          <div className="mt-0.5 font-mono text-[11.5px] text-tinta/55">{lineMeta(l)}</div>
+                          <div className="font-display text-[15px] font-bold leading-[1.2]">{lineName(catalog, l)}</div>
+                          <div className="mt-0.5 font-mono text-[11.5px] text-tinta/55">{lineMeta(catalog, l)}</div>
                         </div>
                         <button onClick={() => setQty(id, 0)} className="flex-none font-mono text-xs text-vino hover:text-ciruela">
                           Quitar
@@ -90,7 +90,7 @@ export function CartDrawer() {
                           <span className="min-w-6 text-center font-mono text-[13px] font-medium">{l.qty}</span>
                           <button onClick={() => setQty(id, l.qty + 1)} aria-label="Más" className="px-[11px] py-[5px] text-sm font-semibold hover:bg-rosa">+</button>
                         </div>
-                        <span className="font-display text-[15px] font-bold">{money(lineUnitPrice(l) * l.qty)}</span>
+                        <span className="font-display text-[15px] font-bold">{money(lineUnitPrice(catalog, l) * l.qty)}</span>
                       </div>
                     </div>
                   </div>

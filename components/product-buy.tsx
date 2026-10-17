@@ -1,11 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import { MAX_QTY, PRICE, type FlavorKey } from "@/lib/catalog";
+import { MAX_QTY } from "@/lib/catalog";
 import { money } from "@/lib/pricing";
 import { useCart } from "./cart-context";
 
-export function ProductBuy({ flavor }: { flavor: FlavorKey }) {
+export function ProductBuy({ flavor, price }: { flavor: string; price: number }) {
   const { addFlavor } = useCart();
   const [qty, setQty] = useState(1);
   return (
@@ -16,7 +16,7 @@ export function ProductBuy({ flavor }: { flavor: FlavorKey }) {
         <button onClick={() => setQty((q) => Math.min(MAX_QTY, q + 1))} aria-label="Más" className="px-4 py-3 text-[17px] font-semibold text-tinta hover:bg-rosa">+</button>
       </div>
       <button onClick={() => addFlavor(flavor, qty)} className="btn-vino press flex-[1_1_200px] px-6 py-[15px] text-[15.5px]">
-        Agregar al carrito · {money(PRICE * qty)}
+        Agregar al carrito · {money(price * qty)}
       </button>
     </div>
   );

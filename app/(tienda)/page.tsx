@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { FLAVOR_KEYS, FLAVORS } from "@/lib/catalog";
+import { getCatalog } from "@/lib/store";
 import { CONTACT } from "@/lib/contact";
 import { FlavorCard } from "@/components/flavor-card";
 import { PackGrid } from "@/components/pack-card";
@@ -23,7 +23,8 @@ const REVIEWS = [
 
 const h2 = "m-0 mt-3 font-display text-[clamp(30px,4vw,46px)] font-extrabold leading-none tracking-[-.035em]";
 
-export default function Home() {
+export default async function Home() {
+  const { flavors } = await getCatalog();
   return (
     <main>
       {/* HERO */}
@@ -84,8 +85,8 @@ export default function Home() {
           </h2>
         </div>
         <div className="grid grid-cols-[repeat(auto-fit,minmax(262px,1fr))] gap-[22px]">
-          {FLAVOR_KEYS.map((k) => (
-            <FlavorCard key={k} f={FLAVORS[k]} />
+          {flavors.map((f) => (
+            <FlavorCard key={f.key} f={f} />
           ))}
         </div>
 

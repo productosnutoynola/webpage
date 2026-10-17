@@ -1,9 +1,12 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { computeTotals, packUnitPrice, sanitizeLines, type CartLine } from "./pricing.ts";
+import { DEFAULT_CATALOG as cat, findPack, type Catalog } from "./catalog.ts";
+import { computeTotals, packPriceVaries, packUnitPrice, sanitizeLines, type CartLine } from "./pricing.ts";
+
+const pack = (k: string) => findPack(cat, k)!;
 
 test("bolsas sueltas no tienen descuento; envío Bogotá bajo el umbral", () => {
-  const t = computeTotals([{ kind: "flavor", flavor: "cinnamon-roll", qty: 2 }], "Bogotá");
+  const t = computeTotals(cat, [{ kind: "flavor", flavor: "cinnamon-roll", qty: 2 }], "Bogotá");
   assert.equal(t.subtotal, 74000);
   assert.equal(t.discount, 0);
   assert.equal(t.shipping, 12000);
@@ -11,31 +14,28 @@ test("bolsas sueltas no tienen descuento; envío Bogotá bajo el umbral", () => 
 });
 
 test("precios de packs según el diseño", () => {
-  assert.equal(packUnitPrice("duo"), 68080);
-  assert.equal(packUnitPrice("trio"), 94350);
-  assert.equal(packUnitPrice("familiar"), 173160);
-  assert.equal(packUnitPrice("regalo"), 82080); // incluye $14.000 de caja
+  assert.equal(packUnitPrice(cat, pack("duo")), 68080);
+  assert.equal(packUnitPrice(cat, pack("trio")), 94350);
+  assert.equal(packUnitPrice(cat, pack("familiar")), 173160);
+  assert.equal(packUnitPrice(cat, pack("regalo")), 82080); // incluye $14.000 de caja
 });
 
 test("la caja regalo se cobra y el descuento no aplica sobre la caja", () => {
-  const t = computeTotals(
-    [{ kind: "pack", pack: "regalo", flavors: ["melted-cocoa", "berries"], qty: 1 }],
-    "Bogotá",
-  );
+  const t = computeTotals(cat, [{ kind: "pack", pack: "regalo", flavors: ["melted-cocoa", "berries"], qty: 1 }], "Bogotá");
   assert.equal(t.gross, 88000);
   assert.equal(t.discount, 5920);
   assert.equal(t.subtotal, 82080);
 });
 
-test("envío gratis desde $100.000 en Bogotá y $150.000 nacional", () => {
+test("envío gratis desde $100.000 en Bogotá y $150.000 en el resto del país", () => {
   const fam: CartLine[] = [{ kind: "pack", pack: "trio", flavors: [], qty: 1 }, { kind: "flavor", flavor: "berries", qty: 1 }];
-  const lines = sanitizeLines(fam);
-  assert.equal(computeTotals(lines, "Bogotá").shipping, 0);
-  assert.equal(computeTotals(lines, "Medellín").shipping, 18000);
+  const lines = sanitizeLines(cat, fam);
+  assert.equal(computeTotals(cat, lines, "Bogotá").shipping, 0);
+  assert.equal(computeTotals(cat, lines, "Medellín").shipping, 18000);
 });
 
 test("sanitizeLines fuerza sabores fijos, rechaza packs incompletos y agrupa", () => {
-  const lines = sanitizeLines([
+  const lines = sanitizeLines(cat, [
     { kind: "pack", pack: "trio", flavors: ["melted-cocoa"], qty: 1 },
     { kind: "pack", pack: "duo", flavors: ["melted-cocoa"], qty: 1 },
     { kind: "pack", pack: "duo", flavors: ["berries", "melted-cocoa"], qty: 1 },
@@ -50,12 +50,29 @@ test("sanitizeLines fuerza sabores fijos, rechaza packs incompletos y agrupa", (
   assert.equal(lines[2].qty, 20);
 });
 
-test("tarifas desde Supabase: envío en 0 es gratis", () => {
+test("envío en 0 es gratis y las ciudades con tarifa propia la usan", () => {
   const lines: CartLine[] = [{ kind: "flavor", flavor: "cinnamon-roll", qty: 1 }];
-  const rules = { bogota: { fee: 0, freeFrom: 100000 }, nacional: { fee: 0, freeFrom: 150000 } };
-  const t = computeTotals(lines, "Bogotá", rules);
+  const c: Catalog = {
+    ...cat,
+    shipping: { default: { fee: 0, freeFrom: 150000, etaDays: 4 }, cities: { Medellín: { fee: 9000, freeFrom: 150000, etaDays: 3 } } },
+  };
+  const t = computeTotals(c, lines, "Bogotá");
   assert.equal(t.shipping, 0);
   assert.equal(t.free, true);
   assert.equal(t.total, 37000);
-  assert.equal(computeTotals(lines, "Medellín", { ...rules, nacional: { fee: 9000, freeFrom: 150000 } }).shipping, 9000);
+  assert.equal(computeTotals(c, lines, "Medellín").shipping, 9000);
+});
+
+test("productos con precios distintos: el pack suma los sabores elegidos", () => {
+  const c: Catalog = {
+    ...cat,
+    flavors: [...cat.flavors, { ...cat.flavors[0], key: "mani", name: "Maní", price: 45000 }],
+  };
+  assert.equal(packPriceVaries(c, pack("duo")), true);
+  assert.equal(packUnitPrice(c, pack("duo")), 68080); // "desde": los dos más económicos
+  assert.equal(packUnitPrice(c, pack("duo"), ["mani", "berries"]), Math.round(82000 * 0.92));
+  const lines = sanitizeLines({ ...c, flavors: c.flavors.map((f) => (f.key === "mani" ? { ...f, packEligible: false } : f)) }, [
+    { kind: "pack", pack: "duo", flavors: ["mani", "berries"], qty: 1 },
+  ]);
+  assert.equal(lines.length, 0); // no habilitado para packs
 });

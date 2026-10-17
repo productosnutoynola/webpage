@@ -49,7 +49,7 @@ export default function PedidoPage() {
 
 function Pedido() {
   const id = useSearchParams().get("id");
-  const { clear } = useCart();
+  const { clear, catalog } = useCart();
   const [tx, setTx] = useState<Tx | null>(null);
   const [failed, setFailed] = useState(false);
   const [snap, setSnap] = useState<OrderSnapshot | null>(null);
@@ -137,7 +137,7 @@ function Pedido() {
           email: local.correo,
           place: `${local.direccion}, ${local.city}`,
           city: local.city,
-          items: local.lines.map((l) => ({ label: `${l.qty} × ${lineName(l)}`, amount: lineUnitPrice(l) * l.qty })),
+          items: local.lines.map((l) => ({ label: `${l.qty} × ${lineName(catalog, l)}`, amount: lineUnitPrice(catalog, l) * l.qty })),
           totals: local.totals,
           etaFrom: local.createdAt,
           etaDays: local.etaDays ?? (isBogota(local.city) ? 2 : 4),
