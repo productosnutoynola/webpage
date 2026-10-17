@@ -8,6 +8,7 @@ import {
   isPackKey,
   type FlavorKey,
   type PackKey,
+  type ShippingRules,
 } from "./catalog.ts";
 
 export type CartLine =
@@ -76,7 +77,7 @@ export type Totals = {
   total: number;
 };
 
-export function computeTotals(lines: CartLine[], city: string = "Bogotá"): Totals {
+export function computeTotals(lines: CartLine[], city: string = "Bogotá", rules: ShippingRules = SHIPPING): Totals {
   let bags = 0;
   let gross = 0;
   let subtotal = 0;
@@ -85,8 +86,8 @@ export function computeTotals(lines: CartLine[], city: string = "Bogotá"): Tota
     gross += lineUnitFull(l) * l.qty;
     subtotal += lineUnitPrice(l) * l.qty;
   }
-  const rule = isBogota(city) ? SHIPPING.bogota : SHIPPING.nacional;
-  const free = subtotal >= rule.freeFrom;
+  const rule = isBogota(city) ? rules.bogota : rules.nacional;
+  const free = rule.fee === 0 || subtotal >= rule.freeFrom;
   const shipping = lines.length === 0 || free ? 0 : rule.fee;
   return {
     bags,

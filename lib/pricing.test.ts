@@ -49,3 +49,13 @@ test("sanitizeLines fuerza sabores fijos, rechaza packs incompletos y agrupa", (
   assert.equal(lines[1].qty, 3);
   assert.equal(lines[2].qty, 20);
 });
+
+test("tarifas desde Supabase: envío en 0 es gratis", () => {
+  const lines: CartLine[] = [{ kind: "flavor", flavor: "cinnamon-roll", qty: 1 }];
+  const rules = { bogota: { fee: 0, freeFrom: 100000 }, nacional: { fee: 0, freeFrom: 150000 } };
+  const t = computeTotals(lines, "Bogotá", rules);
+  assert.equal(t.shipping, 0);
+  assert.equal(t.free, true);
+  assert.equal(t.total, 37000);
+  assert.equal(computeTotals(lines, "Medellín", { ...rules, nacional: { fee: 9000, freeFrom: 150000 } }).shipping, 9000);
+});

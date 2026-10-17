@@ -3,7 +3,6 @@
 import Link from "next/link";
 import Image from "next/image";
 import { money } from "@/lib/pricing";
-import { SHIPPING } from "@/lib/catalog";
 import { useCart } from "./cart-context";
 import { Marquee } from "./marquee";
 
@@ -15,9 +14,9 @@ const NAV = [
 ];
 
 export function SiteHeader() {
-  const { lines, setCartOpen } = useCart();
+  const { lines, setCartOpen, shipping } = useCart();
   const count = lines.reduce((a, l) => a + l.qty, 0);
-  const msg = `Envíos gratis desde ${money(SHIPPING.bogota.freeFrom)}`;
+  const msg = shipping.bogota.fee === 0 ? "Envío gratis en Bogotá" : `Envíos gratis desde ${money(shipping.bogota.freeFrom)}`;
 
   return (
     <div className="sticky top-0 z-50">

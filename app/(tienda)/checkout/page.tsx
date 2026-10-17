@@ -11,7 +11,7 @@ import { useCart } from "@/components/cart-context";
 const FORM_KEY = "nyn-checkout-form";
 
 export default function CheckoutPage() {
-  const { lines, hydrated } = useCart();
+  const { lines, hydrated, shipping } = useCart();
   const [step, setStep] = useState<1 | 2>(1);
   const [form, setForm] = useState<CustomerForm>(EMPTY_FORM);
   const [err, setErr] = useState<string | null>(null);
@@ -37,7 +37,7 @@ export default function CheckoutPage() {
     } catch {}
   }, [form]);
 
-  const t = computeTotals(lines, form.ciudad);
+  const t = computeTotals(lines, form.ciudad, shipping);
   const set = (k: keyof CustomerForm) => (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) =>
     setForm((f) => ({ ...f, [k]: e.target.value }));
   const setDepartamento = (e: React.ChangeEvent<HTMLSelectElement>) => {

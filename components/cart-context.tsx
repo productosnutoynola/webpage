@@ -1,13 +1,15 @@
 "use client";
 
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
-import { FLAVORS, MAX_QTY, PACKS, type FlavorKey, type PackKey } from "@/lib/catalog";
+import { FLAVORS, MAX_QTY, PACKS, type FlavorKey, type PackKey, type ShippingRules } from "@/lib/catalog";
 import { lineId, sanitizeLines, type CartLine } from "@/lib/pricing";
 
 const STORAGE_KEY = "nyn-cart-v1";
 
 type CartCtx = {
   lines: CartLine[];
+  /** Tarifas de envío vigentes (Supabase). */
+  shipping: ShippingRules;
   hydrated: boolean;
   cartOpen: boolean;
   setCartOpen: (v: boolean) => void;
@@ -31,7 +33,7 @@ export function useCart(): CartCtx {
   return c;
 }
 
-export function CartProvider({ children }: { children: React.ReactNode }) {
+export function CartProvider({ children, shipping }: { children: React.ReactNode; shipping: ShippingRules }) {
   const [lines, setLines] = useState<CartLine[]>([]);
   const [hydrated, setHydrated] = useState(false);
   const [cartOpen, setCartOpen] = useState(false);
@@ -111,6 +113,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   const value = useMemo<CartCtx>(
     () => ({
       lines,
+      shipping,
       hydrated,
       cartOpen,
       setCartOpen,
@@ -124,7 +127,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       toast,
       flash,
     }),
-    [lines, hydrated, cartOpen, addFlavor, addPack, setQty, picking, openPicker, toast, flash],
+    [lines, shipping, hydrated, cartOpen, addFlavor, addPack, setQty, picking, openPicker, toast, flash],
   );
 
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;

@@ -2,10 +2,14 @@
 // el servidor recalcula todos los montos desde aquí antes de cobrar.
 
 export const PRICE = 37000;
-export const SHIPPING = {
+export type ShippingRule = { fee: number; freeFrom: number };
+export type ShippingRules = { bogota: ShippingRule; nacional: ShippingRule };
+
+/** Valores por defecto; en producción el sitio usa la tabla shipping_zones de Supabase. */
+export const SHIPPING: ShippingRules = {
   bogota: { fee: 12000, freeFrom: 100000 },
   nacional: { fee: 18000, freeFrom: 150000 },
-} as const;
+};
 
 export type FlavorKey = "cinnamon-roll" | "melted-cocoa" | "berries";
 

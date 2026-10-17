@@ -6,7 +6,7 @@ import { computeTotals, lineId, lineImage, lineMeta, lineName, lineUnitPrice, mo
 import { useCart } from "./cart-context";
 
 export function CartDrawer() {
-  const { lines, cartOpen, setCartOpen, setQty } = useCart();
+  const { lines, cartOpen, setCartOpen, setQty, shipping } = useCart();
 
   useEffect(() => {
     if (!cartOpen) return;
@@ -16,7 +16,7 @@ export function CartDrawer() {
   }, [cartOpen, setCartOpen]);
 
   if (!cartOpen) return null;
-  const t = computeTotals(lines);
+  const t = computeTotals(lines, "Bogotá", shipping);
   const count = lines.reduce((a, l) => a + l.qty, 0);
   const falta = t.freeFrom - t.subtotal;
 
@@ -62,7 +62,7 @@ export function CartDrawer() {
                 <div className="mt-2.5 h-2.5 overflow-hidden rounded-full border-2 border-tinta bg-crema">
                   <div
                     className="h-full bg-ciruela transition-[width] duration-300"
-                    style={{ width: `${Math.min(100, Math.round((t.subtotal / t.freeFrom) * 100))}%` }}
+                    style={{ width: `${Math.min(100, t.free ? 100 : Math.round((t.subtotal / t.freeFrom) * 100))}%` }}
                   />
                 </div>
               </div>
