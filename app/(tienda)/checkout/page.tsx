@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { COLOMBIA, DEPARTMENTS, isValidPlace } from "@/lib/colombia";
-import { EMPTY_FORM, validateCustomer, type CustomerForm } from "@/lib/customer";
+import { EMPTY_FORM, displayDoc, fieldErrors, formatName, validateCustomer, type CustomerForm } from "@/lib/customer";
 import { saveSnapshot } from "@/lib/order-snapshot";
 import { computeTotals, lineId, lineImage, lineName, lineUnitPrice, money, type CartLine, type Totals } from "@/lib/pricing";
 import { useCart } from "@/components/cart-context";
@@ -15,6 +15,8 @@ export default function CheckoutPage() {
   const [step, setStep] = useState<1 | 2>(1);
   const [form, setForm] = useState<CustomerForm>(EMPTY_FORM);
   const [err, setErr] = useState<string | null>(null);
+  const [touched, setTouched] = useState<Partial<Record<keyof CustomerForm, boolean>>>({});
+  const [submitted, setSubmitted] = useState(false);
   const [redirecting, setRedirecting] = useState(false);
 
   useEffect(() => {
@@ -47,11 +49,16 @@ export default function CheckoutPage() {
     setForm((f) => ({ ...f, departamento, ciudad: cities.length === 1 ? cities[0] : "" }));
   };
   const cities = COLOMBIA[form.departamento] ?? [];
+  const errors = fieldErrors(form);
+  const missing = validateCustomer(form);
+  const errOf = (k: keyof CustomerForm) => (submitted || touched[k] ? errors[k] : undefined);
+  const touch = (k: keyof CustomerForm) => () => setTouched((t) => ({ ...t, [k]: true }));
 
   const toStep2 = () => {
-    const missing = validateCustomer(form);
-    if (missing.length) return setErr(`Nos falta ${missing.join(", ")}.`);
+    setSubmitted(true);
+    setForm((f) => ({ ...f, nombre: formatName(f.nombre).trim(), correo: f.correo.trim().toLowerCase() }));
     setErr(null);
+    if (validateCustomer(form).length) return;
     setStep(2);
     window.scrollTo(0, 0);
   };
@@ -120,12 +127,59 @@ export default function CheckoutPage() {
             >
               <h1 className="m-0 mb-1.5 font-display text-[clamp(28px,3.6vw,40px)] font-extrabold leading-none tracking-[-.035em]">¿A dónde la enviamos?</h1>
               <p className="m-0 mb-6 text-[14.5px] text-tinta/60">Todos los campos con * son obligatorios.</p>
+              {submitted && missing.length > 0 && <ErrorBox msg={`Nos falta ${missing.join(", ")}.`} />}
               {err && <ErrorBox msg={err} />}
               <div className="grid grid-cols-[repeat(auto-fit,minmax(200px,1fr))] gap-4">
-                <Field label="Nombre completo *"><input autoComplete="name" value={form.nombre} onChange={set("nombre")} placeholder="María Rodríguez" className="field" /></Field>
-                <Field label="Cédula / NIT"><input inputMode="numeric" value={form.cedula} onChange={set("cedula")} placeholder="1.020.304.050" className="field" /></Field>
-                <Field label="Correo electrónico *"><input type="email" autoComplete="email" value={form.correo} onChange={set("correo")} placeholder="maria@correo.com" className="field" /></Field>
-                <Field label="Celular *"><input type="tel" autoComplete="tel-national" value={form.celular} onChange={set("celular")} placeholder="300 000 0000" className="field" /></Field>
+                <Field label="Nombre completo *" error={errOf("nombre")}>
+                  <input
+                    autoComplete="name"
+                    autoCapitalize="words"
+                    value={form.nombre}
+                    onChange={set("nombre")}
+                    onBlur={() => {
+                      setForm((f) => ({ ...f, nombre: formatName(f.nombre).trim() }));
+                      touch("nombre")();
+                    }}
+                    placeholder="María Rodríguez"
+                    aria-invalid={Boolean(errOf("nombre"))}
+                    className="field"
+                  />
+                </Field>
+                <Field label="Documento de identidad *" error={errOf("cedula")} hint="Cédula, NIT o pasaporte. Con él reconocemos tus pedidos.">
+                  <input
+                    inputMode="numeric"
+                    autoComplete="off"
+                    value={form.cedula}
+                    onChange={set("cedula")}
+                    onBlur={() => {
+                      setForm((f) => ({ ...f, cedula: f.cedula.trim() ? displayDoc(f.cedula) : "" }));
+                      touch("cedula")();
+                    }}
+                    placeholder="1.020.304.050"
+                    aria-invalid={Boolean(errOf("cedula"))}
+                    className="field"
+                  />
+                </Field>
+                <Field label="Correo electrónico *" error={errOf("correo")}>
+                  <input
+                    type="email"
+                    autoComplete="email"
+                    autoCapitalize="none"
+                    spellCheck={false}
+                    value={form.correo}
+                    onChange={set("correo")}
+                    onBlur={() => {
+                      setForm((f) => ({ ...f, correo: f.correo.trim().toLowerCase() }));
+                      touch("correo")();
+                    }}
+                    placeholder="maria@correo.com"
+                    aria-invalid={Boolean(errOf("correo"))}
+                    className="field"
+                  />
+                </Field>
+                <Field label="Celular *" error={errOf("celular")}>
+                  <input type="tel" autoComplete="tel-national" value={form.celular} onChange={set("celular")} onBlur={touch("celular")} placeholder="300 000 0000" aria-invalid={Boolean(errOf("celular"))} className="field" />
+                </Field>
               </div>
               <div className="my-6 h-px bg-tinta/15" />
               <div className="grid grid-cols-[repeat(auto-fit,minmax(200px,1fr))] gap-4">
@@ -135,7 +189,7 @@ export default function CheckoutPage() {
                     {DEPARTMENTS.map((d) => <option key={d} value={d}>{d}</option>)}
                   </select>
                 </Field>
-                <Field label="Ciudad o municipio *">
+                <Field label="Ciudad o municipio *" error={errOf("ciudad")}>
                   <select
                     autoComplete="address-level2"
                     value={form.ciudad}
@@ -148,7 +202,9 @@ export default function CheckoutPage() {
                   </select>
                 </Field>
               </div>
-              <Field label="Dirección de entrega *" className="mt-4"><input autoComplete="street-address" value={form.direccion} onChange={set("direccion")} placeholder="Cra 7 # 45-32, apto 402" className="field" /></Field>
+              <Field label="Dirección de entrega *" className="mt-4" error={errOf("direccion")}>
+                <input autoComplete="street-address" value={form.direccion} onChange={set("direccion")} onBlur={touch("direccion")} placeholder="Cra 7 # 45-32, apto 402" aria-invalid={Boolean(errOf("direccion"))} className="field" />
+              </Field>
               <Field label="Indicaciones para el mensajero" className="mt-4">
                 <textarea rows={3} value={form.notas} onChange={set("notas")} placeholder="Dejar en portería, torre 2. Timbre no funciona." className="field resize-y" />
               </Field>
@@ -235,11 +291,16 @@ function OrderAside({ lines, t, city }: { lines: CartLine[]; t: Totals; city: st
   );
 }
 
-function Field({ label, children, className = "" }: { label: string; children: React.ReactNode; className?: string }) {
+function Field({ label, children, className = "", error, hint }: { label: string; children: React.ReactNode; className?: string; error?: string; hint?: string }) {
   return (
-    <label className={`flex flex-col gap-1.5 ${className}`}>
+    <label className={`flex flex-col gap-1.5 ${className} ${error ? "[&_.field]:border-[#B42318]" : ""}`}>
       <span className="field-label">{label}</span>
       {children}
+      {error ? (
+        <span role="alert" className="text-[12.5px] font-medium text-[#B42318]">{error}</span>
+      ) : (
+        hint && <span className="text-[12px] text-tinta/50">{hint}</span>
+      )}
     </label>
   );
 }

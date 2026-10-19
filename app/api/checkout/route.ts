@@ -52,7 +52,7 @@ export async function POST(req: Request) {
     reference: order.reference,
     amountInCents: order.totals.total * 100,
     redirectUrl: `${origin}/pedido`,
-    customer: { email: f.correo, fullName: f.nombre, phone, legalId: f.cedula.replace(/\D/g, "") || undefined },
+    customer: { email: f.correo, fullName: f.nombre, phone, legalId: /^\d+$/.test(f.cedula) ? f.cedula : undefined },
     shipping: { address: f.direccion, city, region, phone },
   });
 
