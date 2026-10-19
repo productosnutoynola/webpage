@@ -99,8 +99,8 @@ export default async function Home() {
       {/* CÓMO SE COME */}
       <section className="mx-auto max-w-[1240px] px-[22px] pt-[66px]">
         <div className="flex flex-wrap items-center gap-10">
-          <div className="relative aspect-square min-w-0 flex-[1_1_320px] overflow-hidden rounded-3xl border-[3px] border-tinta shadow-[9px_9px_0_var(--color-rosa)]">
-            <Image src="/img/bowl.jpg" alt="Bowl de helado con granola y frambuesas" fill sizes="(max-width: 800px) 100vw, 600px" className="object-cover" />
+          <div className="relative aspect-[3/4] min-w-0 flex-[1_1_320px] overflow-hidden rounded-3xl border-[3px] border-tinta bg-crema shadow-[9px_9px_0_var(--color-rosa)]">
+            <Image src="/img/plato-miel.webp" alt="Queso cottage con granola y miel en un plato negro sobre una tabla de madera" fill sizes="(max-width: 800px) 100vw, 600px" className="object-contain p-3" />
           </div>
           <div className="min-w-0 flex-[1_1_380px]">
             <div className="eyebrow">02 — Cómo se come</div>
@@ -140,7 +140,7 @@ export default async function Home() {
             </div>
           </div>
           <div className="relative aspect-[4/5] min-w-0 flex-[1_1_320px] overflow-hidden rounded-3xl border-[3px] border-tinta shadow-[9px_9px_0_var(--color-mostaza)]">
-            <Image src="/img/hand-bag.jpg" alt="Bolsa de granola Nuto & Nola en la mano" fill sizes="(max-width: 800px) 100vw, 600px" className="object-cover" />
+            <Image src="/img/bowl-leche.webp" alt="Granola Nuto & Nola servida de la bolsa en un bowl, junto a una caja de leche" fill sizes="(max-width: 800px) 100vw, 600px" className="object-cover object-[center_40%]" />
           </div>
         </div>
       </section>
