@@ -32,15 +32,15 @@ export default async function Home() {
         id="inicio"
         className="relative flex flex-col overflow-hidden lg:min-h-[clamp(560px,calc(100svh-190px),860px)] lg:flex-row lg:items-center"
       >
-        {/* Bolsa kraft vertiendo granola; el fondo blanco se funde con el crema (multiply) */}
-        <div className="pointer-events-none relative mx-auto aspect-[4/5] w-full max-w-[460px] lg:absolute lg:inset-y-0 lg:left-0 lg:mx-0 lg:aspect-auto lg:w-[min(50vw,880px)] lg:max-w-none">
+        {/* Bolsa kraft vertiendo granola (volteada: cae hacia el texto); el blanco se funde con el crema */}
+        <div className="pointer-events-none relative aspect-[4/5] w-full max-w-[460px] lg:absolute lg:inset-y-0 lg:left-0 lg:mx-0 lg:aspect-auto lg:w-[min(50vw,880px)] lg:max-w-none">
           <Image
             src="/img/hero-granola.webp"
             alt="Bolsa de granola Nuto & Nola vertiendo granola con almendras, pecanas y semillas"
             fill
             priority
             sizes="(max-width: 1024px) 460px, 50vw"
-            className="object-contain object-center mix-blend-multiply [mask-image:linear-gradient(to_bottom,#000_82%,transparent)]"
+            className="-scale-x-100 object-contain object-right mix-blend-multiply [mask-image:linear-gradient(to_bottom,#000_82%,transparent)]"
           />
         </div>
         <div className="relative mx-auto flex w-full max-w-[1240px] px-[22px] pb-[clamp(34px,6vh,58px)] pt-2 lg:justify-end lg:py-16">
