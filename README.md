@@ -62,6 +62,8 @@ update public.orders set status = 'shipped', shipped_at = now(), tracking_code =
 
 **Correo de confirmación:** al pasar un pedido a `paid`, el trigger `orders_confirmation_email` (pg_net) llama a la Edge Function `order-confirmation-email` (`supabase/functions/`), que relee el pedido y envía el resumen con su número de pedido (`orders.reference`, el *order ID* que ve el cliente) vía Resend. El resultado queda en `orders.confirmation_email_sent_at` / `confirmation_email_error`. Secretos en Supabase → Edge Functions → Secrets: `RESEND_API_KEY` (obligatorio), `EMAIL_FROM` (remitente; hoy `compras@productosnutoynola.com`, se muestra como "Nuto & Nola") y `ORDER_NOTIFY_EMAIL` (opcional, copia para la tienda). Reenviar: `select public.resend_order_confirmation('4827150936');`
 
+**Correo de envío:** en `/admin/panel`, al confirmar el envío de un pedido se elige la transportadora (lista en `lib/carriers.ts`) y se escribe la guía; el trigger `orders_shipped_email` llama a la misma Edge Function con `kind: "shipped"` y el cliente recibe "Tu pedido va en camino" con transportadora, guía, enlace de rastreo y el resumen de la compra. Estado en `orders.shipped_email_sent_at` / `shipped_email_error`; botón "Reenviar" en el panel (`resend_shipped_email`).
+
 **Catálogo:** productos, packs y envíos viven en Supabase (`products`, `bundles`, `bundle_items`, `shipping_zones`) y se editan en `/admin/tienda`. La tienda los lee con `lib/store.ts` (caché de 5 min que se invalida al guardar en el panel); `lib/catalog.ts` solo tiene tipos y valores de respaldo. Las fotos subidas van al bucket público `productos` de Supabase Storage.
 
 **Pruebas de la base:** `psql "$DATABASE_URL" -f supabase/tests/checkout_flow.sql` (corre en una transacción y la revierte; 25 escenarios).

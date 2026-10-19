@@ -4,7 +4,8 @@ import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { checkCredentials, createSessionToken, getAdminSession, SESSION_COOKIE } from "@/lib/admin-auth";
-import { setOrderStatus, TransitionError } from "@/lib/admin-data";
+import { resendShippedEmail, setOrderStatus, TransitionError } from "@/lib/admin-data";
+import { findCarrier } from "@/lib/carriers";
 
 export type LoginState = { error: string | null; email?: string };
 
@@ -37,14 +38,35 @@ export async function updateOrderStatus(_prev: StatusState, form: FormData): Pro
   if (!(await getAdminSession())) redirect("/admin");
   const reference = String(form.get("reference") ?? "");
   const status = String(form.get("status") ?? "");
-  const tracking = String(form.get("tracking") ?? "").slice(0, 80);
+  const tracking = String(form.get("tracking") ?? "").trim().slice(0, 80);
+  const carrierName = String(form.get("carrier") ?? "");
   if (!/^\d{10}$/.test(reference) || (status !== "shipped" && status !== "delivered")) {
     return { error: "Solicitud inválida.", ok: false };
   }
+  if (status === "shipped") {
+    const carrier = findCarrier(carrierName);
+    if (!carrier) return { error: "Elige la empresa transportadora.", ok: false };
+    if (carrier.needsTracking && !/^[A-Za-z0-9-]{4,40}$/.test(tracking)) {
+      return { error: "Escribe el número de guía (solo letras, números o guiones).", ok: false };
+    }
+  }
   try {
-    await setOrderStatus(reference, status, tracking);
+    await setOrderStatus(reference, status, tracking, status === "shipped" ? carrierName : undefined);
   } catch (e) {
     return { error: e instanceof TransitionError ? e.message : "No se pudo actualizar. Intenta de nuevo.", ok: false };
+  }
+  revalidatePath("/admin/panel");
+  return { error: null, ok: true };
+}
+
+export async function resendShipped(_prev: StatusState, form: FormData): Promise<StatusState> {
+  if (!(await getAdminSession())) redirect("/admin");
+  const reference = String(form.get("reference") ?? "");
+  if (!/^\d{10}$/.test(reference)) return { error: "Solicitud inválida.", ok: false };
+  try {
+    await resendShippedEmail(reference);
+  } catch (e) {
+    return { error: e instanceof TransitionError ? e.message : "No se pudo reenviar.", ok: false };
   }
   revalidatePath("/admin/panel");
   return { error: null, ok: true };

@@ -43,6 +43,9 @@ export type AdminOrder = {
   shipped_at: string | null;
   delivered_at: string | null;
   tracking_code: string | null;
+  carrier: string | null;
+  shipped_email_sent_at: string | null;
+  shipped_email_error: string | null;
   ship_name: string;
   ship_phone: string;
   ship_city: string;
@@ -71,11 +74,29 @@ export async function getDashboard(range: Range): Promise<Dashboard> {
   return data as Dashboard;
 }
 
+function searchFilter<T extends { or: (f: string) => T }>(query: T, q: string): T {
+  const term = q.trim().replace(/[%,()]/g, "");
+  if (!term) return query;
+  return /^\d{3,10}$/.test(term)
+    ? query.or(`reference.like.${term}%,ship_phone.like.%${term}%`)
+    : query.or(`ship_name.ilike.%${term}%,ship_city.ilike.%${term}%,ship_address.ilike.%${term}%`);
+}
+
+/** Pestañas donde hay pedidos que coinciden con la búsqueda (para guiar cuando la actual está vacía). */
+export async function searchTabs(q: string): Promise<{ tab: OrderTab; count: number }[]> {
+  const { data, error } = await searchFilter(client().from("orders").select("status"), q).limit(500);
+  if (error) return [];
+  const statuses = (data as { status: OrderStatus }[]).map((r) => r.status);
+  return (["despachar", "enviados", "entregados", "otros"] as OrderTab[])
+    .map((tab) => ({ tab, count: statuses.filter((s) => (ORDER_TABS[tab].statuses as readonly OrderStatus[]).includes(s)).length }))
+    .filter((x) => x.count > 0);
+}
+
 export async function listOrders(tab: OrderTab, q: string): Promise<AdminOrder[]> {
   let query = client()
     .from("orders")
     .select(
-      "reference, status, created_at, paid_at, shipped_at, delivered_at, tracking_code, ship_name, ship_phone, ship_city, ship_region, " +
+      "reference, status, created_at, paid_at, shipped_at, delivered_at, tracking_code, carrier, shipped_email_sent_at, shipped_email_error, ship_name, ship_phone, ship_city, ship_region, " +
         "ship_address, ship_notes, gross_cop, discount_cop, shipping_cop, total_cop, confirmation_email_sent_at, " +
         "customers(email, legal_id), order_items(name, kind, flavors, quantity, line_total_cop), " +
         "payments(status, payment_method, provider_tx_id, created_at)",
@@ -83,12 +104,7 @@ export async function listOrders(tab: OrderTab, q: string): Promise<AdminOrder[]
     .in("status", [...ORDER_TABS[tab].statuses])
     .order("created_at", { ascending: false })
     .limit(200);
-  const term = q.trim().replace(/[%,()]/g, "");
-  if (term) {
-    query = /^\d{3,10}$/.test(term)
-      ? query.or(`reference.like.${term}%,ship_phone.like.%${term}%`)
-      : query.or(`ship_name.ilike.%${term}%,ship_city.ilike.%${term}%,ship_address.ilike.%${term}%`);
-  }
+  query = searchFilter(query, q);
   const { data, error } = await query;
   if (error) throw new Error(`orders: ${error.message}`);
   return data as unknown as AdminOrder[];
@@ -96,11 +112,18 @@ export async function listOrders(tab: OrderTab, q: string): Promise<AdminOrder[]
 
 export class TransitionError extends Error {}
 
-export async function setOrderStatus(reference: string, status: "shipped" | "delivered", tracking?: string): Promise<void> {
+/** Vuelve a enviar el correo de "pedido en camino". */
+export async function resendShippedEmail(reference: string): Promise<void> {
+  const { error } = await client().rpc("resend_shipped_email", { p_reference: reference });
+  if (error) throw new TransitionError(error.message === "NOT_SHIPPED" ? "El pedido no está en estado enviado." : error.message);
+}
+
+export async function setOrderStatus(reference: string, status: "shipped" | "delivered", tracking?: string, carrier?: string): Promise<void> {
   const { error } = await client().rpc("admin_set_order_status", {
     p_reference: reference,
     p_status: status,
     p_tracking: tracking ?? null,
+    p_carrier: carrier ?? null,
   });
   if (error) {
     if (error.message === "INVALID_TRANSITION") throw new TransitionError("El pedido ya cambió de estado. Recarga la página.");

@@ -2,12 +2,12 @@ import Image from "next/image";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { getAdminSession } from "@/lib/admin-auth";
-import { getDashboard, listOrders, ORDER_TABS, RANGES, type AdminOrder, type OrderStatus, type OrderTab, type Range } from "@/lib/admin-data";
+import { getDashboard, listOrders, searchTabs, ORDER_TABS, RANGES, type AdminOrder, type OrderStatus, type OrderTab, type Range } from "@/lib/admin-data";
 import { findFlavor } from "@/lib/catalog";
 import { getCatalog } from "@/lib/store";
 import { BarList, DailyColumns } from "@/components/admin/charts";
 import { dayLabel, money } from "@/lib/admin-format";
-import { OrderActions } from "@/components/admin/order-actions";
+import { OrderActions, ShippedEmailStatus } from "@/components/admin/order-actions";
 import { logout } from "../../actions";
 
 export const dynamic = "force-dynamic";
@@ -64,6 +64,7 @@ export default async function Panel({ searchParams }: { searchParams: SP }) {
   }
 
   const cat = catalog;
+  const elsewhere = q && orders.length === 0 ? await searchTabs(q) : [];
   const flavorName = (s: string) => findFlavor(cat, s)?.name ?? s;
   const k = dash.kpis;
   const st = dash.status;
@@ -304,7 +305,25 @@ export default async function Panel({ searchParams }: { searchParams: SP }) {
 
         <div className="mt-5 flex flex-col gap-3">
           {orders.length === 0 && (
-            <div className={`${card} text-center text-tinta/55`}>{q ? "Ningún pedido coincide con la búsqueda." : "No hay pedidos en esta categoría."}</div>
+            <div className={`${card} text-center text-tinta/55`}>
+              {!q ? (
+                "No hay pedidos en esta categoría."
+              ) : elsewhere.length ? (
+                <>
+                  No está en «{ORDER_TABS[tab].label}». Lo encontramos en:{" "}
+                  {elsewhere.map((e, i) => (
+                    <span key={e.tab}>
+                      {i > 0 && " · "}
+                      <Link href={href({ pedidos: e.tab }) + "#pedidos"} className="font-semibold text-vino underline">
+                        {ORDER_TABS[e.tab].label} ({e.count})
+                      </Link>
+                    </span>
+                  ))}
+                </>
+              ) : (
+                "Ningún pedido coincide con la búsqueda."
+              )}
+            </div>
           )}
           {orders.map((o) => {
             const s = STATUS[o.status];
@@ -322,7 +341,11 @@ export default async function Panel({ searchParams }: { searchParams: SP }) {
                     <div className="mt-2 text-[11.5px] leading-relaxed text-tinta/50">
                       {o.shipped_at && <div>Enviado {dateTime(o.shipped_at)}</div>}
                       {o.delivered_at && <div>Entregado {dateTime(o.delivered_at)}</div>}
+                      {o.carrier && <div>Transportadora: <span className="font-semibold text-tinta/70">{o.carrier}</span></div>}
                       {o.tracking_code && <div>Guía: <span className="font-mono text-tinta/70">{o.tracking_code}</span></div>}
+                      {o.status === "shipped" && o.carrier && (
+                        <div className="mt-1"><ShippedEmailStatus reference={o.reference} sentAt={o.shipped_email_sent_at} error={o.shipped_email_error} /></div>
+                      )}
                     </div>
                   </div>
 
@@ -367,7 +390,7 @@ export default async function Panel({ searchParams }: { searchParams: SP }) {
                 </div>
                 {["paid", "preparing", "shipped"].includes(o.status) && (
                   <div className="mt-4 flex justify-end border-t border-dashed border-tinta/15 pt-4">
-                    <OrderActions reference={o.reference} status={o.status} />
+                    <OrderActions reference={o.reference} status={o.status} email={o.customers?.email} />
                   </div>
                 )}
               </article>
