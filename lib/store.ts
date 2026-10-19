@@ -102,5 +102,10 @@ async function loadCatalog(): Promise<Catalog> {
   return { flavors, packs, shipping };
 }
 
+// Vercel reutiliza la caché de la compilación anterior; sin un identificador por
+// despliegue, las páginas se generaban con el catálogo guardado en esa caché
+// (p. ej. fotos viejas) en vez de leer Supabase.
+const BUILD = process.env.VERCEL_DEPLOYMENT_ID ?? process.env.VERCEL_GIT_COMMIT_SHA ?? "local";
+
 /** Catálogo vigente (Supabase). Se refresca al guardar en el panel o cada 5 min. */
-export const getCatalog = unstable_cache(loadCatalog, ["catalog-v2"], { tags: [CATALOG_TAG], revalidate: 300 });
+export const getCatalog = unstable_cache(loadCatalog, ["catalog-v2", BUILD], { tags: [CATALOG_TAG], revalidate: 300 });
