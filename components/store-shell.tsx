@@ -5,6 +5,7 @@ import { CartDrawer } from "./cart-drawer";
 import { PackPicker } from "./pack-picker";
 import { Toast } from "./toast";
 import { BrandPattern } from "./brand-pattern";
+import { WelcomeSplash } from "./welcome-splash";
 import { getCatalog } from "@/lib/store";
 
 /** Estructura de la tienda: marca de agua, encabezado, carrito y pie de página. */
@@ -22,6 +23,7 @@ export async function StoreShell({ children }: { children: React.ReactNode }) {
         <CartDrawer />
         <PackPicker />
         <Toast />
+        <WelcomeSplash />
       </CartProvider>
     </>
   );
