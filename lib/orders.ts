@@ -10,8 +10,23 @@ export function db(): SupabaseClient | null {
   if (client !== undefined) return client;
   const url = process.env.SUPABASE_URL;
   const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
-  client = url && key ? createClient(url, key, { auth: { persistSession: false } }) : null;
+  client = url && key ? createClient(url, key, { auth: { persistSession: false }, global: { fetch: retryingFetch } }) : null;
   return client;
+}
+
+/**
+ * Supabase rechaza de forma intermitente el token con "JWT issued at future"
+ * (PGRST303, desfase de reloj de su lado). Se reintenta hasta 3 veces.
+ */
+async function retryingFetch(input: RequestInfo | URL, init?: RequestInit): Promise<Response> {
+  for (let attempt = 0; ; attempt++) {
+    const res = await fetch(input, init);
+    if (res.status !== 401 || attempt >= 3) return res;
+    const body = await res.clone().text();
+    if (!body.includes("PGRST303") && !/issued at future/i.test(body)) return res;
+    console.warn(`[supabase] PGRST303, reintento ${attempt + 1}`);
+    await new Promise((r) => setTimeout(r, 400 * (attempt + 1)));
+  }
 }
 
 export type NewOrderInput = {

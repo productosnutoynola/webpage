@@ -3,7 +3,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { getAdminSession } from "@/lib/admin-auth";
 import { getDashboard, listOrders, searchTabs, ORDER_TABS, RANGES, type AdminOrder, type OrderStatus, type OrderTab, type Range } from "@/lib/admin-data";
-import { findFlavor } from "@/lib/catalog";
+import { DEFAULT_CATALOG, findFlavor } from "@/lib/catalog";
 import { getCatalog } from "@/lib/store";
 import { BarList, DailyColumns } from "@/components/admin/charts";
 import { dayLabel, money } from "@/lib/admin-format";
@@ -53,7 +53,7 @@ export default async function Panel({ searchParams }: { searchParams: SP }) {
 
   let dash, orders: AdminOrder[], catalog;
   try {
-    [dash, orders, catalog] = await Promise.all([getDashboard(range), listOrders(tab, q), getCatalog()]);
+    [dash, orders, catalog] = await Promise.all([getDashboard(range), listOrders(tab, q), getCatalog().catch(() => DEFAULT_CATALOG)]);
   } catch (e) {
     return (
       <main className="mx-auto max-w-[760px] px-5 py-20 text-center">

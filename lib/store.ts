@@ -58,8 +58,11 @@ async function loadCatalog(): Promise<Catalog> {
     client.from("shipping_zones").select("code, city, fee_cop, free_from_cop, eta_days").eq("active", true),
   ]);
   if (p.error || b.error || z.error) {
-    console.error("[store] catálogo", p.error ?? b.error ?? z.error);
-    return DEFAULT_CATALOG;
+    // Se lanza en vez de usar el catálogo de respaldo: así no queda en caché un
+    // catálogo viejo y la tienda sigue mostrando la última versión buena.
+    const err = p.error ?? b.error ?? z.error;
+    console.error("[store] catálogo", err);
+    throw new Error(`No se pudo leer el catálogo: ${err?.message}`);
   }
 
   const flavors = (p.data as ProductRow[]).map(toFlavor);

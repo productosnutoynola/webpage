@@ -21,7 +21,13 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Solicitud inválida." }, { status: 400 });
   }
 
-  const lines = sanitizeLines(await getCatalog(), body.lines);
+  let catalog;
+  try {
+    catalog = await getCatalog();
+  } catch {
+    return NextResponse.json({ error: "No pudimos cargar la tienda. Intenta de nuevo en un momento." }, { status: 503 });
+  }
+  const lines = sanitizeLines(catalog, body.lines);
   if (lines.length === 0) return NextResponse.json({ error: "Tu carrito está vacío." }, { status: 400 });
 
   const f = parseCustomer(body.customer);
