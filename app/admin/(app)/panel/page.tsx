@@ -378,7 +378,11 @@ export default async function Panel({ searchParams }: { searchParams: SP }) {
                       ))}
                     </ul>
                     <div className="mt-2 flex justify-between border-t border-tinta/10 pt-2 text-[12.5px] text-tinta/60">
-                      <span>{o.discount_cop > 0 ? `Desc. −${money(o.discount_cop)} · ` : ""}Envío {o.shipping_cop ? money(o.shipping_cop) : "gratis"}</span>
+                      <span>
+                        {o.discount_cop > 0 ? `Desc. −${money(o.discount_cop)} · ` : ""}
+                        {o.promo_code ? `Código ${o.promo_code}${o.promo_discount_cop ? ` −${money(o.promo_discount_cop)}` : ""} · ` : ""}
+                        Envío {o.shipping_cop ? money(o.shipping_cop) : "gratis"}
+                      </span>
                     </div>
                     <div className="mt-1 flex items-baseline justify-between">
                       <span className="text-[12.5px] text-tinta/60">

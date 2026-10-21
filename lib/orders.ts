@@ -1,6 +1,6 @@
 import "server-only";
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
-import type { CartLine, Totals } from "./pricing";
+import type { CartLine, Promo, Totals } from "./pricing";
 import type { TransactionStatus } from "./wompi";
 
 let client: SupabaseClient | null | undefined;
@@ -33,6 +33,7 @@ export type NewOrderInput = {
   customer: { name: string; legalId: string; email: string; phone: string };
   shipping: { city: string; region: string; neighborhood: string; address: string; notes: string };
   lines: CartLine[];
+  promo?: string | null;
 };
 
 export type CreatedOrder = { orderId: string; reference: string; city: string; etaDays: number; totals: Totals };
@@ -52,7 +53,7 @@ export async function createOrder(input: NewOrderInput): Promise<CreatedOrder> {
   const d = db();
   if (!d) throw new OrderError("La tienda aún no está configurada. Escríbenos por WhatsApp para completar tu pedido.", 503);
 
-  const { data, error } = await d.rpc("create_order", {
+  const { data, error } = await d.rpc("place_order", {
     p_customer: {
       email: input.customer.email,
       name: input.customer.name,
@@ -67,6 +68,7 @@ export async function createOrder(input: NewOrderInput): Promise<CreatedOrder> {
       notes: input.shipping.notes,
     },
     p_lines: input.lines,
+    p_promo: input.promo || null,
   });
 
   if (error) {
@@ -74,6 +76,9 @@ export async function createOrder(input: NewOrderInput): Promise<CreatedOrder> {
       const { data: p } = await d.from("products").select("name").eq("slug", error.details ?? "").maybeSingle();
       const name = (p as { name: string } | null)?.name ?? "uno de los sabores";
       throw new OrderError(`Se nos agotó ${name} para la cantidad que pediste. Ajusta tu carrito o escríbenos por WhatsApp.`, 409);
+    }
+    if (error.message === "INVALID_PROMO") {
+      throw new OrderError("El código promocional ya no está disponible. Quítalo e intenta de nuevo.", 400);
     }
     if (["EMPTY_CART", "INVALID_LINE", "UNKNOWN_PRODUCT", "UNKNOWN_BUNDLE", "INVALID_FLAVORS"].includes(error.message)) {
       throw new OrderError("Algo en tu carrito ya no está disponible. Revísalo e intenta de nuevo.", 400);
@@ -139,7 +144,7 @@ export type OrderSummary = {
   address: string;
   etaDays: number;
   items: { name: string; flavors: string[]; quantity: number; lineTotal: number }[];
-  totals: { gross: number; discount: number; shipping: number; total: number };
+  totals: { gross: number; discount: number; shipping: number; total: number; promoCode?: string | null; promoDiscount?: number; shippingWaived?: number };
   paymentMethod: string | null;
   createdAt: string;
 };
@@ -154,7 +159,7 @@ export async function getOrderSummary(reference: string): Promise<OrderSummary |
   const { data, error } = await d
     .from("orders")
     .select(
-      "reference, status, ship_name, ship_city, ship_region, ship_address, gross_cop, discount_cop, shipping_cop, total_cop, created_at, " +
+      "reference, status, ship_name, ship_city, ship_region, ship_address, gross_cop, discount_cop, shipping_cop, total_cop, promo_code, promo_discount_cop, promo_shipping_waived_cop, created_at, " +
         "customers(email), shipping_zones(eta_days), order_items(name, flavors, quantity, line_total_cop), payments(status, payment_method)",
     )
     .eq("reference", reference)
@@ -167,6 +172,7 @@ export async function getOrderSummary(reference: string): Promise<OrderSummary |
   const o = data as unknown as {
     reference: string; status: string; ship_name: string; ship_city: string; ship_region: string; ship_address: string;
     gross_cop: number; discount_cop: number; shipping_cop: number; total_cop: number; created_at: string;
+    promo_code: string | null; promo_discount_cop: number; promo_shipping_waived_cop: number;
     customers: { email: string } | null; shipping_zones: { eta_days: number } | null;
     order_items: { name: string; flavors: string[]; quantity: number; line_total_cop: number }[];
     payments: { status: string; payment_method: string | null }[];
@@ -181,8 +187,22 @@ export async function getOrderSummary(reference: string): Promise<OrderSummary |
     address: o.ship_address,
     etaDays: o.shipping_zones?.eta_days ?? 2,
     items: o.order_items.map((i) => ({ name: i.name, flavors: i.flavors, quantity: i.quantity, lineTotal: i.line_total_cop })),
-    totals: { gross: o.gross_cop, discount: o.discount_cop, shipping: o.shipping_cop, total: o.total_cop },
+    totals: {
+      gross: o.gross_cop, discount: o.discount_cop, shipping: o.shipping_cop, total: o.total_cop,
+      promoCode: o.promo_code, promoDiscount: o.promo_discount_cop, shippingWaived: o.promo_shipping_waived_cop,
+    },
     paymentMethod: o.payments.find((p) => p.status === "APPROVED")?.payment_method ?? null,
     createdAt: o.created_at,
   };
+}
+
+/** Valida un código promocional (activo). Null si no existe o está desactivado. */
+export async function checkPromo(code: string): Promise<Promo | null> {
+  const d = db();
+  if (!d) return null;
+  const clean = code.trim().toUpperCase();
+  if (!/^[A-Z0-9]{4,24}$/.test(clean)) return null;
+  const { data, error } = await d.rpc("check_promo", { p_code: clean });
+  if (error) throw new Error(error.message);
+  return (data as Promo | null) ?? null;
 }

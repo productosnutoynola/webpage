@@ -5,10 +5,11 @@ import { useEffect, useState } from "react";
 import { COLOMBIA, DEPARTMENTS, isValidPlace } from "@/lib/colombia";
 import { EMPTY_FORM, displayDoc, fieldErrors, formatName, validateCustomer, type CustomerForm } from "@/lib/customer";
 import { saveSnapshot } from "@/lib/order-snapshot";
-import { computeTotals, lineId, lineImage, lineName, lineUnitPrice, money, type CartLine, type Totals } from "@/lib/pricing";
+import { computeTotals, lineId, lineImage, lineName, lineUnitPrice, money, promoLabel, type CartLine, type Promo, type Totals } from "@/lib/pricing";
 import { useCart } from "@/components/cart-context";
 
 const FORM_KEY = "nyn-checkout-form";
+const PROMO_KEY = "nyn-promo";
 
 export default function CheckoutPage() {
   const { lines, hydrated, catalog } = useCart();
@@ -17,6 +18,20 @@ export default function CheckoutPage() {
   const [err, setErr] = useState<string | null>(null);
   const [touched, setTouched] = useState<Partial<Record<keyof CustomerForm, boolean>>>({});
   const [submitted, setSubmitted] = useState(false);
+  const [promo, setPromoState] = useState<Promo | null>(null);
+  const setPromo = (p: Promo | null) => {
+    setPromoState(p);
+    try {
+      if (p) sessionStorage.setItem(PROMO_KEY, JSON.stringify(p));
+      else sessionStorage.removeItem(PROMO_KEY);
+    } catch {}
+  };
+  useEffect(() => {
+    try {
+      const raw = sessionStorage.getItem(PROMO_KEY);
+      if (raw) setPromoState(JSON.parse(raw) as Promo);
+    } catch {}
+  }, []);
   const [redirecting, setRedirecting] = useState(false);
 
   useEffect(() => {
@@ -39,7 +54,7 @@ export default function CheckoutPage() {
     } catch {}
   }, [form]);
 
-  const t = computeTotals(catalog, lines, form.ciudad);
+  const t = computeTotals(catalog, lines, form.ciudad, promo);
   const set = (k: keyof CustomerForm) => (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) =>
     setForm((f) => ({ ...f, [k]: e.target.value }));
   const setDepartamento = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -70,7 +85,7 @@ export default function CheckoutPage() {
       const res = await fetch("/api/checkout", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ lines, customer: form }),
+        body: JSON.stringify({ lines, customer: form, promo: promo?.code ?? null }),
       });
       const data = (await res.json()) as { url?: string; reference?: string; lines?: CartLine[]; totals?: Totals; city?: string; etaDays?: number; error?: string };
       if (!res.ok || !data.url) throw new Error(data.error ?? "No pudimos iniciar el pago.");
@@ -246,7 +261,10 @@ export default function CheckoutPage() {
           )}
         </div>
 
-        <OrderAside lines={lines} t={t} city={form.ciudad || "—"} />
+        <div className="sticky top-[132px] flex max-w-[400px] flex-[1_1_300px] flex-col gap-5">
+          <OrderAside lines={lines} t={t} city={form.ciudad || "—"} promo={promo} />
+          <PromoBox promo={promo} onChange={setPromo} disabled={redirecting} />
+        </div>
       </div>
 
       {redirecting && (
@@ -260,10 +278,10 @@ export default function CheckoutPage() {
   );
 }
 
-function OrderAside({ lines, t, city }: { lines: CartLine[]; t: Totals; city: string }) {
+function OrderAside({ lines, t, city, promo }: { lines: CartLine[]; t: Totals; city: string; promo: Promo | null }) {
   const { catalog } = useCart();
   return (
-    <aside className="sticky top-[132px] max-w-[400px] flex-[1_1_300px] rounded-[22px] border-[3px] border-tinta bg-ciruela p-6 shadow-[8px_8px_0_var(--color-mostaza)]">
+    <aside className="rounded-[22px] border-[3px] border-tinta bg-ciruela p-6 shadow-[8px_8px_0_var(--color-mostaza)]">
       <div className="font-mono text-[10.5px] uppercase tracking-[.16em] text-rosa">Tu pedido</div>
       <div className="mb-[18px] mt-4 flex flex-col gap-3">
         {lines.map((l) => (
@@ -280,7 +298,16 @@ function OrderAside({ lines, t, city }: { lines: CartLine[]; t: Totals; city: st
       <div className="flex flex-col gap-[9px] border-y-2 border-dashed border-rosa/35 py-[18px]">
         <div className="flex justify-between text-sm text-crema/85"><span>Subtotal</span><span>{money(t.gross)}</span></div>
         {t.discount > 0 && <div className="flex justify-between text-sm text-rosa"><span>Descuento packs</span><span>−{money(t.discount)}</span></div>}
-        <div className="flex justify-between text-sm text-crema/85"><span>Envío · {city}</span><span>{t.shipping === 0 ? "Gratis" : money(t.shipping)}</span></div>
+        {promo && t.promoDiscount ? (
+          <div className="flex justify-between text-sm text-mostaza"><span>Código {promo.code} ({promoLabel(promo)})</span><span>−{money(t.promoDiscount)}</span></div>
+        ) : null}
+        <div className="flex justify-between text-sm text-crema/85">
+          <span>Envío · {city}</span>
+          <span>
+            {t.shippingWaived ? <span className="mr-1.5 text-rosa/60 line-through">{money(t.shippingWaived)}</span> : null}
+            {t.shipping === 0 ? "Gratis" : money(t.shipping)}
+          </span>
+        </div>
       </div>
       <div className="mt-4 flex items-baseline justify-between">
         <span className="font-display text-[15px] font-bold text-crema">Total</span>
@@ -310,5 +337,74 @@ function ErrorBox({ msg }: { msg: string }) {
     <div role="alert" className="mb-5 rounded-[14px] border-[2.5px] border-tinta bg-vino px-4 py-3.5 text-[13.5px] font-medium leading-normal text-crema">
       {msg}
     </div>
+  );
+}
+
+/** Campo de código promocional debajo del resumen del pedido. */
+function PromoBox({ promo, onChange, disabled }: { promo: Promo | null; onChange: (p: Promo | null) => void; disabled?: boolean }) {
+  const [code, setCode] = useState("");
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  async function apply(e: React.FormEvent) {
+    e.preventDefault();
+    const clean = code.trim().toUpperCase();
+    if (!clean) return setError("Escribe tu código.");
+    setBusy(true);
+    setError(null);
+    try {
+      const res = await fetch("/api/promo", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ code: clean }) });
+      const data = (await res.json()) as { promo?: Promo; error?: string };
+      if (!res.ok || !data.promo) throw new Error(data.error ?? "Código no válido.");
+      onChange(data.promo);
+      setCode("");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Código no válido.");
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  if (promo) {
+    return (
+      <div className="flex items-center justify-between gap-3 rounded-[18px] border-[2.5px] border-tinta bg-mostaza px-5 py-4 shadow-[4px_4px_0_var(--color-tinta)]">
+        <div className="min-w-0">
+          <div className="font-mono text-[10.5px] uppercase tracking-[.16em] text-ciruela">Código aplicado</div>
+          <div className="mt-0.5 truncate font-display text-[17px] font-extrabold text-tinta">
+            {promo.code} · {promoLabel(promo)}
+          </div>
+        </div>
+        <button type="button" disabled={disabled} onClick={() => onChange(null)} className="flex-none text-[13px] font-semibold text-ciruela underline-offset-2 hover:underline">
+          Quitar
+        </button>
+      </div>
+    );
+  }
+
+  return (
+    <form onSubmit={apply} className="rounded-[18px] border-[2.5px] border-tinta bg-crema p-4 shadow-[4px_4px_0_var(--color-rosa)]">
+      <label htmlFor="promo" className="field-label">¿Tienes un código promocional?</label>
+      <div className="mt-2 flex gap-2">
+        <input
+          id="promo"
+          value={code}
+          onChange={(e) => {
+            setCode(e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, ""));
+            setError(null);
+          }}
+          placeholder="EJ: CANELAZO10"
+          autoCapitalize="characters"
+          autoComplete="off"
+          spellCheck={false}
+          maxLength={24}
+          className="field min-w-0 flex-1 font-mono uppercase tracking-[.08em]"
+          aria-invalid={Boolean(error)}
+        />
+        <button type="submit" disabled={busy || disabled} className="btn-primary flex-none px-5 text-sm disabled:opacity-60">
+          {busy ? "…" : "Aplicar"}
+        </button>
+      </div>
+      {error && <p role="alert" className="m-0 mt-2 text-[12.5px] font-medium text-[#B42318]">{error}</p>}
+    </form>
   );
 }

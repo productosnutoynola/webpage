@@ -393,3 +393,35 @@ export async function setThreshold(slug: string, threshold: number): Promise<Res
     return {};
   });
 }
+
+// ---------------------------------------------------------------- códigos promocionales
+
+const PERCENTS = [5, 10, 15, 20, 30, 40, 50];
+
+export async function createPromo(input: { code: string; kind: "percent" | "free_shipping"; percent: number | null; note: string }): Promise<Result<{ code: string }>> {
+  return run(async () => {
+    const c = await guard();
+    const kind = input.kind === "free_shipping" ? "free_shipping" : "percent";
+    const percent = kind === "percent" ? Number(input.percent) : null;
+    if (kind === "percent" && !PERCENTS.includes(percent!)) throw new Error("Elige un descuento: 5, 10, 15, 20, 30, 40 o 50 %.");
+    const code = String(input.code ?? "").trim().toUpperCase().replace(/[^A-Z0-9]/g, "");
+    if (!/^[A-Z0-9]{4,24}$/.test(code)) throw new Error("El código debe tener entre 4 y 24 letras o números, sin espacios.");
+    const { error } = await c.from("promo_codes").insert({ code, kind, percent, note: str(input.note, 120) || null });
+    if (error) {
+      if (error.code === "23505") throw new Error(`El código ${code} ya existe. Genera otro nombre.`);
+      throw new Error(error.message);
+    }
+    revalidatePath("/admin/tienda/promos");
+    return { code };
+  });
+}
+
+export async function setPromoActive(code: string, active: boolean): Promise<Result> {
+  return run(async () => {
+    const c = await guard();
+    const { error } = await c.from("promo_codes").update({ active }).eq("code", code);
+    if (error) throw new Error(error.message);
+    revalidatePath("/admin/tienda/promos");
+    return {};
+  });
+}

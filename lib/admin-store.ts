@@ -210,3 +210,26 @@ export function adminToFlavor(p: AdminProduct): Flavor {
     servings: p.servings, gallery: p.gallery, nutrition: p.nutrition, packEligible: p.packEligible,
   };
 }
+
+export type AdminPromo = {
+  code: string;
+  kind: "percent" | "free_shipping";
+  percent: number | null;
+  active: boolean;
+  note: string | null;
+  created_at: string;
+  uses: number;
+  pending: number;
+  customers: number;
+  revenue: number;
+  discount: number;
+  last_used: string | null;
+  items: { name: string; units: number; revenue: number }[];
+  cities: { city: string; orders: number }[];
+};
+
+export async function listPromos(): Promise<AdminPromo[]> {
+  const { data, error } = await client().rpc("admin_promo_stats");
+  if (error) throw new Error(error.message);
+  return data as AdminPromo[];
+}

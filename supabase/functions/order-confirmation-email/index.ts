@@ -59,6 +59,7 @@ type Order = {
   ship_region: string; ship_address: string; ship_notes: string | null; gross_cop: number; discount_cop: number;
   shipping_cop: number; total_cop: number; created_at: string; shipped_at: string | null;
   tracking_code: string | null; carrier: string | null;
+  promo_code: string | null; promo_discount_cop: number; promo_shipping_waived_cop: number;
   customers: { email: string } | null; shipping_zones: { eta_days: number } | null;
   order_items: { name: string; flavors: string[]; quantity: number; line_total_cop: number; kind: string }[];
   payments: { status: string; payment_method: string | null }[];
@@ -127,6 +128,8 @@ function render(o: Order, kind: Kind, names: Record<string, string>) {
     <table role="presentation" width="100%" style="margin-top:12px;border-top:2px dashed #e3d6c8;padding-top:6px;">
       ${row("Subtotal", money(o.gross_cop), "#4a3a3f")}
       ${o.discount_cop > 0 ? row("Descuento packs", "−" + money(o.discount_cop), C.vino) : ""}
+      ${o.promo_code && o.promo_discount_cop > 0 ? row(`Código ${esc(o.promo_code)}`, "−" + money(o.promo_discount_cop), C.vino) : ""}
+      ${o.promo_code && o.promo_shipping_waived_cop > 0 ? row(`Código ${esc(o.promo_code)} · envío gratis`, "−" + money(o.promo_shipping_waived_cop), C.vino) : ""}
       ${row(`Envío · ${esc(o.ship_city)}`, o.shipping_cop === 0 ? "Gratis" : money(o.shipping_cop), "#4a3a3f")}
       <tr><td colspan="2" style="border-top:2px solid ${C.tinta};padding-top:4px;"></td></tr>
       ${row("Total pagado", money(o.total_cop), C.vino, true)}
@@ -155,6 +158,8 @@ function render(o: Order, kind: Kind, names: Record<string, string>) {
     ``,
     `Subtotal: ${money(o.gross_cop)}`,
     ...(o.discount_cop > 0 ? [`Descuento packs: −${money(o.discount_cop)}`] : []),
+    ...(o.promo_code && o.promo_discount_cop > 0 ? [`Código ${o.promo_code}: −${money(o.promo_discount_cop)}`] : []),
+    ...(o.promo_code && o.promo_shipping_waived_cop > 0 ? [`Código ${o.promo_code} (envío gratis): −${money(o.promo_shipping_waived_cop)}`] : []),
     `Envío (${o.ship_city}): ${o.shipping_cop === 0 ? "Gratis" : money(o.shipping_cop)}`,
     `Total pagado: ${money(o.total_cop)}`,
     ``,
@@ -212,7 +217,7 @@ Deno.serve(async (req) => {
     .from("orders")
     .select(
       "id, reference, status, ship_name, ship_phone, ship_city, ship_region, ship_address, ship_notes, gross_cop, discount_cop, " +
-        "shipping_cop, total_cop, created_at, shipped_at, tracking_code, carrier, customers(email), shipping_zones(eta_days), " +
+        "shipping_cop, total_cop, created_at, shipped_at, tracking_code, carrier, promo_code, promo_discount_cop, promo_shipping_waived_cop, customers(email), shipping_zones(eta_days), " +
         "order_items(name, flavors, quantity, line_total_cop, kind), payments(status, payment_method)",
     )
     .eq("id", orderId)

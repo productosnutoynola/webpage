@@ -12,6 +12,7 @@ const STORE = [
   { href: "/admin/tienda/envios", label: "Envíos por ciudad", icon: "➜" },
   { href: "/admin/tienda/inventario", label: "Inventario", icon: "▤" },
   { href: "/admin/tienda/clientes", label: "Clientes", icon: "☺" },
+  { href: "/admin/tienda/promos", label: "Códigos promocionales", icon: "%" },
 ];
 
 export function AdminSidebar({ email }: { email: string }) {

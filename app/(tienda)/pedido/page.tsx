@@ -16,7 +16,7 @@ type DbOrder = {
   address: string;
   etaDays: number;
   items: { name: string; flavors: string[]; quantity: number; lineTotal: number }[];
-  totals: { gross: number; discount: number; shipping: number; total: number };
+  totals: { gross: number; discount: number; shipping: number; total: number; promoCode?: string | null; promoDiscount?: number; shippingWaived?: number };
   createdAt: string;
 };
 type Tx = {
@@ -177,6 +177,12 @@ function Pedido() {
               <div className="flex justify-between text-tinta/70"><span>Subtotal</span><span className="font-mono">{money(view.totals.gross)}</span></div>
               {view.totals.discount > 0 && (
                 <div className="flex justify-between text-vino"><span>Descuento packs</span><span className="font-mono">−{money(view.totals.discount)}</span></div>
+              )}
+              {view.totals.promoCode && (view.totals.promoDiscount ?? 0) > 0 && (
+                <div className="flex justify-between text-vino"><span>Código {view.totals.promoCode}</span><span className="font-mono">−{money(view.totals.promoDiscount!)}</span></div>
+              )}
+              {view.totals.promoCode && (view.totals.shippingWaived ?? 0) > 0 && (
+                <div className="flex justify-between text-vino"><span>Código {view.totals.promoCode} · envío gratis</span><span className="font-mono">−{money(view.totals.shippingWaived!)}</span></div>
               )}
               <div className="flex justify-between text-tinta/70">
                 <span>Envío · {view.city}</span>

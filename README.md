@@ -83,6 +83,7 @@ Barra lateral → **Configuración de la tienda**:
 - **Envíos por ciudad:** tarifa de Bogotá, del resto del país y tarifas propias por ciudad (`shipping_zones.city`; `create_order` usa `_shipping_zone_for`).
 - **Inventario:** sumar bolsas (`restock`), corregir conteo (`set_stock`), alerta de stock bajo y movimientos recientes.
 - **Clientes:** búsqueda, compras y total por cliente (`admin_customers`) y descarga en CSV.
+- **Códigos promocionales:** crear códigos (5–50 % o envío gratis) con nombre aleatorio divertido, habilitar/deshabilitar y ver métricas (compras, clientes, ventas, descuento otorgado, productos y ciudades). Tabla `promo_codes`; el checkout valida con `check_promo` y el pedido se crea con `place_order(..., p_promo)`, que recalcula el descuento en la base, así que el monto enviado a Wompi ya viene con el cupón aplicado.
 
 ## Puesta en producción
 

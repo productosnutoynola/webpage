@@ -54,6 +54,8 @@ export type AdminOrder = {
   ship_notes: string | null;
   gross_cop: number;
   discount_cop: number;
+  promo_code: string | null;
+  promo_discount_cop: number;
   shipping_cop: number;
   total_cop: number;
   confirmation_email_sent_at: string | null;
@@ -97,7 +99,7 @@ export async function listOrders(tab: OrderTab, q: string): Promise<AdminOrder[]
     .from("orders")
     .select(
       "reference, status, created_at, paid_at, shipped_at, delivered_at, tracking_code, carrier, shipped_email_sent_at, shipped_email_error, ship_name, ship_phone, ship_city, ship_region, " +
-        "ship_address, ship_notes, gross_cop, discount_cop, shipping_cop, total_cop, confirmation_email_sent_at, " +
+        "ship_address, ship_notes, gross_cop, discount_cop, promo_code, promo_discount_cop, shipping_cop, total_cop, confirmation_email_sent_at, " +
         "customers(email, legal_id), order_items(name, kind, flavors, quantity, line_total_cop), " +
         "payments(status, payment_method, provider_tx_id, created_at)",
     )

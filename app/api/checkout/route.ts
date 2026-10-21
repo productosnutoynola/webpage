@@ -14,7 +14,7 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Los pagos aún no están configurados. Escríbenos por WhatsApp para completar tu pedido." }, { status: 503 });
   }
 
-  let body: { lines?: unknown; customer?: unknown };
+  let body: { lines?: unknown; customer?: unknown; promo?: unknown };
   try {
     body = await req.json();
   } catch {
@@ -44,6 +44,7 @@ export async function POST(req: Request) {
       customer: { name: f.nombre, legalId: f.cedula, email: f.correo, phone },
       shipping: { city, region, neighborhood: "", address: f.direccion, notes: f.notas },
       lines,
+      promo: typeof body.promo === "string" ? body.promo.trim().toUpperCase().slice(0, 24) : null,
     });
   } catch (err) {
     if (err instanceof OrderError) return NextResponse.json({ error: err.message }, { status: err.status });

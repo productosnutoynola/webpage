@@ -76,3 +76,16 @@ test("productos con precios distintos: el pack suma los sabores elegidos", () =>
   ]);
   assert.equal(lines.length, 0); // no habilitado para packs
 });
+
+test("código promocional: % sobre el subtotal con descuento de packs, o envío gratis", () => {
+  const lines: CartLine[] = [{ kind: "flavor", flavor: "berries", qty: 2 }];
+  const pct = computeTotals(cat, lines, "Cali", { code: "CANELAZO10", kind: "percent", percent: 10 });
+  assert.equal(pct.promoDiscount, 7400);
+  assert.equal(pct.total, 74000 - 7400 + 18000);
+  const ship = computeTotals(cat, [{ kind: "flavor", flavor: "berries", qty: 1 }], "Cali", { code: "ENVIOGRATIS", kind: "free_shipping", percent: null });
+  assert.equal(ship.shipping, 0);
+  assert.equal(ship.shippingWaived, 18000);
+  assert.equal(ship.total, 37000);
+  const pack = computeTotals(cat, [{ kind: "pack", pack: "trio", flavors: [], qty: 1 }], "Bogotá", { code: "X", kind: "percent", percent: 20 });
+  assert.equal(pack.promoDiscount, Math.round(94350 * 0.2));
+});

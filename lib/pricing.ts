@@ -79,6 +79,13 @@ export function isBogota(city: string): boolean {
   return city === "Bogotá";
 }
 
+/** Código promocional validado en el servidor (check_promo). */
+export type Promo = { code: string; kind: "percent" | "free_shipping"; percent: number | null };
+
+export function promoLabel(p: Promo): string {
+  return p.kind === "percent" ? `−${p.percent} %` : "Envío gratis";
+}
+
 export type Totals = {
   bags: number;
   gross: number;
@@ -88,9 +95,14 @@ export type Totals = {
   freeFrom: number;
   free: boolean;
   total: number;
+  promoCode?: string | null;
+  /** Descuento del código sobre los productos. */
+  promoDiscount?: number;
+  /** Envío que el código dejó en $0. */
+  shippingWaived?: number;
 };
 
-export function computeTotals(cat: Catalog, lines: CartLine[], city: string = "Bogotá"): Totals {
+export function computeTotals(cat: Catalog, lines: CartLine[], city: string = "Bogotá", promo?: Promo | null): Totals {
   let bags = 0;
   let gross = 0;
   let subtotal = 0;
@@ -101,7 +113,17 @@ export function computeTotals(cat: Catalog, lines: CartLine[], city: string = "B
   }
   const rule = shippingFor(cat.shipping, city);
   const free = rule.fee === 0 || subtotal >= rule.freeFrom;
-  const shipping = lines.length === 0 || free ? 0 : rule.fee;
+  let shipping = lines.length === 0 || free ? 0 : rule.fee;
+  // Mismo cálculo que place_order en Supabase (que es quien cobra).
+  let promoDiscount = 0;
+  let shippingWaived = 0;
+  if (promo && lines.length) {
+    if (promo.kind === "percent") promoDiscount = Math.round((subtotal * (promo.percent ?? 0)) / 100);
+    else {
+      shippingWaived = shipping;
+      shipping = 0;
+    }
+  }
   return {
     bags,
     gross,
@@ -109,8 +131,11 @@ export function computeTotals(cat: Catalog, lines: CartLine[], city: string = "B
     subtotal,
     shipping,
     freeFrom: rule.freeFrom,
-    free,
-    total: subtotal + shipping,
+    free: free || shipping === 0,
+    total: subtotal - promoDiscount + shipping,
+    promoCode: promo?.code ?? null,
+    promoDiscount,
+    shippingWaived,
   };
 }
 
